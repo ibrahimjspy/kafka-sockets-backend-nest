@@ -17,7 +17,7 @@ export const graphqlCallSource = async (query: string): Promise<object> => {
       authorization: `Bearer ${SOURCE_GRAPHQL_ALL_ACCESS_TOKEN}`,
     },
   });
-  const response = await graphQLClient.request(query);
+  const response: object = await graphQLClient.request(query);
   const endTime = new Date().getTime();
   logger.log('Request took ' + (endTime - startTime) + 'ms', { request });
   return response;

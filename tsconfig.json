@@ -19,5 +19,8 @@
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true,
      "esModuleInterop": true,
+     "lib": [
+      "ES2021.String"
+    ]
   }
 }
