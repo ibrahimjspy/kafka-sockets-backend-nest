@@ -5,9 +5,16 @@ import {
   ProductTransformedDto,
   ShopDetailsDto,
 } from './Product.transformer.types';
+import { ProductMediaTransformer } from '../services/productMedia/Product.media.transformer';
+import { ProductVariantTransformer } from '../services/productVariant/Product.variant.transformer';
 
 @Injectable()
 export class ProductTransformer {
+  constructor(
+    private readonly mediaTransformer: ProductMediaTransformer,
+    private readonly variantTransformer: ProductVariantTransformer,
+  ) {}
+
   public payloadBuilder(productsData: GetProductsDto) {
     const transformedProducts: ProductTransformedDto[] = [];
     const productsList: ProductDto[] = this.removeEdges(productsData);
@@ -15,6 +22,8 @@ export class ProductTransformer {
       const transformedProduct: ProductTransformedDto = {};
       this.addProductDetails(product, transformedProduct);
       this.addShopDetails(product, transformedProduct);
+      this.mediaTransformer.addMedia(product, transformedProduct);
+      this.variantTransformer.addVariants(product, transformedProduct);
       console.log(transformedProduct);
       transformedProducts.push(transformedProduct);
     });
