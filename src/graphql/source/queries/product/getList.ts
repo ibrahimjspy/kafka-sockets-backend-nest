@@ -50,6 +50,9 @@ export const getProductsQuery = (
               }
               stocks {
                 quantity
+                warehouse {
+                  id
+                }
               }
               channelListings {
                 costPrice {

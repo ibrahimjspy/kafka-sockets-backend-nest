@@ -29,7 +29,14 @@ export const mockProductsList = {
                 url: 'http://localhost:8000/media/ColorSwatch/202007/0896e4a2-d1a8-11ea-8dbb-002590aaee66.jpeg',
               },
             ],
-            stocks: [{ quantity: 1000 }],
+            stocks: [
+              {
+                quantity: 1000,
+                warehouse: {
+                  id: 'V2FyZWhvdXNlOjYxYWU5MGU5LWRlNTItNDQ3NC05YzY2LTJkMzk5ZDhmYWIzZg==',
+                },
+              },
+            ],
             channelListings: [
               { costPrice: { amount: 3.5 }, price: { amount: 3.5 } },
             ],
@@ -65,7 +72,14 @@ export const mockProductsList = {
                 url: 'http://localhost:8000/media/ColorSwatch/202007/a10ab3ea-d1a7-11ea-8dbb-002590aaee66.JPG',
               },
             ],
-            stocks: [{ quantity: 1000 }],
+            stocks: [
+              {
+                quantity: 1000,
+                warehouse: {
+                  id: 'V2FyZWhvdXNlOjYxYWU5MGU5LWRlNTItNDQ3NC05YzY2LTJkMzk5ZDhmYWIzZg==',
+                },
+              },
+            ],
             channelListings: [
               { costPrice: { amount: 3.5 }, price: { amount: 3.5 } },
             ],
@@ -101,7 +115,14 @@ export const mockProductsList = {
                 url: 'http://localhost:8000/media/ColorSwatch/202007/b042a9c6-d1a7-11ea-8dbb-002590aaee66.JPG',
               },
             ],
-            stocks: [{ quantity: 1000 }],
+            stocks: [
+              {
+                quantity: 1000,
+                warehouse: {
+                  id: 'V2FyZWhvdXNlOjYxYWU5MGU5LWRlNTItNDQ3NC05YzY2LTJkMzk5ZDhmYWIzZg==',
+                },
+              },
+            ],
             channelListings: [
               { costPrice: { amount: 3.5 }, price: { amount: 3.5 } },
             ],
@@ -137,7 +158,14 @@ export const mockProductsList = {
                 url: 'http://localhost:8000/media/ColorSwatch/202007/cae88066-d1a7-11ea-8dbb-002590aaee66.JPG',
               },
             ],
-            stocks: [{ quantity: 1000 }],
+            stocks: [
+              {
+                quantity: 1000,
+                warehouse: {
+                  id: 'V2FyZWhvdXNlOjYxYWU5MGU5LWRlNTItNDQ3NC05YzY2LTJkMzk5ZDhmYWIzZg==',
+                },
+              },
+            ],
             channelListings: [
               { costPrice: { amount: 3.5 }, price: { amount: 3.5 } },
             ],
@@ -173,7 +201,14 @@ export const mockProductsList = {
                 url: 'http://localhost:8000/media/ColorSwatch/202007/86bec7d8-d1a7-11ea-8dbb-002590aaee66.JPG',
               },
             ],
-            stocks: [{ quantity: 1000 }],
+            stocks: [
+              {
+                quantity: 1000,
+                warehouse: {
+                  id: 'V2FyZWhvdXNlOjYxYWU5MGU5LWRlNTItNDQ3NC05YzY2LTJkMzk5ZDhmYWIzZg==',
+                },
+              },
+            ],
             channelListings: [
               { costPrice: { amount: 3.5 }, price: { amount: 3.5 } },
             ],
@@ -269,7 +304,14 @@ export const mockProductsList = {
                 url: 'http://localhost:8000/media/ColorSwatch/202007/223a06a8-d1c8-11ea-8dcb-002590aaee66.JPG',
               },
             ],
-            stocks: [{ quantity: 1000 }],
+            stocks: [
+              {
+                quantity: 1000,
+                warehouse: {
+                  id: 'V2FyZWhvdXNlOjYxYWU5MGU5LWRlNTItNDQ3NC05YzY2LTJkMzk5ZDhmYWIzZg==',
+                },
+              },
+            ],
             channelListings: [
               { costPrice: { amount: 5.5 }, price: { amount: 5.5 } },
             ],
@@ -338,7 +380,14 @@ export const mockProductsList = {
                 url: 'http://localhost:8000/media/ColorSwatch/202008/7c85de24-dcbe-11ea-90fb-002590aaee66.png',
               },
             ],
-            stocks: [{ quantity: 1000 }],
+            stocks: [
+              {
+                quantity: 1000,
+                warehouse: {
+                  id: 'V2FyZWhvdXNlOjYxYWU5MGU5LWRlNTItNDQ3NC05YzY2LTJkMzk5ZDhmYWIzZg==',
+                },
+              },
+            ],
             channelListings: [
               { costPrice: { amount: 4 }, price: { amount: 4 } },
             ],
@@ -407,7 +456,14 @@ export const mockProductsList = {
                 url: 'http://localhost:8000/media/ColorSwatch/202008/9d98c3a8-dc44-11ea-90e0-002590aaee66.png',
               },
             ],
-            stocks: [{ quantity: 1000 }],
+            stocks: [
+              {
+                quantity: 1000,
+                warehouse: {
+                  id: 'V2FyZWhvdXNlOjYxYWU5MGU5LWRlNTItNDQ3NC05YzY2LTJkMzk5ZDhmYWIzZg==',
+                },
+              },
+            ],
             channelListings: [
               { costPrice: { amount: 6.75 }, price: { amount: 6.75 } },
             ],
@@ -476,7 +532,14 @@ export const mockProductsList = {
                 url: 'http://localhost:8000/media/ColorSwatch/202008/f670e53a-dcbe-11ea-90fc-002590aaee66.JPG',
               },
             ],
-            stocks: [{ quantity: 1000 }],
+            stocks: [
+              {
+                quantity: 1000,
+                warehouse: {
+                  id: 'V2FyZWhvdXNlOjYxYWU5MGU5LWRlNTItNDQ3NC05YzY2LTJkMzk5ZDhmYWIzZg==',
+                },
+              },
+            ],
             channelListings: [
               { costPrice: { amount: 3.5 }, price: { amount: 3.5 } },
             ],
@@ -545,7 +608,14 @@ export const mockProductsList = {
                 url: 'http://localhost:8000/media/ColorSwatch/202008/e2b665ba-dca0-11ea-90f2-002590aaee66.png',
               },
             ],
-            stocks: [{ quantity: 1000 }],
+            stocks: [
+              {
+                quantity: 1000,
+                warehouse: {
+                  id: 'V2FyZWhvdXNlOjYxYWU5MGU5LWRlNTItNDQ3NC05YzY2LTJkMzk5ZDhmYWIzZg==',
+                },
+              },
+            ],
             channelListings: [
               { costPrice: { amount: 6.5 }, price: { amount: 6.5 } },
             ],
@@ -614,7 +684,14 @@ export const mockProductsList = {
                 url: 'http://localhost:8000/media/ColorSwatch/202008/5122b8fa-dcba-11ea-90f9-002590aaee66.png',
               },
             ],
-            stocks: [{ quantity: 1000 }],
+            stocks: [
+              {
+                quantity: 1000,
+                warehouse: {
+                  id: 'V2FyZWhvdXNlOjYxYWU5MGU5LWRlNTItNDQ3NC05YzY2LTJkMzk5ZDhmYWIzZg==',
+                },
+              },
+            ],
             channelListings: [
               { costPrice: { amount: 4 }, price: { amount: 4 } },
             ],
@@ -683,7 +760,14 @@ export const mockProductsList = {
                 url: 'http://localhost:8000/media/202007/Z/4666631e-c90d-11ea-8b09-002590aaee66_Z.jpg',
               },
             ],
-            stocks: [{ quantity: 1000 }],
+            stocks: [
+              {
+                quantity: 1000,
+                warehouse: {
+                  id: 'V2FyZWhvdXNlOjYxYWU5MGU5LWRlNTItNDQ3NC05YzY2LTJkMzk5ZDhmYWIzZg==',
+                },
+              },
+            ],
             channelListings: [
               { costPrice: { amount: 1.85 }, price: { amount: 1.85 } },
             ],
@@ -755,7 +839,14 @@ export const mockProductsList = {
                 url: 'http://localhost:8000/media/202007/Z/c11a131a-ccf2-11ea-8c7e-002590aaee66_Z.jpg',
               },
             ],
-            stocks: [{ quantity: 1000 }],
+            stocks: [
+              {
+                quantity: 1000,
+                warehouse: {
+                  id: 'V2FyZWhvdXNlOjYxYWU5MGU5LWRlNTItNDQ3NC05YzY2LTJkMzk5ZDhmYWIzZg==',
+                },
+              },
+            ],
             channelListings: [
               { costPrice: { amount: 1.85 }, price: { amount: 1.85 } },
             ],
@@ -827,7 +918,14 @@ export const mockProductsList = {
                 url: 'http://localhost:8000/media/202007/Z/a663eb4a-c27f-11ea-88db-002590aaee66_Z.jpg',
               },
             ],
-            stocks: [{ quantity: 1000 }],
+            stocks: [
+              {
+                quantity: 1000,
+                warehouse: {
+                  id: 'V2FyZWhvdXNlOjYxYWU5MGU5LWRlNTItNDQ3NC05YzY2LTJkMzk5ZDhmYWIzZg==',
+                },
+              },
+            ],
             channelListings: [
               { costPrice: { amount: 0.85 }, price: { amount: 0.85 } },
             ],

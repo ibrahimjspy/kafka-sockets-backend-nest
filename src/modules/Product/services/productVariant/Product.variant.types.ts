@@ -4,6 +4,9 @@ export interface ProductVariantInterface {
   media: any[];
   stocks: {
     quantity: number;
+    warehouse: {
+      id: string;
+    };
   }[];
   channelListings: {
     costPrice: {
@@ -30,4 +33,10 @@ export interface ProductVariantDto {
   'Cost Price'?: string;
   sku?: string;
   'Resale Price'?: string;
+  stock?: ProductVariantStockDto[];
+}
+
+export interface ProductVariantStockDto {
+  warehouseId?: string;
+  quantity?: number;
 }

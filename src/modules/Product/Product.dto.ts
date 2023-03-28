@@ -51,6 +51,9 @@ export interface GetProductsDto {
         media: any[];
         stocks: {
           quantity: number;
+          warehouse: {
+            id: string;
+          };
         }[];
         channelListings: {
           costPrice: {

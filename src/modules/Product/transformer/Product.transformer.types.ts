@@ -1,3 +1,6 @@
+import { ProductVariantMediaDto } from '../services/productMedia/Product.media.types';
+import { ProductVariantDto } from '../services/productVariant/Product.variant.types';
+
 export interface ProductDto {
   id: string;
   slug: string;
@@ -22,6 +25,9 @@ export interface ProductDto {
     media: any[];
     stocks: {
       quantity: number;
+      warehouse: {
+        id: string;
+      };
     }[];
     channelListings: {
       costPrice: {
@@ -59,8 +65,8 @@ export interface ProductTransformedDto {
   description?: string;
   categoryId?: string;
   styleNumber?: string;
-  vendorDetails?: {
-    vendorId?: string;
-    vendorName?: string;
-  };
+  vendorDetails?: ShopDetailsDto;
+  mediaUrls?: string[];
+  variantMedia?: ProductVariantMediaDto[];
+  variants?: ProductVariantDto[];
 }

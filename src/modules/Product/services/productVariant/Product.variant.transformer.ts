@@ -8,22 +8,29 @@ import {
 @Injectable()
 export class ProductVariantTransformer {
   public addVariants(product: ProductDto, transformedProduct) {
-    const productVariantsList = [];
-    product.variants.map((variant: ProductVariantInterface) => {
-      let productVariant: ProductVariantDto = {};
-      productVariant = this.addVariantAttributes(variant, productVariant);
-      productVariant.sku = variant.sku;
-      productVariantsList.push(productVariant);
+    const transformedVariantsList = [];
+    product.variants.map((rawProductVariant: ProductVariantInterface) => {
+      let transformedProductVariant: ProductVariantDto = {};
+      transformedProductVariant = this.addVariantAttributes(
+        rawProductVariant,
+        transformedProductVariant,
+      );
+      this.addVariantChannelListing(
+        rawProductVariant,
+        transformedProductVariant,
+      );
+      transformedProductVariant.sku = rawProductVariant.sku;
+      transformedVariantsList.push(transformedProductVariant);
     });
-    transformedProduct.variants = productVariantsList;
+    transformedProduct.variants = transformedVariantsList;
   }
 
   public addVariantAttributes(
-    productVariant: ProductVariantInterface,
-    transformedProductVariant,
+    rawProductVariant: ProductVariantInterface,
+    transformedProductVariant: ProductVariantDto,
   ) {
     const productVariantAttributes: ProductVariantDto = {};
-    productVariant.attributes.map((attribute) => {
+    rawProductVariant.attributes.map((attribute) => {
       const attributeName = attribute.attribute.name;
       let attributeValue;
       attribute.values.map((value) => {
@@ -34,19 +41,15 @@ export class ProductVariantTransformer {
     return { ...transformedProductVariant, ...productVariantAttributes };
   }
 
-  public addVariantPricing(product: ProductDto, transformedProduct) {
-    const variantMedia = [];
-    product.variants.map((variant) => {
-      variantMedia.push({ sku: variant.sku, url: variant.media[0]?.url });
+  public addVariantChannelListing(
+    rawProductVariant: ProductVariantInterface,
+    transformedProductVariant: ProductVariantDto,
+  ) {
+    rawProductVariant.stocks.map((warehouseListing) => {
+      transformedProductVariant.stock.push({
+        warehouseId: warehouseListing.warehouse.id,
+        quantity: warehouseListing.quantity,
+      });
     });
-    transformedProduct.variantMedia = variantMedia;
-  }
-
-  public addVariantChannelListing(product: ProductDto, transformedProduct) {
-    const variantMedia = [];
-    product.variants.map((variant) => {
-      variantMedia.push({ sku: variant.sku, url: variant.media[0]?.url });
-    });
-    transformedProduct.variantMedia = variantMedia;
   }
 }
