@@ -11,8 +11,8 @@ import { storeProductCreateStatusMutation } from '../mutations/product/storeProd
 import { storeProductBrandMutation } from '../mutations/product/addProductBrand';
 
 @Injectable()
-export class ProductDestinationGQLService {
-  private readonly logger = new Logger(ProductDestinationGQLService.name);
+export class ProductDestinationService {
+  private readonly logger = new Logger(ProductDestinationService.name);
 
   public async createProduct(transformedProduct: ProductTransformedDto) {
     try {
@@ -31,7 +31,7 @@ export class ProductDestinationGQLService {
     }
   }
 
-  public async productChannelListing(productId: ProductTransformedDto) {
+  public async productChannelListing(productId: string) {
     try {
       return await graphqlCallDestination(
         productChannelListingMutation(productId),
@@ -54,7 +54,7 @@ export class ProductDestinationGQLService {
         'product add to store call failed',
         graphqlExceptionHandler(err),
       );
-      return;
+      throw err;
     }
   }
 
@@ -68,7 +68,7 @@ export class ProductDestinationGQLService {
         'product create status could not be stored',
         graphqlExceptionHandler(err),
       );
-      return;
+      throw err;
     }
   }
 

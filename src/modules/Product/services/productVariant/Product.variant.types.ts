@@ -31,9 +31,9 @@ export interface ProductVariantDto {
   color?: string;
   commission?: string;
   size?: string;
-  'Cost Price'?: string;
+  costPrice?: number;
   sku?: string;
-  resalePrice?: string;
+  resalePrice?: number;
   stock?: ProductVariantStockDto[];
 }
 

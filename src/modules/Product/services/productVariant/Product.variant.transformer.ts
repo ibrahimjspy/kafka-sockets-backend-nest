@@ -4,9 +4,11 @@ import {
   ProductVariantDto,
   ProductVariantInterface,
 } from './Product.variant.types';
+import { ProductVariantService } from './Product.variants.service';
 
 @Injectable()
 export class ProductVariantTransformer {
+  constructor(private readonly productVariantService: ProductVariantService) {}
   public addVariants(product: ProductDto, transformedProduct) {
     const transformedVariantsList = [];
     product.variants.map((rawProductVariant: ProductVariantInterface) => {
@@ -51,6 +53,18 @@ export class ProductVariantTransformer {
         warehouseId: warehouseListing.warehouse.id,
         quantity: warehouseListing.quantity,
       });
+    });
+  }
+
+  public addVariantCostPrice(
+    rawProductVariant: ProductVariantInterface,
+    transformedProductVariant: ProductVariantDto,
+  ) {
+    rawProductVariant.channelListings.map((channelListing) => {
+      transformedProductVariant.resalePrice =
+        this.productVariantService.getVariantResalePrice(
+          channelListing.price.amount,
+        );
     });
   }
 }

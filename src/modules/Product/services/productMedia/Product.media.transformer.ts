@@ -4,6 +4,9 @@ import {
   ProductTransformedDto,
 } from '../../transformer/Product.transformer.types';
 import { ProductVariantMediaDto } from './Product.media.types';
+import { ProductMedia } from 'src/database/destination/media';
+import { idBase64Decode, mediaUrlTransformer } from './Product.media.utils';
+import { mediaCreateDefaults } from 'src/constants';
 
 @Injectable()
 export class ProductMediaTransformer {
@@ -19,9 +22,12 @@ export class ProductMediaTransformer {
     product: ProductDto,
     transformedProduct: ProductTransformedDto,
   ) {
-    const mediaUrls: string[] = [];
+    const mediaUrls: ProductMedia[] = [];
     product.media.map((media) => {
-      mediaUrls.push(media.url);
+      mediaUrls.push({
+        image: mediaUrlTransformer(media.url),
+        ...mediaCreateDefaults,
+      });
     });
     transformedProduct.mediaUrls = mediaUrls;
   }
@@ -32,8 +38,20 @@ export class ProductMediaTransformer {
   ) {
     const variantMedia: ProductVariantMediaDto[] = [];
     product.variants.map((variant) => {
-      variantMedia.push({ sku: variant.sku, url: variant.media[0]?.url });
+      variantMedia.push({
+        sku: variant.sku,
+        url: mediaUrlTransformer(variant.media[0]?.url),
+      });
     });
     transformedProduct.variantMedia = variantMedia;
+  }
+
+  public addDestinationProductIdToMedia(
+    productId: string,
+    productMediaList: ProductMedia[],
+  ) {
+    productMediaList.map((media) => {
+      media.product_id = idBase64Decode(productId);
+    });
   }
 }

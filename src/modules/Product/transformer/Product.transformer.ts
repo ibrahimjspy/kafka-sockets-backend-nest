@@ -24,10 +24,8 @@ export class ProductTransformer {
       this.addShopDetails(product, transformedProduct);
       this.mediaTransformer.addMedia(product, transformedProduct);
       this.variantTransformer.addVariants(product, transformedProduct);
-      console.log(transformedProduct);
       transformedProducts.push(transformedProduct);
     });
-    console.log(transformedProducts);
     return transformedProducts;
   }
 

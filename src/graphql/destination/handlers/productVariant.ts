@@ -12,8 +12,8 @@ import { productVariantBulkCreateMutation } from '../mutations/productVariant.ts
 import { graphqlExceptionHandler } from 'src/graphql/utils/exceptionHandler';
 
 @Injectable()
-export class ProductVariantGQLService {
-  private readonly logger = new Logger(ProductVariantGQLService.name);
+export class ProductVariantDestinationService {
+  private readonly logger = new Logger(ProductVariantDestinationService.name);
 
   public async createBulkVariants(
     productId: string,
@@ -32,6 +32,7 @@ export class ProductVariantGQLService {
         'Product bulk create call failed',
         graphqlExceptionHandler(err),
       );
+      throw err;
     }
   }
 
@@ -43,13 +44,10 @@ export class ProductVariantGQLService {
           attributes: [
           { id: "${COLOR_ATTRIBUTE_ID}", values:["${color}"] }
           { id: "${SIZE_ATTRIBUTE_ID}", values:["${size}"] }
-          { id: "${SKU_ATTRIBUTE_ID}", values:["${sku}"] } }
+          { id: "${SKU_ATTRIBUTE_ID}", values:["${sku}"] } 
         ]
-          channelListings: { channelId: "${DEFAULT_CHANNEL_ID}", price: ${
-        variant[`${resalePrice}`]
-      }}
-  stocks: { warehouse:"${DEFAULT_WAREHOUSE_ID}"  quantity: 1000 }
-          }
+          channelListings: { channelId: "${DEFAULT_CHANNEL_ID}", price: ${resalePrice}}
+         stocks: { warehouse:"${DEFAULT_WAREHOUSE_ID}"  quantity: 1000 }
         }
       `;
     });
