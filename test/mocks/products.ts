@@ -16,7 +16,7 @@ export const mockProductsList = {
         ],
         attributes: [
           {
-            attribute: { name: 'Style Number' },
+            attribute: { name: 'Style Number', slug: 'style-number' },
             values: [{ name: '001' }],
           },
         ],
@@ -42,24 +42,24 @@ export const mockProductsList = {
             ],
             attributes: [
               {
-                attribute: { name: 'Color' },
+                attribute: { name: 'Color', slug: 'color' },
                 values: [{ name: 'BLACK' }],
               },
               {
-                attribute: { name: 'Commission' },
+                attribute: { name: 'Commission', slug: 'commission' },
                 values: [{ name: '10' }],
               },
               {
-                attribute: { name: 'Size' },
+                attribute: { name: 'Size', slug: 'size' },
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price' },
+                attribute: { name: 'Cost Price', slug: 'cost-price' },
                 values: [{ name: '3.5' }],
               },
-              { attribute: { name: 'sku' }, values: [] },
+              { attribute: { name: 'sku', slug: 'sku' }, values: [] },
               {
-                attribute: { name: 'Resale Price' },
+                attribute: { name: 'Resale Price', slug: 'resalePrice' },
                 values: [{ name: '5.6' }],
               },
             ],
@@ -85,24 +85,24 @@ export const mockProductsList = {
             ],
             attributes: [
               {
-                attribute: { name: 'Color' },
+                attribute: { name: 'Color', slug: 'color' },
                 values: [{ name: 'WHITE' }],
               },
               {
-                attribute: { name: 'Commission' },
+                attribute: { name: 'Commission', slug: 'commission' },
                 values: [{ name: '10' }],
               },
               {
-                attribute: { name: 'Size' },
+                attribute: { name: 'Size', slug: 'size' },
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price' },
+                attribute: { name: 'Cost Price', slug: 'cost-price' },
                 values: [{ name: '3.5' }],
               },
-              { attribute: { name: 'sku' }, values: [] },
+              { attribute: { name: 'sku', slug: 'sku' }, values: [] },
               {
-                attribute: { name: 'Resale Price' },
+                attribute: { name: 'Resale Price', slug: 'resalePrice' },
                 values: [{ name: '5.6' }],
               },
             ],
@@ -128,24 +128,24 @@ export const mockProductsList = {
             ],
             attributes: [
               {
-                attribute: { name: 'Color' },
+                attribute: { name: 'Color', slug: 'color' },
                 values: [{ name: 'PINK' }],
               },
               {
-                attribute: { name: 'Commission' },
+                attribute: { name: 'Commission', slug: 'commission' },
                 values: [{ name: '10' }],
               },
               {
-                attribute: { name: 'Size' },
+                attribute: { name: 'Size', slug: 'size' },
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price' },
+                attribute: { name: 'Cost Price', slug: 'cost-price' },
                 values: [{ name: '3.5' }],
               },
-              { attribute: { name: 'sku' }, values: [] },
+              { attribute: { name: 'sku', slug: 'sku' }, values: [] },
               {
-                attribute: { name: 'Resale Price' },
+                attribute: { name: 'Resale Price', slug: 'resalePrice' },
                 values: [{ name: '5.6' }],
               },
             ],
@@ -171,24 +171,24 @@ export const mockProductsList = {
             ],
             attributes: [
               {
-                attribute: { name: 'Color' },
+                attribute: { name: 'Color', slug: 'color' },
                 values: [{ name: 'GREY' }],
               },
               {
-                attribute: { name: 'Commission' },
+                attribute: { name: 'Commission', slug: 'commission' },
                 values: [{ name: '10' }],
               },
               {
-                attribute: { name: 'Size' },
+                attribute: { name: 'Size', slug: 'size' },
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price' },
+                attribute: { name: 'Cost Price', slug: 'cost-price' },
                 values: [{ name: '3.5' }],
               },
-              { attribute: { name: 'sku' }, values: [] },
+              { attribute: { name: 'sku', slug: 'sku' }, values: [] },
               {
-                attribute: { name: 'Resale Price' },
+                attribute: { name: 'Resale Price', slug: 'resalePrice' },
                 values: [{ name: '5.6' }],
               },
             ],
@@ -214,24 +214,24 @@ export const mockProductsList = {
             ],
             attributes: [
               {
-                attribute: { name: 'Color' },
+                attribute: { name: 'Color', slug: 'color' },
                 values: [{ name: 'BLUE' }],
               },
               {
-                attribute: { name: 'Commission' },
+                attribute: { name: 'Commission', slug: 'commission' },
                 values: [{ name: '10' }],
               },
               {
-                attribute: { name: 'Size' },
+                attribute: { name: 'Size', slug: 'size' },
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price' },
+                attribute: { name: 'Cost Price', slug: 'cost-price' },
                 values: [{ name: '3.5' }],
               },
-              { attribute: { name: 'sku' }, values: [] },
+              { attribute: { name: 'sku', slug: 'sku' }, values: [] },
               {
-                attribute: { name: 'Resale Price' },
+                attribute: { name: 'Resale Price', slug: 'resalePrice' },
                 values: [{ name: '5.6' }],
               },
             ],
@@ -291,7 +291,7 @@ export const mockProductsList = {
         ],
         attributes: [
           {
-            attribute: { name: 'Style Number' },
+            attribute: { name: 'Style Number', slug: 'style-number' },
             values: [{ name: '004' }],
           },
         ],
@@ -317,24 +317,24 @@ export const mockProductsList = {
             ],
             attributes: [
               {
-                attribute: { name: 'Color' },
+                attribute: { name: 'Color', slug: 'color' },
                 values: [{ name: 'SILVER' }],
               },
               {
-                attribute: { name: 'Commission' },
+                attribute: { name: 'Commission', slug: 'commission' },
                 values: [{ name: '10' }],
               },
               {
-                attribute: { name: 'Size' },
+                attribute: { name: 'Size', slug: 'size' },
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price' },
+                attribute: { name: 'Cost Price', slug: 'cost-price' },
                 values: [{ name: '5.5' }],
               },
-              { attribute: { name: 'sku' }, values: [] },
+              { attribute: { name: 'sku', slug: 'sku' }, values: [] },
               {
-                attribute: { name: 'Resale Price' },
+                attribute: { name: 'Resale Price', slug: 'resalePrice' },
                 values: [{ name: '8.8' }],
               },
             ],
@@ -367,7 +367,7 @@ export const mockProductsList = {
         ],
         attributes: [
           {
-            attribute: { name: 'Style Number' },
+            attribute: { name: 'Style Number', slug: 'style-number' },
             values: [{ name: '006' }],
           },
         ],
@@ -393,24 +393,24 @@ export const mockProductsList = {
             ],
             attributes: [
               {
-                attribute: { name: 'Color' },
+                attribute: { name: 'Color', slug: 'color' },
                 values: [{ name: 'MULTI' }],
               },
               {
-                attribute: { name: 'Commission' },
+                attribute: { name: 'Commission', slug: 'commission' },
                 values: [{ name: '10' }],
               },
               {
-                attribute: { name: 'Size' },
+                attribute: { name: 'Size', slug: 'size' },
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price' },
+                attribute: { name: 'Cost Price', slug: 'cost-price' },
                 values: [{ name: '4' }],
               },
-              { attribute: { name: 'sku' }, values: [] },
+              { attribute: { name: 'sku', slug: 'sku' }, values: [] },
               {
-                attribute: { name: 'Resale Price' },
+                attribute: { name: 'Resale Price', slug: 'resalePrice' },
                 values: [{ name: '6.4' }],
               },
             ],
@@ -443,7 +443,7 @@ export const mockProductsList = {
         ],
         attributes: [
           {
-            attribute: { name: 'Style Number' },
+            attribute: { name: 'Style Number', slug: 'style-number' },
             values: [{ name: '007' }],
           },
         ],
@@ -469,24 +469,24 @@ export const mockProductsList = {
             ],
             attributes: [
               {
-                attribute: { name: 'Color' },
+                attribute: { name: 'Color', slug: 'color' },
                 values: [{ name: 'BLUE' }],
               },
               {
-                attribute: { name: 'Commission' },
+                attribute: { name: 'Commission', slug: 'commission' },
                 values: [{ name: '10' }],
               },
               {
-                attribute: { name: 'Size' },
+                attribute: { name: 'Size', slug: 'size' },
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price' },
+                attribute: { name: 'Cost Price', slug: 'cost-price' },
                 values: [{ name: '6.75' }],
               },
-              { attribute: { name: 'sku' }, values: [] },
+              { attribute: { name: 'sku', slug: 'sku' }, values: [] },
               {
-                attribute: { name: 'Resale Price' },
+                attribute: { name: 'Resale Price', slug: 'resalePrice' },
                 values: [{ name: '10.8' }],
               },
             ],
@@ -519,7 +519,7 @@ export const mockProductsList = {
         ],
         attributes: [
           {
-            attribute: { name: 'Style Number' },
+            attribute: { name: 'Style Number', slug: 'style-number' },
             values: [{ name: '010' }],
           },
         ],
@@ -545,24 +545,24 @@ export const mockProductsList = {
             ],
             attributes: [
               {
-                attribute: { name: 'Color' },
+                attribute: { name: 'Color', slug: 'color' },
                 values: [{ name: 'BLACK' }],
               },
               {
-                attribute: { name: 'Commission' },
+                attribute: { name: 'Commission', slug: 'commission' },
                 values: [{ name: '10' }],
               },
               {
-                attribute: { name: 'Size' },
+                attribute: { name: 'Size', slug: 'size' },
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price' },
+                attribute: { name: 'Cost Price', slug: 'cost-price' },
                 values: [{ name: '3.5' }],
               },
-              { attribute: { name: 'sku' }, values: [] },
+              { attribute: { name: 'sku', slug: 'sku' }, values: [] },
               {
-                attribute: { name: 'Resale Price' },
+                attribute: { name: 'Resale Price', slug: 'resalePrice' },
                 values: [{ name: '5.6' }],
               },
             ],
@@ -595,7 +595,7 @@ export const mockProductsList = {
         ],
         attributes: [
           {
-            attribute: { name: 'Style Number' },
+            attribute: { name: 'Style Number', slug: 'style-number' },
             values: [{ name: '020' }],
           },
         ],
@@ -621,24 +621,24 @@ export const mockProductsList = {
             ],
             attributes: [
               {
-                attribute: { name: 'Color' },
+                attribute: { name: 'Color', slug: 'color' },
                 values: [{ name: 'MULTI' }],
               },
               {
-                attribute: { name: 'Commission' },
+                attribute: { name: 'Commission', slug: 'commission' },
                 values: [{ name: '10' }],
               },
               {
-                attribute: { name: 'Size' },
+                attribute: { name: 'Size', slug: 'size' },
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price' },
+                attribute: { name: 'Cost Price', slug: 'cost-price' },
                 values: [{ name: '6.5' }],
               },
-              { attribute: { name: 'sku' }, values: [] },
+              { attribute: { name: 'sku', slug: 'sku' }, values: [] },
               {
-                attribute: { name: 'Resale Price' },
+                attribute: { name: 'Resale Price', slug: 'resalePrice' },
                 values: [{ name: '10.4' }],
               },
             ],
@@ -671,7 +671,7 @@ export const mockProductsList = {
         ],
         attributes: [
           {
-            attribute: { name: 'Style Number' },
+            attribute: { name: 'Style Number', slug: 'style-number' },
             values: [{ name: '026' }],
           },
         ],
@@ -697,24 +697,24 @@ export const mockProductsList = {
             ],
             attributes: [
               {
-                attribute: { name: 'Color' },
+                attribute: { name: 'Color', slug: 'color' },
                 values: [{ name: 'BLACK' }],
               },
               {
-                attribute: { name: 'Commission' },
+                attribute: { name: 'Commission', slug: 'commission' },
                 values: [{ name: '10' }],
               },
               {
-                attribute: { name: 'Size' },
+                attribute: { name: 'Size', slug: 'size' },
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price' },
+                attribute: { name: 'Cost Price', slug: 'cost-price' },
                 values: [{ name: '4' }],
               },
-              { attribute: { name: 'sku' }, values: [] },
+              { attribute: { name: 'sku', slug: 'sku' }, values: [] },
               {
-                attribute: { name: 'Resale Price' },
+                attribute: { name: 'Resale Price', slug: 'resalePrice' },
                 values: [{ name: '6.4' }],
               },
             ],
@@ -747,7 +747,7 @@ export const mockProductsList = {
         ],
         attributes: [
           {
-            attribute: { name: 'Style Number' },
+            attribute: { name: 'Style Number', slug: 'style-number' },
             values: [{ name: 'LYJKMSK' }],
           },
         ],
@@ -773,24 +773,24 @@ export const mockProductsList = {
             ],
             attributes: [
               {
-                attribute: { name: 'Color' },
+                attribute: { name: 'Color', slug: 'color' },
                 values: [{ name: 'MIX COLOR' }],
               },
               {
-                attribute: { name: 'Commission' },
+                attribute: { name: 'Commission', slug: 'commission' },
                 values: [{ name: '10' }],
               },
               {
-                attribute: { name: 'Size' },
+                attribute: { name: 'Size', slug: 'size' },
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price' },
+                attribute: { name: 'Cost Price', slug: 'cost-price' },
                 values: [{ name: '1.85' }],
               },
-              { attribute: { name: 'sku' }, values: [] },
+              { attribute: { name: 'sku', slug: 'sku' }, values: [] },
               {
-                attribute: { name: 'Resale Price' },
+                attribute: { name: 'Resale Price', slug: 'resalePrice' },
                 values: [{ name: '2.96' }],
               },
             ],
@@ -826,7 +826,7 @@ export const mockProductsList = {
         ],
         attributes: [
           {
-            attribute: { name: 'Style Number' },
+            attribute: { name: 'Style Number', slug: 'style-number' },
             values: [{ name: 'LYJKMSK-CT' }],
           },
         ],
@@ -852,24 +852,24 @@ export const mockProductsList = {
             ],
             attributes: [
               {
-                attribute: { name: 'Color' },
+                attribute: { name: 'Color', slug: 'color' },
                 values: [{ name: 'MIX COLOR' }],
               },
               {
-                attribute: { name: 'Commission' },
+                attribute: { name: 'Commission', slug: 'commission' },
                 values: [{ name: '10' }],
               },
               {
-                attribute: { name: 'Size' },
+                attribute: { name: 'Size', slug: 'size' },
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price' },
+                attribute: { name: 'Cost Price', slug: 'cost-price' },
                 values: [{ name: '1.85' }],
               },
-              { attribute: { name: 'sku' }, values: [] },
+              { attribute: { name: 'sku', slug: 'sku' }, values: [] },
               {
-                attribute: { name: 'Resale Price' },
+                attribute: { name: 'Resale Price', slug: 'resalePrice' },
                 values: [{ name: '2.96' }],
               },
             ],
@@ -905,7 +905,7 @@ export const mockProductsList = {
         ],
         attributes: [
           {
-            attribute: { name: 'Style Number' },
+            attribute: { name: 'Style Number', slug: 'style-number' },
             values: [{ name: 'F169965' }],
           },
         ],
@@ -931,24 +931,24 @@ export const mockProductsList = {
             ],
             attributes: [
               {
-                attribute: { name: 'Color' },
+                attribute: { name: 'Color', slug: 'color' },
                 values: [{ name: 'WHITE' }],
               },
               {
-                attribute: { name: 'Commission' },
+                attribute: { name: 'Commission', slug: 'commission' },
                 values: [{ name: '10' }],
               },
               {
-                attribute: { name: 'Size' },
+                attribute: { name: 'Size', slug: 'size' },
                 values: [{ name: 'ONE' }],
               },
               {
-                attribute: { name: 'Cost Price' },
+                attribute: { name: 'Cost Price', slug: 'cost-price' },
                 values: [{ name: '0.85' }],
               },
-              { attribute: { name: 'sku' }, values: [] },
+              { attribute: { name: 'sku', slug: 'sku' }, values: [] },
               {
-                attribute: { name: 'Resale Price' },
+                attribute: { name: 'Resale Price', slug: 'resalePrice' },
                 values: [{ name: '1.36' }],
               },
             ],

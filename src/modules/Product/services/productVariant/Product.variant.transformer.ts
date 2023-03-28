@@ -31,7 +31,7 @@ export class ProductVariantTransformer {
   ) {
     const productVariantAttributes: ProductVariantDto = {};
     rawProductVariant.attributes.map((attribute) => {
-      const attributeName = attribute.attribute.name;
+      const attributeName = attribute.attribute.slug;
       let attributeValue;
       attribute.values.map((value) => {
         attributeValue = value.name;
@@ -46,6 +46,7 @@ export class ProductVariantTransformer {
     transformedProductVariant: ProductVariantDto,
   ) {
     rawProductVariant.stocks.map((warehouseListing) => {
+      transformedProductVariant.stock = [];
       transformedProductVariant.stock.push({
         warehouseId: warehouseListing.warehouse.id,
         quantity: warehouseListing.quantity,

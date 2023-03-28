@@ -37,6 +37,7 @@ export const getProductsQuery = (
             attributes {
                 attribute {
                   name
+                  slug
                 }
                 values {
                   name
@@ -65,6 +66,7 @@ export const getProductsQuery = (
               attributes {
                 attribute {
                   name
+                  slug
                 }
                 values {
                   name

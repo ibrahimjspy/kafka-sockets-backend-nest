@@ -19,6 +19,7 @@ export interface ProductVariantInterface {
   attributes: {
     attribute: {
       name: string;
+      slug: string;
     };
     values: {
       name: string;
@@ -27,12 +28,12 @@ export interface ProductVariantInterface {
 }
 
 export interface ProductVariantDto {
-  Color?: string;
-  Commission?: string;
-  Size?: string;
+  color?: string;
+  commission?: string;
+  size?: string;
   'Cost Price'?: string;
   sku?: string;
-  'Resale Price'?: string;
+  resalePrice?: string;
   stock?: ProductVariantStockDto[];
 }
 
