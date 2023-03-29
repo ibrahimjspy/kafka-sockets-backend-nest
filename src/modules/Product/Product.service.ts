@@ -28,7 +28,7 @@ export class ProductService {
       const pagination: PaginationDto = {
         hasNextPage: true,
         endCursor: '',
-        first: 100,
+        first: 50,
       };
       const addCategoryToShop = await this.shopDestinationApi.addCategoryToShop(
         storeId,
@@ -60,7 +60,7 @@ export class ProductService {
     productsData: ProductTransformedDto[],
     addCategoryToShop,
   ) {
-    const BATCH_SIZE = 20;
+    const BATCH_SIZE = 50;
     const { ...bulkProducts } = await PromisePool.for(productsData)
       .withConcurrency(BATCH_SIZE)
       .handleError((error) => {
@@ -80,7 +80,7 @@ export class ProductService {
       this.productDestinationApi.addProductsToStore(
         bulkProducts.results,
         autoSyncInput.storeId,
-      ),
+      ), // FIX this api is showing unexpected errors over 50 products at once
       this.productMappingService.storeBulkMappings(bulkProducts.results),
     ]);
     return storeMappings;
