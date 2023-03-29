@@ -19,7 +19,6 @@ export const getProductsHandler = async (
     );
     return productsList['products'];
   } catch (err) {
-    console.log(err);
     Logger.warn('Product fetch call failed');
   }
 };

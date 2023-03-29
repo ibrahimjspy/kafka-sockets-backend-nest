@@ -1,7 +1,9 @@
+import {
+  DESTINATION_DB_SCHEMA_NAME,
+  DESTINATION_MEDIA_TABLE_NAME,
+} from 'src/constants';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-const DESTINATION_DB_SCHEMA_NAME = 'saleor';
-const DESTINATION_MEDIA_TABLE_NAME = 'product_productmedia';
 @Entity({
   schema: DESTINATION_DB_SCHEMA_NAME,
   name: DESTINATION_MEDIA_TABLE_NAME,
