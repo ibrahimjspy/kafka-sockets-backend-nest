@@ -83,3 +83,9 @@ export interface GetProductsDto {
     };
   }[];
 }
+
+export interface PaginationDto {
+  hasNextPage: boolean;
+  endCursor: string;
+  first: number;
+}

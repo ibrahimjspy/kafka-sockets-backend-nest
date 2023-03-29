@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ProductTransformedDto } from '../../transformer/Product.transformer.types';
 import { ProductVariantDestinationService } from 'src/graphql/destination/handlers/productVariant';
+import { bulkVariantCreate } from 'src/graphql/destination/types/product';
 
 @Injectable()
 export class ProductVariantService {
@@ -10,12 +11,17 @@ export class ProductVariantService {
   public async bulkProductVariantCreate(
     productId: string,
     transformedProduct: ProductTransformedDto,
-  ): Promise<any> {
-    const createBulkVariants = await this.productVariantApi.createBulkVariants(
-      productId,
-      transformedProduct,
+  ): Promise<string[]> {
+    const variantIds = [];
+    const createBulkVariants: bulkVariantCreate =
+      await this.productVariantApi.createBulkVariants(
+        productId,
+        transformedProduct,
+      );
+    createBulkVariants.productVariantBulkCreate.productVariants.map(
+      (variant) => [variantIds.push(variant.id)],
     );
-    return createBulkVariants;
+    return variantIds;
   }
 
   public getVariantResalePrice(variantCostPrice: number): number {

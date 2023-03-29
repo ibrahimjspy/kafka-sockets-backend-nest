@@ -6,9 +6,13 @@ import { createProductMutation } from '../mutations/product/create';
 import { productCreate } from '../types/product';
 import { graphqlExceptionHandler } from 'src/graphql/utils/exceptionHandler';
 import { productChannelListingMutation } from '../mutations/product/channelListing';
-import { addProductToStoreMutation } from '../mutations/product/addToShop';
+import {
+  addProductToStoreMutation,
+  addProductsToStoreMutation,
+} from '../mutations/product/addToShop';
 import { storeProductCreateStatusMutation } from '../mutations/product/storeProductStatus';
 import { storeProductBrandMutation } from '../mutations/product/addProductBrand';
+import { ProductMappingsDto } from 'src/modules/Product/services/productMapping/Product.mapping.types';
 
 @Injectable()
 export class ProductDestinationService {
@@ -44,10 +48,10 @@ export class ProductDestinationService {
     }
   }
 
-  public async addProductsToStore(productIds: string[], storeId) {
+  public async addProductsToStore(products: ProductMappingsDto[], storeId) {
     try {
       return await graphqlCallDestination(
-        addProductToStoreMutation(productIds, storeId),
+        addProductsToStoreMutation(products, storeId),
       );
     } catch (err) {
       this.logger.error(
@@ -87,6 +91,30 @@ export class ProductDestinationService {
         graphqlExceptionHandler(err),
       );
       return;
+    }
+  }
+
+  public async addProductToShop(
+    storeId: string,
+    product: string,
+    categoryId: string,
+    productVariantIds: string[],
+  ) {
+    try {
+      return await graphqlCallDestination(
+        addProductToStoreMutation(
+          storeId,
+          product,
+          categoryId,
+          productVariantIds,
+        ),
+      );
+    } catch (err) {
+      this.logger.error(
+        'product add to shop call failed',
+        graphqlExceptionHandler(err),
+      );
+      throw err;
     }
   }
 }

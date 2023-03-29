@@ -10,6 +10,8 @@ import { ProductDestinationService } from 'src/graphql/destination/handlers/prod
 import { ProductVariantService } from './services/productVariant/Product.variants.service';
 import { ProductVariantDestinationService } from 'src/graphql/destination/handlers/productVariant';
 import { ProductMediaService } from './services/productMedia/Product.media.service';
+import { ProductMappingService } from './services/productMapping/Product.mapping.service';
+import { ShopDestinationService } from 'src/graphql/destination/handlers/shop';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ProductMedia])],
@@ -23,6 +25,8 @@ import { ProductMediaService } from './services/productMedia/Product.media.servi
     ProductVariantService,
     ProductVariantDestinationService,
     ProductMediaService,
+    ProductMappingService,
+    ShopDestinationService,
   ],
 })
 export class ProductModule {}

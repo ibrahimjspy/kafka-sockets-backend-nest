@@ -5,7 +5,7 @@ import {
   MAPPING_MAPPING_TOKEN,
   MAPPING_SERVICE_URL,
 } from '../../../../constants';
-
+import axiosRetry from 'axios-retry';
 @Injectable()
 export class ProductMappingService {
   private readonly logger = new Logger(ProductMappingService.name);
@@ -22,6 +22,7 @@ export class ProductMappingService {
           },
         },
       );
+      axiosRetry(axios, { retries: 3 });
       return addProductMapping.data;
     } catch (error) {
       this.logger.error(error);

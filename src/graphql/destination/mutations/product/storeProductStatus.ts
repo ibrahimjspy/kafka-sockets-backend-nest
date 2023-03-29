@@ -8,7 +8,6 @@ export const storeProductCreateStatusMutation = (productId: string) => {
           input: { key: "status", value: "product_created" }
         ) {
           item {
-            id
             metadata {
               key
               value

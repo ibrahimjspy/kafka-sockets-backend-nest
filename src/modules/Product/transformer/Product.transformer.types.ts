@@ -66,6 +66,7 @@ export interface ProductTransformedDto {
   description?: string;
   categoryId?: string;
   styleNumber?: string;
+  sourceId?: string;
   vendorDetails?: ShopDetailsDto;
   mediaUrls?: ProductMedia[];
   variantMedia?: ProductVariantMediaDto[];

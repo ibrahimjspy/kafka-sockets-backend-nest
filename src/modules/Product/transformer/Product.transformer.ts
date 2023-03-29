@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { GetProductsDto } from '../Product.dto';
+import { AutoSyncDto, GetProductsDto } from '../Product.dto';
 import {
   ProductDto,
   ProductTransformedDto,
@@ -7,6 +7,7 @@ import {
 } from './Product.transformer.types';
 import { ProductMediaTransformer } from '../services/productMedia/Product.media.transformer';
 import { ProductVariantTransformer } from '../services/productVariant/Product.variant.transformer';
+import { ProductMappingsDto } from '../services/productMapping/Product.mapping.types';
 
 @Injectable()
 export class ProductTransformer {
@@ -54,8 +55,12 @@ export class ProductTransformer {
     transformedProduct.vendorDetails = vendorDetails;
   }
 
-  public addProductDetails(product: ProductDto, transformedProduct) {
+  public addProductDetails(
+    product: ProductDto,
+    transformedProduct: ProductTransformedDto,
+  ) {
     transformedProduct.name = product.name;
+    transformedProduct.sourceId = product.id;
     transformedProduct.description = product.description;
     transformedProduct.categoryId = product.category.id;
     transformedProduct.styleNumber = this.getProductStyleNumber(product);
@@ -72,5 +77,17 @@ export class ProductTransformer {
       }
     });
     return styleNumber;
+  }
+
+  public transformCreatedProductForMapping(
+    autoSyncInput: AutoSyncDto,
+    createdProductId: string,
+    transformedProduct: ProductTransformedDto,
+  ): ProductMappingsDto {
+    return {
+      shr_b2b_product_id: transformedProduct.sourceId,
+      shr_b2c_product_id: createdProductId,
+      retailer_id: autoSyncInput.shopId,
+    };
   }
 }

@@ -10,6 +10,7 @@ import { ProductTransformedDto } from 'src/modules/Product/transformer/Product.t
 import { graphqlCallDestination } from '../proxies/client';
 import { productVariantBulkCreateMutation } from '../mutations/productVariant.ts/bulkCreate';
 import { graphqlExceptionHandler } from 'src/graphql/utils/exceptionHandler';
+import { bulkVariantCreate } from '../types/product';
 
 @Injectable()
 export class ProductVariantDestinationService {
@@ -20,12 +21,13 @@ export class ProductVariantDestinationService {
     transformedProduct: ProductTransformedDto,
   ) {
     try {
-      const createBulkVariants = await graphqlCallDestination(
-        productVariantBulkCreateMutation(
-          productId,
-          this.transformVariants(transformedProduct),
-        ),
-      );
+      const createBulkVariants: bulkVariantCreate =
+        await graphqlCallDestination(
+          productVariantBulkCreateMutation(
+            productId,
+            this.transformVariants(transformedProduct),
+          ),
+        );
       return createBulkVariants;
     } catch (err) {
       this.logger.error(
