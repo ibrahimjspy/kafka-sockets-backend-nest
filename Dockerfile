@@ -14,7 +14,6 @@ COPY . .
 RUN npm run lint
 
 # Build package
-RUN npm run prebuild
 RUN npm run build
 
 EXPOSE 5000
