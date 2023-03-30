@@ -12,6 +12,7 @@ import { ProductVariantDestinationService } from 'src/graphql/destination/handle
 import { ProductMediaService } from './services/productMedia/Product.media.service';
 import { ProductMappingService } from './services/productMapping/Product.mapping.service';
 import { ShopDestinationService } from 'src/graphql/destination/handlers/shop';
+import { RollbackService } from './services/rollback/Rollback.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ProductMedia])],
@@ -26,6 +27,7 @@ import { ShopDestinationService } from 'src/graphql/destination/handlers/shop';
     ProductVariantDestinationService,
     ProductMediaService,
     ProductMappingService,
+    RollbackService,
     ShopDestinationService,
   ],
 })

@@ -10,6 +10,7 @@ import { ProductMappingsDto } from './services/productMapping/Product.mapping.ty
 import { PromisePool } from '@supercharge/promise-pool';
 import { ProductMappingService } from './services/productMapping/Product.mapping.service';
 import { ShopDestinationService } from 'src/graphql/destination/handlers/shop';
+import { RollbackService } from './services/rollback/Rollback.service';
 
 @Injectable()
 export class ProductService {
@@ -20,6 +21,7 @@ export class ProductService {
     private readonly productVariantService: ProductVariantService,
     private readonly productMediaService: ProductMediaService,
     private readonly productMappingService: ProductMappingService,
+    private readonly productRollbackService: RollbackService,
   ) {}
   private readonly logger = new Logger(ProductService.name);
 
@@ -36,7 +38,7 @@ export class ProductService {
       const pagination: PaginationDto = {
         hasNextPage: true,
         endCursor: '',
-        first: 50,
+        first: 80,
       };
       const addCategoryToShop = await this.shopDestinationApi.addCategoryToShop(
         storeId,
@@ -116,22 +118,36 @@ export class ProductService {
     );
     const { storeId } = autoSyncInput;
 
-    await this.productDestinationApi.productChannelListing(productId);
-    const [createProductVariants] = await Promise.all([
-      this.productVariantService.bulkProductVariantCreate(
-        productId,
-        productData,
-      ),
-      this.productDestinationApi.storeProductBrand(productId, productData),
-      this.productMediaService.bulkMediaCreate(productId, productData),
+    const addProductToChannel = await Promise.allSettled([
+      await this.productDestinationApi.productChannelListing(productId),
     ]);
-    await this.productDestinationApi.addProductToShop(
-      storeId,
-      productId,
-      addCategoryToShop,
-      createProductVariants,
-    );
-    this.productDestinationApi.storeProductCreateStatus(productId);
+
+    const [createProductVariants, storeProductBrand, createProductMedia] =
+      await Promise.allSettled([
+        this.productVariantService.bulkProductVariantCreate(
+          productId,
+          productData,
+        ),
+        this.productDestinationApi.storeProductBrand(productId, productData),
+        this.productMediaService.bulkMediaCreate(productId, productData),
+      ]);
+    const [addProductToShop, storeProductStatus] = await Promise.allSettled([
+      this.productDestinationApi.addProductToShop(
+        storeId,
+        productId,
+        addCategoryToShop,
+        createProductVariants['value'],
+      ),
+      this.productDestinationApi.storeProductCreateStatus(productId),
+    ]);
+
+    await this.productRollbackService.handleProductCreateRollbacks(productId, [
+      addProductToChannel,
+      storeProductBrand,
+      createProductMedia,
+      addProductToShop,
+      storeProductStatus,
+    ]);
 
     return this.productTransformer.transformCreatedProductForMapping(
       autoSyncInput,

@@ -23,6 +23,12 @@ export class ProductVariantService {
         productId,
         transformedProduct,
       );
+
+    if (createBulkVariants.productVariantBulkCreate.errors[0]) {
+      throw new Error(
+        createBulkVariants.productVariantBulkCreate.errors[0].message,
+      );
+    }
     createBulkVariants.productVariantBulkCreate.productVariants.map(
       (variant) => [variantIds.push(variant.id)],
     );

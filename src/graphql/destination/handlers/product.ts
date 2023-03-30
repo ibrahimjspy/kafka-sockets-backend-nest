@@ -13,6 +13,7 @@ import {
 import { storeProductCreateStatusMutation } from '../mutations/product/storeProductStatus';
 import { storeProductBrandMutation } from '../mutations/product/addProductBrand';
 import { ProductMappingsDto } from 'src/modules/Product/services/productMapping/Product.mapping.types';
+import { deleteProductMutation } from '../mutations/product/deleteProduct';
 
 /**
  * @description -- this layer connects with destination graphql api for and exposes handlers to perform transactions related to product such as create, metadata update etc
@@ -33,6 +34,7 @@ export class ProductDestinationService {
       );
       const productId = createProduct?.productCreate?.product?.id;
 
+      if (!productId) throw new Error('product could not be created');
       this.logger.verbose('Product created', createProduct);
       return productId;
     } catch (err) {
@@ -130,6 +132,7 @@ export class ProductDestinationService {
     productVariantIds: string[],
   ) {
     try {
+      if (!product) return;
       return await graphqlCallDestination(
         addProductToStoreMutation(
           storeId,
@@ -141,6 +144,21 @@ export class ProductDestinationService {
     } catch (err) {
       this.logger.error(
         'product add to shop call failed',
+        graphqlExceptionHandler(err),
+      );
+      throw err;
+    }
+  }
+
+  /**
+   * @description -- this method deletes product from destination
+   */
+  public async deleteProductHandler(productId: string) {
+    try {
+      return await graphqlCallDestination(deleteProductMutation(productId));
+    } catch (err) {
+      this.logger.error(
+        'product delete call failed',
         graphqlExceptionHandler(err),
       );
       throw err;
