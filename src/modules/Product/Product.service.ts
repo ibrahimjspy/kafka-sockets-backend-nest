@@ -22,7 +22,15 @@ export class ProductService {
     private readonly productMappingService: ProductMappingService,
   ) {}
   private readonly logger = new Logger(ProductService.name);
-  public async autoSync(autoSyncInput: AutoSyncDto): Promise<any> {
+
+  /**
+   * @description -- this returns sync a category for a retailer and imports bulk products against that category
+   * @step -- add category to shop
+   * @step -- fetch bulk products from source
+   * @step -- transform bulk products
+   * @step -- create bulk products
+   */
+  public async autoSync(autoSyncInput: AutoSyncDto): Promise<void> {
     try {
       const { storeId, categoryId } = autoSyncInput;
       const pagination: PaginationDto = {
@@ -55,6 +63,12 @@ export class ProductService {
     }
   }
 
+  /**
+   * @description -- this method creates bulk products using promise pooling
+   * @step -- create products
+   * @step -- store product mappings
+   * @link -- createSingleProduct()
+   */
   public async createBulkProducts(
     autoSyncInput: AutoSyncDto,
     productsData: ProductTransformedDto[],
@@ -77,15 +91,21 @@ export class ProductService {
         );
       });
     const [...storeMappings] = await Promise.all([
-      this.productDestinationApi.addProductsToStore(
-        bulkProducts.results,
-        autoSyncInput.storeId,
-      ), // FIX this api is showing unexpected errors over 50 products at once
       this.productMappingService.storeBulkMappings(bulkProducts.results),
     ]);
     return storeMappings;
   }
 
+  /**
+   * @description -- this method creates a single product
+   * @step -- create product
+   * @step -- add product to channel
+   * @step -- add product to shop
+   * @step -- create product variants
+   * @step -- create product media
+   * @step -- store product status
+   * @return  -- product which should be mapped in our services
+   */
   public async createSingleProduct(
     autoSyncInput: AutoSyncDto,
     productData: ProductTransformedDto,

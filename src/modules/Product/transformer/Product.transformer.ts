@@ -8,6 +8,11 @@ import {
 import { ProductMediaTransformer } from '../services/productMedia/Product.media.transformer';
 import { ProductVariantTransformer } from '../services/productVariant/Product.variant.transformer';
 import { ProductMappingsDto } from '../services/productMapping/Product.mapping.types';
+import {
+  VENDOR_ID_METADATA_KEY,
+  VENDOR_NAME_METADATA_KEY,
+  STYLE_NUMBER_ATTRIBUTE_NAME,
+} from 'src/constants';
 
 @Injectable()
 export class ProductTransformer {
@@ -39,9 +44,6 @@ export class ProductTransformer {
   }
 
   public addShopDetails(product: ProductDto, transformedProduct) {
-    const VENDOR_ID_METADATA_KEY = 'vendorId';
-    const VENDOR_NAME_METADATA_KEY = 'vendorName';
-
     const vendorDetails: ShopDetailsDto = {};
 
     product.metadata.map((meta) => {
@@ -67,7 +69,6 @@ export class ProductTransformer {
   }
 
   public getProductStyleNumber(product: ProductDto) {
-    const STYLE_NUMBER_ATTRIBUTE_NAME = 'Style Number';
     let styleNumber: string;
     product.attributes.map((attribute) => {
       if (attribute.attribute.name == STYLE_NUMBER_ATTRIBUTE_NAME) {

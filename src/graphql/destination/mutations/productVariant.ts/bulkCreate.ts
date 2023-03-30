@@ -12,16 +12,7 @@ export const productVariantBulkCreateMutation = (
         ) {
           productVariants {
             id
-            attributes {
-              attribute {
-                id
-                name
-              }
-              values {
-                value
-                name
-              }
-            }
+            sku
           }
           errors {
             message

@@ -16,6 +16,9 @@ import { bulkVariantCreate } from '../types/product';
 export class ProductVariantDestinationService {
   private readonly logger = new Logger(ProductVariantDestinationService.name);
 
+  /**
+   * @description -- this creates variant in bulk using destination bulk create
+   */
   public async createBulkVariants(
     productId: string,
     transformedProduct: ProductTransformedDto,
@@ -38,7 +41,10 @@ export class ProductVariantDestinationService {
     }
   }
 
-  public transformVariants(transformedProduct: ProductTransformedDto) {
+  /**
+   * @description -- this method transforms product variant attributes that are transformed according to destination api inout type
+   */
+  private transformVariants(transformedProduct: ProductTransformedDto) {
     return transformedProduct.variants.map((variant) => {
       const { color, sku, size, resalePrice } = variant;
       return `

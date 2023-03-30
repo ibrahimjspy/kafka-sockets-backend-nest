@@ -4,6 +4,9 @@ import {
 } from 'src/constants';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
+/**
+ * @description -- class to connect with product media table in destination which we use for inserting product media urls directly in database
+ */
 @Entity({
   schema: DESTINATION_DB_SCHEMA_NAME,
   name: DESTINATION_MEDIA_TABLE_NAME,

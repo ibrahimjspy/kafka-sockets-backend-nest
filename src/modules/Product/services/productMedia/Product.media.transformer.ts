@@ -46,6 +46,9 @@ export class ProductMediaTransformer {
     transformedProduct.variantMedia = variantMedia;
   }
 
+  /**
+   * @description -- this method adds product id which is created to media list which was transformed previously
+   */
   public addDestinationProductIdToMedia(
     productId: string,
     productMediaList: ProductMedia[],

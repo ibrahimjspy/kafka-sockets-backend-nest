@@ -10,6 +10,10 @@ import axiosRetry from 'axios-retry';
 export class ProductMappingService {
   private readonly logger = new Logger(ProductMappingService.name);
 
+  /**
+   * @description -- this method stores mapping in bulk in destination mapping service which we are currently using Elastic search
+   * @warn -- this can crete mappings using falsy vales as well , because of how ES stores its documents
+   */
   public async storeBulkMappings(mappingsList: ProductMappingsDto[]) {
     try {
       const addProductMapping = await axios.post(

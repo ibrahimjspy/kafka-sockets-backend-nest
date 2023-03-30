@@ -7,6 +7,9 @@ import { addCategoryToShopMutation } from '../mutations/shop/addCategoryToShop';
 export class ShopDestinationService {
   private readonly logger = new Logger(ShopDestinationService.name);
 
+  /**
+   * @description -- this method adds a category to shop in destination
+   */
   public async addCategoryToShop(
     shopId: string,
     categoryId: string,

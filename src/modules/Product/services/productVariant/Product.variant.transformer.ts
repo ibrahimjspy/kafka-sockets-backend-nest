@@ -9,6 +9,10 @@ import { ProductVariantService } from './Product.variants.service';
 @Injectable()
 export class ProductVariantTransformer {
   constructor(private readonly productVariantService: ProductVariantService) {}
+
+  /**
+   * @description -- this method adds variants list which includes attributes and channel listings to product transformed list
+   */
   public addVariants(product: ProductDto, transformedProduct) {
     const transformedVariantsList = [];
     product.variants.map((rawProductVariant: ProductVariantInterface) => {

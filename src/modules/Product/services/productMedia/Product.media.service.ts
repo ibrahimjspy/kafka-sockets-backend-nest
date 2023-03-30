@@ -12,6 +12,10 @@ export class ProductMediaService {
   constructor(
     private readonly productMediaTransformer: ProductMediaTransformer,
   ) {}
+
+  /**
+   * @description -- this method create media in bulk using postgres orm
+   */
   public async bulkMediaCreate(
     productId: string,
     transformedProduct: ProductTransformedDto,

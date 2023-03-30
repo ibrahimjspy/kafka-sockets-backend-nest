@@ -8,11 +8,20 @@ export const KAFKA_CONSUMER_GROUP = process.env.KAFKA_CONSUMER_GROUP;
 export const SERVER_PORT = process.env.SERVER_PORT || '1010';
 
 // source
+export const STYLE_NUMBER_ATTRIBUTE_NAME =
+  process.env.STYLE_NUMBER_ATTRIBUTE_NAME || 'Style Number';
+export const VENDOR_ID_METADATA_KEY =
+  process.env.VENDOR_ID_METADATA_KEY || 'vendorId';
+export const VENDOR_NAME_METADATA_KEY =
+  process.env.VENDOR_NAME_METADATA_KEY || 'vendorName';
+
 export const SOURCE_GRAPHQL_ENDPOINT = process.env.SOURCE_GRAPHQL_ENDPOINT;
 export const SOURCE_GRAPHQL_ALL_ACCESS_TOKEN =
   process.env.SOURCE_GRAPHQL_ALL_ACCESS_TOKEN;
 
 // destination
+export const VARIANT_PRICE_RULE = Number(process.env.VARIANT_PRICE_RULE) || 1.6;
+
 export const DESTINATION_DB_SCHEMA_NAME = 'saleor';
 export const DESTINATION_MEDIA_TABLE_NAME = 'product_productmedia';
 export const MEDIA_URL_PREFIX = 'media/';
