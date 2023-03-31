@@ -88,4 +88,6 @@ export interface PaginationDto {
   hasNextPage: boolean;
   endCursor: string;
   first: number;
+  totalCount: number;
+  batchNumber: number;
 }

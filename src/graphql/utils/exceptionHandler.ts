@@ -40,7 +40,7 @@ export const graphqlExceptionHandler = (
   const response = error?.response;
   const message = response?.errors[0].message
     ? response?.errors[0].message
-    : 'Something went wrong.';
+    : error.message;
   let error_code: number = error.type ? 500 : response?.status;
   if (status) {
     error_code = status;
@@ -50,6 +50,6 @@ export const graphqlExceptionHandler = (
 
   return {
     status: error_code == 200 ? 405 : error_code,
-    graphql_error: message,
+    graphql_error: message || 'something went wrong',
   };
 };
