@@ -1,7 +1,7 @@
 import { Controller, Logger } from '@nestjs/common';
 import io from 'socket.io-client';
 import { AutoSyncDto, PaginationDto } from '../Product/Product.dto';
-import { SOCKET_ENDPOINT } from 'src/constants';
+import { SOCKET_CLIENT_MESSAGE_NAME, SOCKET_ENDPOINT } from 'src/constants';
 @Controller()
 export class SocketClientService {
   private readonly logger = new Logger(SocketClientService.name);
@@ -19,8 +19,7 @@ export class SocketClientService {
     const socket = io(SOCKET_ENDPOINT);
     socket.connect();
     socket.on('connect', async () => {
-      this.logger.log('sending progress to socket');
-      return await socket.emit('autoSync', {
+      return await socket.emit(SOCKET_CLIENT_MESSAGE_NAME, {
         totalProducts: paginationData.totalCount,
         imported: productImportedCount,
         eventId,

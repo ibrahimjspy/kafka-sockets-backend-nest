@@ -22,7 +22,7 @@ export class AutoSyncGateway implements OnGatewayInit {
     this.logger.log('Initialized!');
   }
 
-  @SubscribeMessage('autoSync')
+  @SubscribeMessage(SOCKET_CLIENT_MESSAGE_NAME)
   sendMessages(client: Socket, data: AutoSyncDto) {
     this.server.emit(SOCKET_CLIENT_MESSAGE_NAME, {
       ...data,

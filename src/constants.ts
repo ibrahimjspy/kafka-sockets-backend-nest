@@ -5,12 +5,14 @@ dotenv.config();
 export const KAFKA_CONSUMER_GROUP = process.env.KAFKA_CONSUMER_GROUP;
 export const KAFKA_BROKER_ENDPOINT = process.env.KAFKA_BROKER_ENDPOINT;
 export const KAFKA_BULK_PRODUCT_CREATE_TOPIC = 'autoSyncBulkCreate';
+export const KAFKA_CREATE_PRODUCT_BATCHES_TOPIC = 'autoSyncCreateBatches';
+
 // application
 export const SERVER_PORT = process.env.SERVER_PORT || '1010';
 export const SOCKET_PORT = process.env.SOCKET_PORT || '3000';
 export const SOCKET_ENDPOINT =
   process.env.SOCKET_ENDPOINT || 'http://localhost:3000/autosync';
-export const SOCKET_NAMESPACE = process.env.SOCKET_NAMESPACE || '1010';
+export const SOCKET_NAMESPACE = process.env.SOCKET_NAMESPACE || 'autosync';
 export const SOCKET_CLIENT_MESSAGE_NAME =
   process.env.SOCKET_CLIENT_MESSAGE_NAME || 'autoSyncStatus';
 

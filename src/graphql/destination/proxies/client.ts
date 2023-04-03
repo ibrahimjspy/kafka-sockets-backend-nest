@@ -5,7 +5,10 @@ import {
   DESTINATION_GRAPHQL_ALL_ACCESS_TOKEN,
   DESTINATION_GRAPHQL_ENDPOINT,
 } from 'src/constants';
-import { graphqlExceptionHandler } from 'src/graphql/utils/exceptionHandler';
+import {
+  graphqlExceptionHandler,
+  graphqlInternalErrorHandler,
+} from 'src/graphql/utils/exceptionHandler';
 
 export const graphqlCallDestination = async (
   query: string,
@@ -26,6 +29,6 @@ export const graphqlCallDestination = async (
         },
       });
       const response: object = await graphQLClient.request(query);
-      return response;
+      return graphqlInternalErrorHandler(response);
     });
 };
