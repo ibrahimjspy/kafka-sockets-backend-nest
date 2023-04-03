@@ -47,7 +47,7 @@ async function bootstrap() {
       },
 
       consumer: {
-        groupId: KAFKA_CONSUMER_GROUP || 'my-kafka-consumer3',
+        groupId: KAFKA_CONSUMER_GROUP || 'auto-sync-kafka-consumer',
       },
     },
   });
