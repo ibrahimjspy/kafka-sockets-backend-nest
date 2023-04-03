@@ -17,7 +17,7 @@ export class ProductMappingService {
   public async storeBulkMappings(mappingsList: ProductMappingsDto[]) {
     try {
       const addProductMapping = await axios.post(
-        MAPPING_SERVICE_URL,
+        `${MAPPING_SERVICE_URL}/documents`,
         JSON.stringify(mappingsList),
         {
           headers: {

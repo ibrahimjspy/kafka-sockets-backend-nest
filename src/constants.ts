@@ -48,6 +48,7 @@ export const SKU_ATTRIBUTE_ID = process.env.SKU_ATTRIBUTE_ID;
 export const DEFAULT_WAREHOUSE_ID = process.env.DEFAULT_WAREHOUSE_ID;
 export const MAPPING_MAPPING_TOKEN = process.env.MAPPING_MAPPING_TOKEN;
 export const MAPPING_SERVICE_URL = process.env.MAPPING_SERVICE_URL;
+export const AUTO_SYNC_MAPPING_URL = process.env.AUTO_SYNC_MAPPING_URL;
 export const mediaCreateDefaults = {
   type: 'IMAGE',
   alt: 'alt',
