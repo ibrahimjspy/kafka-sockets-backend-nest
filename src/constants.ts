@@ -55,3 +55,10 @@ export const mediaCreateDefaults = {
   oembed_data: {},
   to_remove: false,
 };
+
+export const MAPPING_SERVICE_HEADERS = {
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer private-${MAPPING_MAPPING_TOKEN}`,
+  },
+};
