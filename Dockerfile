@@ -16,6 +16,7 @@ RUN npm run lint
 # Build package
 RUN npm run build
 
-EXPOSE 5000 3000
+EXPOSE 5000
+EXPOSE 3000
 
 CMD ["npm", "run", "start"]

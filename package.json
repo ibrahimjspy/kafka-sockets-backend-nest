@@ -40,6 +40,7 @@
     "class-validator": "^0.14.0",
     "dotenv": "^16.0.3",
     "graphql-request": "^5.2.0",
+    "kafkajs": "^2.2.4",
     "pg": "^8.10.0",
     "polly-js": "^1.8.2",
     "reflect-metadata": "^0.1.13",
