@@ -27,8 +27,8 @@ jobs:
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
           cd /home/ec2-user/auto-sync
-          docker rm -f auto_sync_container
           git pull origin develop
-          docker build . -t auto-sync
-          docker run -d -p 4001:5000 -p 4002:3000 --name auto_sync_container auto-sync
+          cd /home/ec2-user/sharove_data_capture
+          docker-compose build autosync
+          docker-compose up -d
           '
