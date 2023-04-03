@@ -32,9 +32,10 @@ export class ProductDestinationService {
       const createProduct: productCreate = await graphqlCallDestination(
         createProductMutation(transformedProduct),
       );
+      if (createProduct.productCreate.errors[0]) {
+        throw new Error(createProduct?.productCreate?.errors[0]?.message);
+      }
       const productId = createProduct?.productCreate?.product?.id;
-
-      if (!productId) throw new Error('product could not be created');
       this.logger.verbose('Product created', createProduct);
       return productId;
     } catch (err) {

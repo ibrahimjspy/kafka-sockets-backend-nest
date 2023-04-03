@@ -13,10 +13,13 @@ import { ProductMediaService } from './services/productMedia/Product.media.servi
 import { ProductMappingService } from './services/productMapping/Product.mapping.service';
 import { ShopDestinationService } from 'src/graphql/destination/handlers/shop';
 import { RollbackService } from './services/rollback/Rollback.service';
+import { SocketClientService } from '../Socket/Socket.client.service';
+import { KafkaController } from './services/kafka/Kafka.controller';
+import { ProducerService } from './services/kafka/Kafka.producer.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ProductMedia])],
-  controllers: [ProductController],
+  controllers: [KafkaController, ProductController],
   providers: [
     ProductService,
     ProductTransformer,
@@ -29,6 +32,9 @@ import { RollbackService } from './services/rollback/Rollback.service';
     ProductMappingService,
     RollbackService,
     ShopDestinationService,
+    SocketClientService,
+    KafkaController,
+    ProducerService,
   ],
 })
 export class ProductModule {}

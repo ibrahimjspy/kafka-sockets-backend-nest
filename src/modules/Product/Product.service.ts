@@ -11,6 +11,13 @@ import { PromisePool } from '@supercharge/promise-pool';
 import { ProductMappingService } from './services/productMapping/Product.mapping.service';
 import { ShopDestinationService } from 'src/graphql/destination/handlers/shop';
 import { RollbackService } from './services/rollback/Rollback.service';
+import { SocketClientService } from '../Socket/Socket.client.service';
+import { KafkaController } from './services/kafka/Kafka.controller';
+import { v4 as uuidv4 } from 'uuid';
+import {
+  KAFKA_BULK_PRODUCT_CREATE_TOPIC,
+  KAFKA_CREATE_PRODUCT_BATCHES_TOPIC,
+} from 'src/constants';
 
 @Injectable()
 export class ProductService {
@@ -22,46 +29,89 @@ export class ProductService {
     private readonly productMediaService: ProductMediaService,
     private readonly productMappingService: ProductMappingService,
     private readonly productRollbackService: RollbackService,
+    private readonly webSocketService: SocketClientService,
+    private readonly kafkaService: KafkaController,
   ) {}
   private readonly logger = new Logger(ProductService.name);
 
   /**
-   * @description -- this returns sync a category for a retailer and imports bulk products against that category
+   * @description -- this sync a category for a retailer and imports bulk products against that category
+   * @step -- it send message to kafka to create bulk products
    * @step -- add category to shop
    * @step -- fetch bulk products from source
    * @step -- transform bulk products
    * @step -- create bulk products
    */
-  public async autoSync(autoSyncInput: AutoSyncDto): Promise<void> {
+  public async autoSync(autoSyncInput: AutoSyncDto): Promise<object> {
     try {
       const { storeId, categoryId } = autoSyncInput;
-      const pagination: PaginationDto = {
-        hasNextPage: true,
-        endCursor: '',
-        first: 80,
-      };
+      const eventId = uuidv4();
       const addCategoryToShop = await this.shopDestinationApi.addCategoryToShop(
         storeId,
         categoryId,
       );
-      while (pagination.hasNextPage) {
-        const categoryData: GetProductsDto = await getProductsHandler(
-          { first: pagination.first, after: pagination.endCursor },
-          { categories: [`${autoSyncInput.categoryId}`] },
-        );
-        pagination.endCursor = categoryData.pageInfo.endCursor;
-        pagination.hasNextPage = categoryData.pageInfo.hasNextPage;
-
-        const productsData =
-          this.productTransformer.payloadBuilder(categoryData);
-        await this.createBulkProducts(
-          autoSyncInput,
-          productsData,
-          addCategoryToShop,
-        );
-      }
+      await this.kafkaService.createProductBatches({
+        topic: KAFKA_CREATE_PRODUCT_BATCHES_TOPIC,
+        messages: [
+          {
+            value: JSON.stringify({
+              autoSyncInput,
+              addCategoryToShop,
+              eventId,
+            }),
+          },
+        ],
+      });
+      return { eventId };
     } catch (error) {
       this.logger.error(error);
+    }
+  }
+
+  /**
+   * @description -- this method creates bulk product batches
+   * @step -- fetches products against a category
+   * @step -- send a kafka message which creates product in bulk against that batch
+   * @link -- createBulkProducts()
+   */
+  public async createProductBatches({
+    autoSyncInput,
+    addCategoryToShop,
+    eventId,
+  }) {
+    const pagination: PaginationDto = {
+      hasNextPage: true,
+      endCursor: '',
+      first: 50,
+      totalCount: 0,
+      batchNumber: 0,
+    };
+    while (pagination.hasNextPage) {
+      const categoryData: GetProductsDto = await getProductsHandler(
+        { first: pagination.first, after: pagination.endCursor },
+        { categories: [`${autoSyncInput.categoryId}`] },
+      );
+
+      pagination.endCursor = categoryData.pageInfo.endCursor;
+      pagination.hasNextPage = categoryData.pageInfo.hasNextPage;
+      pagination.totalCount = categoryData.totalCount;
+      pagination.batchNumber = pagination.batchNumber + 1;
+
+      const productsData = this.productTransformer.payloadBuilder(categoryData);
+      await this.kafkaService.pushProductBatch({
+        topic: KAFKA_BULK_PRODUCT_CREATE_TOPIC,
+        messages: [
+          {
+            value: JSON.stringify({
+              autoSyncInput,
+              productsData,
+              addCategoryToShop,
+              pagination,
+              eventId,
+            }),
+          },
+        ],
+      });
     }
   }
 
@@ -71,11 +121,13 @@ export class ProductService {
    * @step -- store product mappings
    * @link -- createSingleProduct()
    */
-  public async createBulkProducts(
-    autoSyncInput: AutoSyncDto,
-    productsData: ProductTransformedDto[],
+  public async createBulkProducts({
+    autoSyncInput,
+    productsData,
     addCategoryToShop,
-  ) {
+    pagination,
+    eventId,
+  }) {
     const BATCH_SIZE = 50;
     const { ...bulkProducts } = await PromisePool.for(productsData)
       .withConcurrency(BATCH_SIZE)
@@ -94,6 +146,11 @@ export class ProductService {
       });
     const [...storeMappings] = await Promise.all([
       this.productMappingService.storeBulkMappings(bulkProducts.results),
+      this.webSocketService.sendAutoSyncProgress(
+        pagination,
+        autoSyncInput,
+        eventId,
+      ),
     ]);
     return storeMappings;
   }
