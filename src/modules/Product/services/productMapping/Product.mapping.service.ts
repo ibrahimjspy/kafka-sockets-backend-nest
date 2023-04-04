@@ -11,7 +11,6 @@ import {
   MAPPING_SERVICE_URL,
   RETRY_COUNT,
 } from '../../../../constants';
-import axiosRetry from 'axios-retry';
 import { AutoSyncDto } from '../../Product.dto';
 import { ProductTransformedDto } from '../../transformer/Product.transformer.types';
 import polly from 'polly-js';
@@ -69,7 +68,6 @@ export class ProductMappingService {
             },
           },
         );
-        axiosRetry(axios, { retries: 3 });
         return addProductMapping.data;
       });
   }
