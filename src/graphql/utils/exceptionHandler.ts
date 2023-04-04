@@ -38,9 +38,7 @@ export const graphqlExceptionHandler = (
 
   // Used to handle all the unexpected errors.
   const response = error?.response;
-  const message = response?.errors[0].message
-    ? response?.errors[0].message
-    : error.message;
+  const message = error.message;
   let error_code: number = error.type ? 500 : response?.status;
   if (status) {
     error_code = status;
@@ -64,7 +62,7 @@ export const graphqlInternalErrorHandler = async (
   const error = response[Object.keys(response)[0]] || {};
 
   if (error.errors?.length > 0) {
-    throw new ResultError(error.errors[0]['message'], error.errors);
+    throw new ResultError(error?.errors[0]?.message, error?.errors);
   }
   return response;
 };

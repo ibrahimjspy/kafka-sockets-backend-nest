@@ -46,10 +46,10 @@ export class ProductService {
     try {
       const { storeId, categoryId } = autoSyncInput;
       const eventId = uuidv4();
-      const addCategoryToShop = await this.shopDestinationApi.addCategoryToShop(
-        storeId,
-        categoryId,
-      );
+      const [addCategoryToShop] = await Promise.all([
+        this.shopDestinationApi.addCategoryToShop(storeId, categoryId),
+        this.productMappingService.saveSyncCategoryMapping(autoSyncInput),
+      ]);
       await this.kafkaService.createProductBatches({
         topic: KAFKA_CREATE_PRODUCT_BATCHES_TOPIC,
         messages: [
@@ -128,8 +128,12 @@ export class ProductService {
     pagination,
     eventId,
   }) {
+    const productsList = await this.productMappingService.validateMappings(
+      autoSyncInput,
+      productsData,
+    );
     const BATCH_SIZE = 50;
-    const { ...bulkProducts } = await PromisePool.for(productsData)
+    const { ...bulkProducts } = await PromisePool.for(productsList)
       .withConcurrency(BATCH_SIZE)
       .handleError((error) => {
         this.logger.error(error);
@@ -145,7 +149,7 @@ export class ProductService {
         );
       });
     const [...storeMappings] = await Promise.all([
-      this.productMappingService.storeBulkMappings(bulkProducts.results),
+      this.productMappingService.saveBulkMappings(bulkProducts.results),
       this.webSocketService.sendAutoSyncProgress(
         pagination,
         autoSyncInput,
@@ -195,7 +199,7 @@ export class ProductService {
         addCategoryToShop,
         createProductVariants['value'],
       ),
-      this.productDestinationApi.storeProductCreateStatus(productId),
+      this.productDestinationApi.saveProductCreateStatus(productId),
     ]);
 
     await this.productRollbackService.handleProductCreateRollbacks(productId, [

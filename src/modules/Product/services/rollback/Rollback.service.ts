@@ -17,7 +17,7 @@ export class RollbackService {
     return await Promise.all(
       promises.map(async (promise) => {
         if (promise.status == FAILED_STATUS) {
-          this.logger.warn(
+          this.logger.error(
             `rolling back product :: ${productId}`,
             promise.reason,
           );
