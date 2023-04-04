@@ -25,7 +25,7 @@ export class ProductMappingService {
   public async saveBulkMappings(mappingsList: ProductMappingsDto[]) {
     return polly()
       .logger(function (error) {
-        this.logger.error(error);
+        Logger.error(error);
       })
       .waitAndRetry(RETRY_COUNT)
       .executeForPromise(async () => {
@@ -50,7 +50,7 @@ export class ProductMappingService {
   public async saveSyncCategoryMapping(mappingData: AutoSyncDto) {
     return polly()
       .logger(function (error) {
-        this.logger.error(error);
+        Logger.error(error);
       })
       .waitAndRetry(RETRY_COUNT)
       .executeForPromise(async () => {
@@ -81,7 +81,7 @@ export class ProductMappingService {
   ) {
     return polly()
       .logger(function (error) {
-        this.logger.error(error);
+        Logger.error(error);
       })
       .waitAndRetry(RETRY_COUNT)
       .executeForPromise(async () => {
@@ -117,7 +117,7 @@ export class ProductMappingService {
   public async getSyncCategoryMappings(autoSyncInput: AutoSyncDto) {
     return polly()
       .logger(function (error) {
-        this.logger.error(error);
+        Logger.error(error);
       })
       .waitAndRetry(RETRY_COUNT)
       .executeForPromise(async () => {
@@ -153,7 +153,7 @@ export class ProductMappingService {
   ) {
     return polly()
       .logger(function (error) {
-        this.logger.error(error);
+        Logger.error(error);
       })
       .waitAndRetry(RETRY_COUNT)
       .executeForPromise(async () => {
