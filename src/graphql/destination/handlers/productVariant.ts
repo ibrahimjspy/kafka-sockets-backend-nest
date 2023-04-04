@@ -45,6 +45,9 @@ export class ProductVariantDestinationService {
    * @description -- this method transforms product variant attributes that are transformed according to destination api inout type
    */
   private transformVariants(transformedProduct: ProductTransformedDto) {
+    // we are using default variant price if a variant has not specified selling price
+    const defaultVariantResalePrice =
+      transformedProduct.variants[0].resalePrice;
     return transformedProduct.variants.map((variant) => {
       const { color, sku, size, resalePrice } = variant;
       return `
@@ -54,7 +57,9 @@ export class ProductVariantDestinationService {
           { id: "${SIZE_ATTRIBUTE_ID}", values:["${size}"] }
           { id: "${SKU_ATTRIBUTE_ID}", values:["${sku}"] } 
         ]
-          channelListings: { channelId: "${DEFAULT_CHANNEL_ID}", price: ${resalePrice}}
+          channelListings: { channelId: "${DEFAULT_CHANNEL_ID}", price: ${
+        resalePrice || defaultVariantResalePrice
+      }}
          stocks: { warehouse:"${DEFAULT_WAREHOUSE_ID}"  quantity: 1000 }
         }
       `;
