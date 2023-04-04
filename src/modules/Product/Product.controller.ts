@@ -1,9 +1,9 @@
 import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ProductService } from './Product.service';
-import { AutoSyncDto } from './Product.dto';
+import { AutoSyncDto, ImportBulkCategoriesDto } from './Product.dto';
+import PromisePool from '@supercharge/promise-pool/dist';
 
-// endpoints to trigger data bulk imports
 @Controller()
 @ApiTags('auto-sync-product-api')
 export class ProductController {
@@ -11,7 +11,23 @@ export class ProductController {
 
   constructor(private readonly productService: ProductService) {}
   @Post('api/v1/auto/sync')
-  async autoSync(@Body() autoSyncInput: AutoSyncDto) {
-    return this.productService.autoSync(autoSyncInput);
+  async autoSync(@Body() autoSyncInput: ImportBulkCategoriesDto) {
+    const BATCH_SIZE = 1;
+    const { ...syncCategories } = await PromisePool.for(
+      autoSyncInput.categoryIds,
+    )
+      .withConcurrency(BATCH_SIZE)
+      .handleError((error) => {
+        this.logger.error(error);
+      })
+      .process(async (category: string) => {
+        const syncCategoriesRequest: AutoSyncDto = {
+          shopId: autoSyncInput.shopId,
+          storeId: autoSyncInput.storeId,
+          categoryId: category,
+        };
+        return this.productService.autoSync(syncCategoriesRequest);
+      });
+    return syncCategories.results;
   }
 }

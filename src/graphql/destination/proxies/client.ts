@@ -4,6 +4,7 @@ import polly from 'polly-js';
 import {
   DESTINATION_GRAPHQL_ALL_ACCESS_TOKEN,
   DESTINATION_GRAPHQL_ENDPOINT,
+  RETRY_COUNT,
 } from 'src/constants';
 import {
   graphqlExceptionHandler,
@@ -21,7 +22,7 @@ export const graphqlCallDestination = async (
         graphqlExceptionHandler(err),
       );
     })
-    .waitAndRetry(4)
+    .waitAndRetry(RETRY_COUNT)
     .executeForPromise(async () => {
       const graphQLClient = new GraphQLClient(DESTINATION_GRAPHQL_ENDPOINT, {
         headers: {

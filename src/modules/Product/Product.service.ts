@@ -62,7 +62,7 @@ export class ProductService {
           },
         ],
       });
-      return { eventId };
+      return { categoryId, eventId };
     } catch (error) {
       this.logger.error(error);
     }

@@ -1,5 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 import {
+  RETRY_COUNT,
   SOURCE_GRAPHQL_ALL_ACCESS_TOKEN,
   SOURCE_GRAPHQL_ENDPOINT,
 } from 'src/constants';
@@ -16,7 +17,7 @@ export const graphqlCallSource = async (query: string): Promise<object> => {
         graphqlExceptionHandler(err),
       );
     })
-    .waitAndRetry(4)
+    .waitAndRetry(RETRY_COUNT)
     .executeForPromise(async () => {
       const graphQLClient = new GraphQLClient(SOURCE_GRAPHQL_ENDPOINT, {
         headers: {
