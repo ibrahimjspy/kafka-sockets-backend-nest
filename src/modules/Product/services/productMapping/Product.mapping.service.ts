@@ -21,7 +21,7 @@ export class ProductMappingService {
    * @description -- this method stores mapping in bulk in destination mapping service which we are currently using Elastic search
    * @warn -- this can crete mappings using falsy vales as well , because of how ES stores its documents
    */
-  public async storeBulkMappings(mappingsList: ProductMappingsDto[]) {
+  public async saveBulkMappings(mappingsList: ProductMappingsDto[]) {
     try {
       if (mappingsList.length == 0) return;
       const addProductMapping = await axios.post(
@@ -44,7 +44,7 @@ export class ProductMappingService {
   /**
    * @description -- this method stores mapping for retailer against its category
    */
-  public async storeSyncCategoryMapping(mappingData: AutoSyncDto) {
+  public async saveSyncCategoryMapping(mappingData: AutoSyncDto) {
     try {
       const mappingObject: SyncCategoryMappingDto = {
         shr_category_id: mappingData.categoryId,

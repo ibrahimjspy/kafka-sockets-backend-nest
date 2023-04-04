@@ -85,7 +85,7 @@ export class ProductDestinationService {
   /**
    * @description -- this method store private metadata for product which we use to store status about product -- whether it is created successfully
    */
-  public async storeProductCreateStatus(productId: string) {
+  public async saveProductCreateStatus(productId: string) {
     try {
       return await graphqlCallDestination(
         storeProductCreateStatusMutation(productId),

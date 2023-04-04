@@ -48,7 +48,7 @@ export class ProductService {
       const eventId = uuidv4();
       const [addCategoryToShop] = await Promise.all([
         this.shopDestinationApi.addCategoryToShop(storeId, categoryId),
-        this.productMappingService.storeSyncCategoryMapping(autoSyncInput),
+        this.productMappingService.saveSyncCategoryMapping(autoSyncInput),
       ]);
       await this.kafkaService.createProductBatches({
         topic: KAFKA_CREATE_PRODUCT_BATCHES_TOPIC,
@@ -149,7 +149,7 @@ export class ProductService {
         );
       });
     const [...storeMappings] = await Promise.all([
-      this.productMappingService.storeBulkMappings(bulkProducts.results),
+      this.productMappingService.saveBulkMappings(bulkProducts.results),
       this.webSocketService.sendAutoSyncProgress(
         pagination,
         autoSyncInput,
@@ -199,7 +199,7 @@ export class ProductService {
         addCategoryToShop,
         createProductVariants['value'],
       ),
-      this.productDestinationApi.storeProductCreateStatus(productId),
+      this.productDestinationApi.saveProductCreateStatus(productId),
     ]);
 
     await this.productRollbackService.handleProductCreateRollbacks(productId, [
