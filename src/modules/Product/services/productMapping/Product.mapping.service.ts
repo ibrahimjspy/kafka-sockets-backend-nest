@@ -9,6 +9,7 @@ import {
   MAPPING_MAPPING_TOKEN,
   MAPPING_SERVICE_HEADERS,
   MAPPING_SERVICE_URL,
+  RETRY_COUNT,
 } from '../../../../constants';
 import axiosRetry from 'axios-retry';
 import { AutoSyncDto } from '../../Product.dto';
@@ -27,7 +28,7 @@ export class ProductMappingService {
       .logger(function (error) {
         this.logger.error(error);
       })
-      .waitAndRetry(4)
+      .waitAndRetry(RETRY_COUNT)
       .executeForPromise(async () => {
         if (mappingsList.length == 0) return;
         const addProductMapping = await axios.post(
@@ -52,7 +53,7 @@ export class ProductMappingService {
       .logger(function (error) {
         this.logger.error(error);
       })
-      .waitAndRetry(4)
+      .waitAndRetry(RETRY_COUNT)
       .executeForPromise(async () => {
         const mappingObject: SyncCategoryMappingDto = {
           shr_category_id: mappingData.categoryId,
@@ -84,7 +85,7 @@ export class ProductMappingService {
       .logger(function (error) {
         this.logger.error(error);
       })
-      .waitAndRetry(4)
+      .waitAndRetry(RETRY_COUNT)
       .executeForPromise(async () => {
         const productIds = productsData.map((product) => {
           return product.sourceId;
@@ -108,7 +109,6 @@ export class ProductMappingService {
           filters,
           MAPPING_SERVICE_HEADERS,
         );
-        axiosRetry(axios, { retries: 3 });
         return getProductsMapping.data;
       });
   }
@@ -117,32 +117,33 @@ export class ProductMappingService {
    * @description -- this method fetches whether a category is synced against retailer or not
    */
   public async getSyncCategoryMappings(autoSyncInput: AutoSyncDto) {
-    try {
-      const filters = JSON.stringify({
-        query: '',
-        page: { size: 100 },
-        filters: {
-          all: [
-            {
-              shr_category_id: autoSyncInput.categoryId,
-            },
-            {
-              shr_retailer_shop_id: autoSyncInput.shopId,
-            },
-          ],
-        },
+    return polly()
+      .logger(function (error) {
+        this.logger.error(error);
+      })
+      .waitAndRetry(RETRY_COUNT)
+      .executeForPromise(async () => {
+        const filters = JSON.stringify({
+          query: '',
+          page: { size: 100 },
+          filters: {
+            all: [
+              {
+                shr_category_id: autoSyncInput.categoryId,
+              },
+              {
+                shr_retailer_shop_id: autoSyncInput.shopId,
+              },
+            ],
+          },
+        });
+        const getSyncedCategoriesMapping = await axios.post(
+          `${AUTO_SYNC_MAPPING_URL}/search`,
+          filters,
+          MAPPING_SERVICE_HEADERS,
+        );
+        return getSyncedCategoriesMapping.data;
       });
-      const getSyncedCategoriesMapping = await axios.post(
-        `${AUTO_SYNC_MAPPING_URL}/search`,
-        filters,
-        MAPPING_SERVICE_HEADERS,
-      );
-      axiosRetry(axios, { retries: 3 });
-      return getSyncedCategoriesMapping.data;
-    } catch (error) {
-      console.log(error);
-      this.logger.error(error);
-    }
   }
 
   /**
@@ -156,7 +157,7 @@ export class ProductMappingService {
       .logger(function (error) {
         this.logger.error(error);
       })
-      .waitAndRetry(4)
+      .waitAndRetry(RETRY_COUNT)
       .executeForPromise(async () => {
         const [productMappings, categoryMappings] = await Promise.all([
           this.getProductsMapping(productsList, autoSyncInput),

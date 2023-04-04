@@ -8,6 +8,7 @@ export const KAFKA_BULK_PRODUCT_CREATE_TOPIC = 'autoSyncBulkCreate';
 export const KAFKA_CREATE_PRODUCT_BATCHES_TOPIC = 'autoSyncCreateBatches';
 
 // application
+export const RETRY_COUNT = 4;
 export const SERVER_PORT = process.env.SERVER_PORT || '1010';
 export const SOCKET_PORT = process.env.SOCKET_PORT || '3000';
 export const SOCKET_ENDPOINT =
