@@ -18,6 +18,7 @@ import {
   KAFKA_BULK_PRODUCT_CREATE_TOPIC,
   KAFKA_CREATE_PRODUCT_BATCHES_TOPIC,
 } from 'src/constants';
+import { isArrayEmpty } from './Product.utils';
 
 @Injectable()
 export class ProductService {
@@ -133,6 +134,8 @@ export class ProductService {
       productsData,
     );
     const BATCH_SIZE = 50;
+    if (isArrayEmpty(productsList)) return;
+
     const { ...bulkProducts } = await PromisePool.for(productsList)
       .withConcurrency(BATCH_SIZE)
       .handleError((error) => {
