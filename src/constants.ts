@@ -2,10 +2,16 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 // kafka
-export const KAFKA_CONSUMER_GROUP = process.env.KAFKA_CONSUMER_GROUP;
+export const KAFKA_CONSUMER_GROUP =
+  process.env.KAFKA_CONSUMER_GROUP || 'auto-sync-kafka-consumer';
 export const KAFKA_BROKER_ENDPOINT = process.env.KAFKA_BROKER_ENDPOINT;
 export const KAFKA_BULK_PRODUCT_CREATE_TOPIC = 'autoSyncBulkCreate';
 export const KAFKA_CREATE_PRODUCT_BATCHES_TOPIC = 'autoSyncCreateBatches';
+export const KAFKA_HEARTBEAT_INTERVAL =
+  Number(process.env.KAFKA_HEARTBEAT_INTERVAL) || 1000;
+export const KAFKA_RETRIES = Number(process.env.KAFKA_RETRIES) || 2;
+export const KAFKA_SESSION_TIMEOUT =
+  Number(process.env.KAFKA_SESSION_TIMEOUT) || 100000;
 
 // application
 export const RETRY_COUNT = 4;
@@ -44,6 +50,7 @@ export const DEFAULT_PRODUCT_TYPE = process.env.DEFAULT_PRODUCT_TYPE;
 export const STYLE_ATTRIBUTE_ID = process.env.STYLE_ATTRIBUTE_ID;
 export const DEFAULT_CHANNEL_ID = process.env.DEFAULT_CHANNEL_ID;
 export const COLOR_ATTRIBUTE_ID = process.env.COLOR_ATTRIBUTE_ID;
+export const COST_ATTRIBUTE_ID = process.env.COST_ATTRIBUTE_ID;
 export const SIZE_ATTRIBUTE_ID = process.env.SIZE_ATTRIBUTE_ID;
 export const SKU_ATTRIBUTE_ID = process.env.SKU_ATTRIBUTE_ID;
 export const DEFAULT_WAREHOUSE_ID = process.env.DEFAULT_WAREHOUSE_ID;

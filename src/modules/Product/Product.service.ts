@@ -134,7 +134,7 @@ export class ProductService {
       productsData,
     );
     const BATCH_SIZE = 50;
-    if (isArrayEmpty(productsList)) return;
+    if (isArrayEmpty(productsList) || !addCategoryToShop) return;
 
     const { ...bulkProducts } = await PromisePool.for(productsList)
       .withConcurrency(BATCH_SIZE)

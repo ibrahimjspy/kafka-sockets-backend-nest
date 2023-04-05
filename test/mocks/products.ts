@@ -54,7 +54,7 @@ export const mockProductsList = {
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price', slug: 'cost-price' },
+                attribute: { name: 'Cost Price', slug: 'costPrice' },
                 values: [{ name: '3.5' }],
               },
               { attribute: { name: 'sku', slug: 'sku' }, values: [] },
@@ -97,7 +97,7 @@ export const mockProductsList = {
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price', slug: 'cost-price' },
+                attribute: { name: 'Cost Price', slug: 'costPrice' },
                 values: [{ name: '3.5' }],
               },
               { attribute: { name: 'sku', slug: 'sku' }, values: [] },
@@ -140,7 +140,7 @@ export const mockProductsList = {
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price', slug: 'cost-price' },
+                attribute: { name: 'Cost Price', slug: 'costPrice' },
                 values: [{ name: '3.5' }],
               },
               { attribute: { name: 'sku', slug: 'sku' }, values: [] },
@@ -183,7 +183,7 @@ export const mockProductsList = {
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price', slug: 'cost-price' },
+                attribute: { name: 'Cost Price', slug: 'costPrice' },
                 values: [{ name: '3.5' }],
               },
               { attribute: { name: 'sku', slug: 'sku' }, values: [] },
@@ -226,7 +226,7 @@ export const mockProductsList = {
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price', slug: 'cost-price' },
+                attribute: { name: 'Cost Price', slug: 'costPrice' },
                 values: [{ name: '3.5' }],
               },
               { attribute: { name: 'sku', slug: 'sku' }, values: [] },
@@ -329,7 +329,7 @@ export const mockProductsList = {
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price', slug: 'cost-price' },
+                attribute: { name: 'Cost Price', slug: 'costPrice' },
                 values: [{ name: '5.5' }],
               },
               { attribute: { name: 'sku', slug: 'sku' }, values: [] },
@@ -405,7 +405,7 @@ export const mockProductsList = {
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price', slug: 'cost-price' },
+                attribute: { name: 'Cost Price', slug: 'costPrice' },
                 values: [{ name: '4' }],
               },
               { attribute: { name: 'sku', slug: 'sku' }, values: [] },
@@ -481,7 +481,7 @@ export const mockProductsList = {
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price', slug: 'cost-price' },
+                attribute: { name: 'Cost Price', slug: 'costPrice' },
                 values: [{ name: '6.75' }],
               },
               { attribute: { name: 'sku', slug: 'sku' }, values: [] },
@@ -557,7 +557,7 @@ export const mockProductsList = {
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price', slug: 'cost-price' },
+                attribute: { name: 'Cost Price', slug: 'costPrice' },
                 values: [{ name: '3.5' }],
               },
               { attribute: { name: 'sku', slug: 'sku' }, values: [] },
@@ -633,7 +633,7 @@ export const mockProductsList = {
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price', slug: 'cost-price' },
+                attribute: { name: 'Cost Price', slug: 'costPrice' },
                 values: [{ name: '6.5' }],
               },
               { attribute: { name: 'sku', slug: 'sku' }, values: [] },
@@ -709,7 +709,7 @@ export const mockProductsList = {
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price', slug: 'cost-price' },
+                attribute: { name: 'Cost Price', slug: 'costPrice' },
                 values: [{ name: '4' }],
               },
               { attribute: { name: 'sku', slug: 'sku' }, values: [] },
@@ -785,7 +785,7 @@ export const mockProductsList = {
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price', slug: 'cost-price' },
+                attribute: { name: 'Cost Price', slug: 'costPrice' },
                 values: [{ name: '1.85' }],
               },
               { attribute: { name: 'sku', slug: 'sku' }, values: [] },
@@ -864,7 +864,7 @@ export const mockProductsList = {
                 values: [{ name: 'ONE SIZE' }],
               },
               {
-                attribute: { name: 'Cost Price', slug: 'cost-price' },
+                attribute: { name: 'Cost Price', slug: 'costPrice' },
                 values: [{ name: '1.85' }],
               },
               { attribute: { name: 'sku', slug: 'sku' }, values: [] },
@@ -943,7 +943,7 @@ export const mockProductsList = {
                 values: [{ name: 'ONE' }],
               },
               {
-                attribute: { name: 'Cost Price', slug: 'cost-price' },
+                attribute: { name: 'Cost Price', slug: 'costPrice' },
                 values: [{ name: '0.85' }],
               },
               { attribute: { name: 'sku', slug: 'sku' }, values: [] },
@@ -1087,7 +1087,7 @@ export const expectedTransformedProductsList = [
         color: 'BLACK',
         commission: '10',
         size: 'ONE SIZE',
-        'cost-price': '3.5',
+        costPrice: '3.5',
         sku: '001-BLA-O-16796618460',
         resalePrice: '5.6',
         stock: [
@@ -1102,7 +1102,7 @@ export const expectedTransformedProductsList = [
         color: 'WHITE',
         commission: '10',
         size: 'ONE SIZE',
-        'cost-price': '3.5',
+        costPrice: '3.5',
         sku: '001-WHI-O-16796618461',
         resalePrice: '5.6',
         stock: [
@@ -1117,7 +1117,7 @@ export const expectedTransformedProductsList = [
         color: 'PINK',
         commission: '10',
         size: 'ONE SIZE',
-        'cost-price': '3.5',
+        costPrice: '3.5',
         sku: '001-PIN-O-16796618462',
         resalePrice: '5.6',
         stock: [
@@ -1132,7 +1132,7 @@ export const expectedTransformedProductsList = [
         color: 'GREY',
         commission: '10',
         size: 'ONE SIZE',
-        'cost-price': '3.5',
+        costPrice: '3.5',
         sku: '001-GRE-O-16796618463',
         resalePrice: '5.6',
         stock: [
@@ -1147,7 +1147,7 @@ export const expectedTransformedProductsList = [
         color: 'BLUE',
         commission: '10',
         size: 'ONE SIZE',
-        'cost-price': '3.5',
+        costPrice: '3.5',
         sku: '001-BLU-O-16796618464',
         resalePrice: '5.6',
         stock: [
@@ -1195,7 +1195,7 @@ export const expectedTransformedProductsList = [
         color: 'SILVER',
         commission: '10',
         size: 'ONE SIZE',
-        'cost-price': '5.5',
+        costPrice: '5.5',
         sku: '004-SIL-O-16796598230',
         resalePrice: '8.8',
         stock: [
@@ -1243,7 +1243,7 @@ export const expectedTransformedProductsList = [
         color: 'MULTI',
         commission: '10',
         size: 'ONE SIZE',
-        'cost-price': '4',
+        costPrice: '4',
         sku: '006-MUL-O-16796597280',
         resalePrice: '6.4',
         stock: [
@@ -1291,7 +1291,7 @@ export const expectedTransformedProductsList = [
         color: 'BLUE',
         commission: '10',
         size: 'ONE SIZE',
-        'cost-price': '6.75',
+        costPrice: '6.75',
         sku: '007-BLU-O-16796625200',
         resalePrice: '10.8',
         stock: [
@@ -1339,7 +1339,7 @@ export const expectedTransformedProductsList = [
         color: 'BLACK',
         commission: '10',
         size: 'ONE SIZE',
-        'cost-price': '3.5',
+        costPrice: '3.5',
         sku: '010-BLA-O-16796597120',
         resalePrice: '5.6',
         stock: [
@@ -1387,7 +1387,7 @@ export const expectedTransformedProductsList = [
         color: 'MULTI',
         commission: '10',
         size: 'ONE SIZE',
-        'cost-price': '6.5',
+        costPrice: '6.5',
         sku: '020-MUL-O-16796598410',
         resalePrice: '10.4',
         stock: [
@@ -1435,7 +1435,7 @@ export const expectedTransformedProductsList = [
         color: 'BLACK',
         commission: '10',
         size: 'ONE SIZE',
-        'cost-price': '4',
+        costPrice: '4',
         sku: '026-BLA-O-16796617860',
         resalePrice: '6.4',
         stock: [
@@ -1490,7 +1490,7 @@ export const expectedTransformedProductsList = [
         color: 'MIX COLOR',
         commission: '10',
         size: 'ONE SIZE',
-        'cost-price': '1.85',
+        costPrice: '1.85',
         sku: '20P-MIX-O-16796624430',
         resalePrice: '2.96',
         stock: [
@@ -1545,7 +1545,7 @@ export const expectedTransformedProductsList = [
         color: 'MIX COLOR',
         commission: '10',
         size: 'ONE SIZE',
-        'cost-price': '1.85',
+        costPrice: '1.85',
         sku: '20P-MIX-O-16796624560',
         resalePrice: '2.96',
         stock: [
@@ -1593,7 +1593,7 @@ export const expectedTransformedProductsList = [
         color: 'WHITE',
         commission: '10',
         size: 'ONE',
-        'cost-price': '0.85',
+        costPrice: '0.85',
         sku: '3PC-WHI-O-16796599180',
         resalePrice: '1.36',
         stock: [

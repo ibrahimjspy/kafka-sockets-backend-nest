@@ -7,6 +7,9 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import {
   KAFKA_BROKER_ENDPOINT,
   KAFKA_CONSUMER_GROUP,
+  KAFKA_HEARTBEAT_INTERVAL,
+  KAFKA_RETRIES,
+  KAFKA_SESSION_TIMEOUT,
   SERVER_PORT,
   SOCKET_PORT,
 } from './constants';
@@ -45,9 +48,11 @@ async function bootstrap() {
       client: {
         brokers: [KAFKA_BROKER_ENDPOINT],
       },
-
       consumer: {
-        groupId: KAFKA_CONSUMER_GROUP || 'auto-sync-kafka-consumer',
+        heartbeatInterval: KAFKA_HEARTBEAT_INTERVAL,
+        sessionTimeout: KAFKA_SESSION_TIMEOUT,
+        retry: { retries: KAFKA_RETRIES },
+        groupId: KAFKA_CONSUMER_GROUP,
       },
     },
   });
