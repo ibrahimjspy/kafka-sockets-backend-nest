@@ -82,6 +82,7 @@ async function bootstrap() {
 
   // enable auto validation
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
   app
     .listen(SERVER_PORT)
     .then(() => {
