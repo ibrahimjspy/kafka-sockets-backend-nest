@@ -5,6 +5,7 @@ import {
   DEFAULT_CHANNEL_ID,
   DEFAULT_WAREHOUSE_ID,
   SKU_ATTRIBUTE_ID,
+  COST_ATTRIBUTE_ID,
 } from 'src/constants';
 import { ProductTransformedDto } from 'src/modules/Product/transformer/Product.transformer.types';
 import { graphqlCallDestination } from '../proxies/client';
@@ -48,14 +49,18 @@ export class ProductVariantDestinationService {
     // we are using default variant price if a variant has not specified selling price
     const defaultVariantResalePrice =
       transformedProduct.variants[0].resalePrice;
+    const defaultVariantCostPrice = transformedProduct.variants[0].costPrice;
     return transformedProduct.variants.map((variant) => {
-      const { color, sku, size, resalePrice } = variant;
+      const { color, sku, size, resalePrice, costPrice } = variant;
       return `
         {
           attributes: [
           { id: "${COLOR_ATTRIBUTE_ID}", values:["${color}"] }
           { id: "${SIZE_ATTRIBUTE_ID}", values:["${size}"] }
           { id: "${SKU_ATTRIBUTE_ID}", values:["${sku}"] } 
+          { id: "${COST_ATTRIBUTE_ID}", values:["${
+        costPrice || defaultVariantCostPrice
+      }"] } 
         ]
           channelListings: { channelId: "${DEFAULT_CHANNEL_ID}", price: ${
         resalePrice || defaultVariantResalePrice
