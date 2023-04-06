@@ -1,4 +1,4 @@
-import { ProductMedia } from 'src/database/destination/media';
+import { ProductMedia, ProductThumbnail } from 'src/database/destination/media';
 import { ProductVariantMediaDto } from '../services/productMedia/Product.media.types';
 import { ProductVariantDto } from '../services/productVariant/Product.variant.types';
 
@@ -67,6 +67,7 @@ export interface ProductTransformedDto {
   categoryId?: string;
   styleNumber?: string;
   sourceId?: string;
+  thumbnail?: ProductThumbnail;
   vendorDetails?: ShopDetailsDto;
   mediaUrls?: ProductMedia[];
   variantMedia?: ProductVariantMediaDto[];

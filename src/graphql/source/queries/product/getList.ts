@@ -27,6 +27,9 @@ export const getProductsQuery = (
           node {
             id
             slug
+            thumbnail ( size: 512 ){
+              url
+            }
             category {
               id
             }
@@ -72,9 +75,6 @@ export const getProductsQuery = (
                   name
                 }
               }
-            }
-            thumbnail {
-              url
             }
             media {
               url

@@ -9,7 +9,7 @@ export const KAFKA_BULK_PRODUCT_CREATE_TOPIC = 'autoSyncBulkCreate';
 export const KAFKA_CREATE_PRODUCT_BATCHES_TOPIC = 'autoSyncCreateBatches';
 export const KAFKA_HEARTBEAT_INTERVAL =
   Number(process.env.KAFKA_HEARTBEAT_INTERVAL) || 1000;
-export const KAFKA_RETRIES = Number(process.env.KAFKA_RETRIES) || 2;
+export const KAFKA_RETRIES = Number(process.env.KAFKA_RETRIES) || 5;
 export const KAFKA_SESSION_TIMEOUT =
   Number(process.env.KAFKA_SESSION_TIMEOUT) || 100000;
 
@@ -40,6 +40,7 @@ export const VARIANT_PRICE_RULE = Number(process.env.VARIANT_PRICE_RULE) || 1.6;
 
 export const DESTINATION_DB_SCHEMA_NAME = 'saleor';
 export const DESTINATION_MEDIA_TABLE_NAME = 'product_productmedia';
+export const DESTINATION_THUMBNAIL_TABLE_NAME = 'thumbnail_thumbnail';
 export const MEDIA_URL_PREFIX = 'media/';
 
 export const DESTINATION_GRAPHQL_ENDPOINT =
@@ -57,13 +58,13 @@ export const DEFAULT_WAREHOUSE_ID = process.env.DEFAULT_WAREHOUSE_ID;
 export const MAPPING_MAPPING_TOKEN = process.env.MAPPING_MAPPING_TOKEN;
 export const MAPPING_SERVICE_URL = process.env.MAPPING_SERVICE_URL;
 export const AUTO_SYNC_MAPPING_URL = process.env.AUTO_SYNC_MAPPING_URL;
+export const PRODUCT_THUMBNAIL_SIZE = 512;
 export const mediaCreateDefaults = {
   type: 'IMAGE',
   alt: 'alt',
   oembed_data: {},
   to_remove: false,
 };
-
 export const MAPPING_SERVICE_HEADERS = {
   headers: {
     'Content-Type': 'application/json',

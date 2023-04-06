@@ -6,7 +6,7 @@ import {
 import { ProductVariantMediaDto } from './Product.media.types';
 import { ProductMedia } from 'src/database/destination/media';
 import { idBase64Decode, mediaUrlTransformer } from './Product.media.utils';
-import { mediaCreateDefaults } from 'src/constants';
+import { PRODUCT_THUMBNAIL_SIZE, mediaCreateDefaults } from 'src/constants';
 
 @Injectable()
 export class ProductMediaTransformer {
@@ -16,6 +16,7 @@ export class ProductMediaTransformer {
   ) {
     this.addProductMedia(product, transformedProduct);
     this.addVariantMedia(product, transformedProduct);
+    this.addThumbnail(product, transformedProduct);
   }
 
   public addProductMedia(
@@ -56,5 +57,31 @@ export class ProductMediaTransformer {
     productMediaList.map((media) => {
       media.product_id = idBase64Decode(productId);
     });
+  }
+
+  /**
+   * @description -- this method adds thumbnail url to transformed product
+   */
+  public addThumbnail(
+    product: ProductDto,
+    transformedProduct: ProductTransformedDto,
+  ) {
+    transformedProduct.thumbnail = {
+      image: product.thumbnail.url,
+      size: PRODUCT_THUMBNAIL_SIZE,
+    };
+  }
+
+  /**
+   * @description -- this method adds media id which of default image in thumbnail object
+   */
+  public addMediaIdToThumbnail(
+    defaultImageId: number,
+    transformedProduct: ProductTransformedDto,
+  ) {
+    transformedProduct.thumbnail = {
+      ...transformedProduct.thumbnail,
+      product_media_id: defaultImageId,
+    };
   }
 }

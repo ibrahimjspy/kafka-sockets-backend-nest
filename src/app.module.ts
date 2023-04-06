@@ -6,7 +6,7 @@ import { HealthModule } from './health/health.module';
 import { ProductModule } from './modules/Product/Product.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductMedia } from './database/destination/media';
+import { ProductMedia, ProductThumbnail } from './database/destination/media';
 @Module({
   imports: [
     TerminusModule,
@@ -22,7 +22,7 @@ import { ProductMedia } from './database/destination/media';
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DATABASE'),
-        entities: [ProductMedia],
+        entities: [ProductMedia, ProductThumbnail],
         synchronize: false,
       }),
       inject: [ConfigService],
