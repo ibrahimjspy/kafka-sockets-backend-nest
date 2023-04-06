@@ -67,7 +67,7 @@ export class ProductMediaTransformer {
     transformedProduct: ProductTransformedDto,
   ) {
     transformedProduct.thumbnail = {
-      image: product.thumbnail.url,
+      image: mediaUrlTransformer(product.thumbnail.url),
       size: PRODUCT_THUMBNAIL_SIZE,
     };
   }
