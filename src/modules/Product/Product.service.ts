@@ -17,6 +17,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   KAFKA_BULK_PRODUCT_CREATE_TOPIC,
   KAFKA_CREATE_PRODUCT_BATCHES_TOPIC,
+  PRODUCT_BATCH_SIZE,
 } from 'src/constants';
 import { isArrayEmpty } from './Product.utils';
 
@@ -133,11 +134,10 @@ export class ProductService {
       autoSyncInput,
       productsData,
     );
-    const BATCH_SIZE = 50;
     if (isArrayEmpty(productsList) || !addCategoryToShop) return;
 
     const { ...bulkProducts } = await PromisePool.for(productsList)
-      .withConcurrency(BATCH_SIZE)
+      .withConcurrency(PRODUCT_BATCH_SIZE)
       .handleError((error) => {
         this.logger.error(error);
       })

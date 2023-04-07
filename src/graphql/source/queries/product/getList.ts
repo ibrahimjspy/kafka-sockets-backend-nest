@@ -13,6 +13,7 @@ export const getProductsQuery = (
     categories: [],
   },
 ): string => {
+  const THUMBNAIL_SIZE = 512;
   return gql`
     query {
       products(${validatePageFilter(
@@ -27,6 +28,9 @@ export const getProductsQuery = (
           node {
             id
             slug
+            thumbnail ( size: ${THUMBNAIL_SIZE} ){
+              url
+            }
             category {
               id
             }
@@ -72,9 +76,6 @@ export const getProductsQuery = (
                   name
                 }
               }
-            }
-            thumbnail {
-              url
             }
             media {
               url
