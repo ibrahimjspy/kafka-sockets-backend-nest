@@ -14,6 +14,7 @@ export const KAFKA_SESSION_TIMEOUT =
   Number(process.env.KAFKA_SESSION_TIMEOUT) || 100000;
 
 // application
+export const PRODUCT_BATCH_SIZE = Number(process.env.PRODUCT_BATCH_SIZE) || 25;
 export const RETRY_COUNT = 4;
 export const SERVER_PORT = process.env.SERVER_PORT || '1010';
 export const SOCKET_PORT = process.env.SOCKET_PORT || '3000';

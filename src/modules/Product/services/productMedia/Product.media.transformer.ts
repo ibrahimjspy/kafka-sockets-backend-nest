@@ -67,21 +67,18 @@ export class ProductMediaTransformer {
     transformedProduct: ProductTransformedDto,
   ) {
     transformedProduct.thumbnail = {
-      image: mediaUrlTransformer(product.thumbnail.url),
+      image: mediaUrlTransformer(product.thumbnail.url) || '',
       size: PRODUCT_THUMBNAIL_SIZE,
     };
   }
 
   /**
-   * @description -- this method adds media id which of default image in thumbnail object
+   * @description -- this method adds media id of default image in thumbnail object
    */
   public addMediaIdToThumbnail(
     defaultImageId: number,
     transformedProduct: ProductTransformedDto,
   ) {
-    transformedProduct.thumbnail = {
-      ...transformedProduct.thumbnail,
-      product_media_id: defaultImageId,
-    };
+    transformedProduct.thumbnail.product_media_id = defaultImageId;
   }
 }

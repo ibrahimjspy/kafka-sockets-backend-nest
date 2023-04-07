@@ -3,12 +3,15 @@ export const mockProductsList = {
     hasNextPage: true,
     endCursor: 'WyIzLXBjLW1hc2stZmlsdGVyLXJlZmlsbC1zaGVldC1zZXQiXQ==',
   },
-  totalCount: 308,
+  totalCount: 307,
   edges: [
     {
       node: {
         id: 'UHJvZHVjdDoxMjUxNQ==',
         slug: '001',
+        thumbnail: {
+          url: 'http://localhost:8000/media/202007/V/94810af2-c621-11ea-89ed-002590aaee66_V.JPG',
+        },
         category: { id: 'Q2F0ZWdvcnk6MTU=' },
         metadata: [
           { key: 'vendorId', value: '610' },
@@ -237,9 +240,6 @@ export const mockProductsList = {
             ],
           },
         ],
-        thumbnail: {
-          url: 'http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjc4ODkz/256/',
-        },
         media: [
           {
             url: 'http://localhost:8000/media/202007/Z/94810af2-c621-11ea-89ed-002590aaee66_Z.JPG',
@@ -284,6 +284,9 @@ export const mockProductsList = {
       node: {
         id: 'UHJvZHVjdDoxMjExMA==',
         slug: '004',
+        thumbnail: {
+          url: 'http://localhost:8000/media/202007/V/2481a5eb-d1c5-11ea-8dc9-002590aaee66_V.JPG',
+        },
         category: { id: 'Q2F0ZWdvcnk6MTU=' },
         metadata: [
           { key: 'vendorId', value: '610' },
@@ -340,9 +343,6 @@ export const mockProductsList = {
             ],
           },
         ],
-        thumbnail: {
-          url: 'http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjc3OTUw/256/',
-        },
         media: [
           {
             url: 'http://localhost:8000/media/202007/Z/2481a5eb-d1c5-11ea-8dc9-002590aaee66_Z.JPG',
@@ -360,6 +360,9 @@ export const mockProductsList = {
       node: {
         id: 'UHJvZHVjdDoxMjA2OA==',
         slug: '006',
+        thumbnail: {
+          url: 'http://localhost:8000/media/202008/V/97f888e8-dbbd-11ea-90ae-002590aaee66_V.png',
+        },
         category: { id: 'Q2F0ZWdvcnk6MTU=' },
         metadata: [
           { key: 'vendorId', value: '610' },
@@ -416,9 +419,6 @@ export const mockProductsList = {
             ],
           },
         ],
-        thumbnail: {
-          url: 'http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjc3OTEz/256/',
-        },
         media: [
           {
             url: 'http://localhost:8000/media/202008/Z/97f888e8-dbbd-11ea-90ae-002590aaee66_Z.png',
@@ -436,6 +436,9 @@ export const mockProductsList = {
       node: {
         id: 'UHJvZHVjdDoxMjc4MA==',
         slug: '007',
+        thumbnail: {
+          url: 'http://localhost:8000/media/202008/V/00bfab78-dc44-11ea-90e0-002590aaee66_V.png',
+        },
         category: { id: 'Q2F0ZWdvcnk6MTU=' },
         metadata: [
           { key: 'vendorId', value: '610' },
@@ -492,9 +495,6 @@ export const mockProductsList = {
             ],
           },
         ],
-        thumbnail: {
-          url: 'http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjc5NTE2/256/',
-        },
         media: [
           {
             url: 'http://localhost:8000/media/202008/Z/00bfab78-dc44-11ea-90e0-002590aaee66_Z.png',
@@ -512,6 +512,9 @@ export const mockProductsList = {
       node: {
         id: 'UHJvZHVjdDoxMjA1Mw==',
         slug: '010',
+        thumbnail: {
+          url: 'http://localhost:8000/media/202008/V/eadded7a-dc51-11ea-90e1-002590aaee66_V.png',
+        },
         category: { id: 'Q2F0ZWdvcnk6MTU=' },
         metadata: [
           { key: 'vendorId', value: '610' },
@@ -568,9 +571,6 @@ export const mockProductsList = {
             ],
           },
         ],
-        thumbnail: {
-          url: 'http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjc3ODk2/256/',
-        },
         media: [
           {
             url: 'http://localhost:8000/media/202008/Z/eadded7a-dc51-11ea-90e1-002590aaee66_Z.png',
@@ -588,6 +588,9 @@ export const mockProductsList = {
       node: {
         id: 'UHJvZHVjdDoxMjEzNg==',
         slug: '020',
+        thumbnail: {
+          url: 'http://localhost:8000/media/202008/V/d497e1de-dca0-11ea-90f2-002590aaee66_V.png',
+        },
         category: { id: 'Q2F0ZWdvcnk6MTU=' },
         metadata: [
           { key: 'vendorId', value: '610' },
@@ -644,9 +647,6 @@ export const mockProductsList = {
             ],
           },
         ],
-        thumbnail: {
-          url: 'http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjc3OTgw/256/',
-        },
         media: [
           {
             url: 'http://localhost:8000/media/202008/Z/d497e1de-dca0-11ea-90f2-002590aaee66_Z.png',
@@ -664,6 +664,9 @@ export const mockProductsList = {
       node: {
         id: 'UHJvZHVjdDoxMjQ5Mg==',
         slug: '026',
+        thumbnail: {
+          url: 'http://localhost:8000/media/202008/V/7cb3b42a-dcb4-11ea-90f6-002590aaee66_V.png',
+        },
         category: { id: 'Q2F0ZWdvcnk6MTU=' },
         metadata: [
           { key: 'vendorId', value: '610' },
@@ -720,9 +723,6 @@ export const mockProductsList = {
             ],
           },
         ],
-        thumbnail: {
-          url: 'http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjc4ODUz/256/',
-        },
         media: [
           {
             url: 'http://localhost:8000/media/202008/Z/7cb3b42a-dcb4-11ea-90f6-002590aaee66_Z.png',
@@ -740,6 +740,9 @@ export const mockProductsList = {
       node: {
         id: 'UHJvZHVjdDoxMjc1MA==',
         slug: '20-pc-assorted-cartoon-reusable-mask',
+        thumbnail: {
+          url: 'http://localhost:8000/media/202007/V/4666631e-c90d-11ea-8b09-002590aaee66_V.jpg',
+        },
         category: { id: 'Q2F0ZWdvcnk6MTU=' },
         metadata: [
           { key: 'vendorId', value: '521' },
@@ -796,9 +799,6 @@ export const mockProductsList = {
             ],
           },
         ],
-        thumbnail: {
-          url: 'http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjc5NDQ3/256/',
-        },
         media: [
           {
             url: 'http://localhost:8000/media/202007/Z/4666631e-c90d-11ea-8b09-002590aaee66_Z.jpg',
@@ -819,6 +819,9 @@ export const mockProductsList = {
       node: {
         id: 'UHJvZHVjdDoxMjc2MA==',
         slug: '20-pc-assorted-cartoon-reusable-mask-2',
+        thumbnail: {
+          url: 'http://localhost:8000/media/202007/V/c11a131a-ccf2-11ea-8c7e-002590aaee66_V.jpg',
+        },
         category: { id: 'Q2F0ZWdvcnk6MTU=' },
         metadata: [
           { key: 'vendorId', value: '521' },
@@ -875,9 +878,6 @@ export const mockProductsList = {
             ],
           },
         ],
-        thumbnail: {
-          url: 'http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjc5NDcw/256/',
-        },
         media: [
           {
             url: 'http://localhost:8000/media/202007/Z/c11a131a-ccf2-11ea-8c7e-002590aaee66_Z.jpg',
@@ -898,6 +898,9 @@ export const mockProductsList = {
       node: {
         id: 'UHJvZHVjdDoxMjE4Mw==',
         slug: '3-pc-mask-filter-refill-sheet-set',
+        thumbnail: {
+          url: 'http://localhost:8000/media/202007/V/a663eb4a-c27f-11ea-88db-002590aaee66_V.jpg',
+        },
         category: { id: 'Q2F0ZWdvcnk6MTU=' },
         metadata: [
           { key: 'vendorId', value: '521' },
@@ -954,9 +957,6 @@ export const mockProductsList = {
             ],
           },
         ],
-        thumbnail: {
-          url: 'http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjc4MDgx/256/',
-        },
         media: [
           {
             url: 'http://localhost:8000/media/202007/Z/a663eb4a-c27f-11ea-88db-002590aaee66_Z.jpg',
@@ -1082,6 +1082,10 @@ export const expectedTransformedProductsList = [
         url: 'ColorSwatch/202007/86bec7d8-d1a7-11ea-8dbb-002590aaee66.JPG',
       },
     ],
+    thumbnail: {
+      image: '202007/V/94810af2-c621-11ea-89ed-002590aaee66_V.JPG',
+      size: 512,
+    },
     variants: [
       {
         color: 'BLACK',
@@ -1190,6 +1194,10 @@ export const expectedTransformedProductsList = [
         url: 'ColorSwatch/202007/223a06a8-d1c8-11ea-8dcb-002590aaee66.JPG',
       },
     ],
+    thumbnail: {
+      image: '202007/V/2481a5eb-d1c5-11ea-8dc9-002590aaee66_V.JPG',
+      size: 512,
+    },
     variants: [
       {
         color: 'SILVER',
@@ -1238,6 +1246,10 @@ export const expectedTransformedProductsList = [
         url: 'ColorSwatch/202008/7c85de24-dcbe-11ea-90fb-002590aaee66.png',
       },
     ],
+    thumbnail: {
+      image: '202008/V/97f888e8-dbbd-11ea-90ae-002590aaee66_V.png',
+      size: 512,
+    },
     variants: [
       {
         color: 'MULTI',
@@ -1286,6 +1298,10 @@ export const expectedTransformedProductsList = [
         url: 'ColorSwatch/202008/9d98c3a8-dc44-11ea-90e0-002590aaee66.png',
       },
     ],
+    thumbnail: {
+      image: '202008/V/00bfab78-dc44-11ea-90e0-002590aaee66_V.png',
+      size: 512,
+    },
     variants: [
       {
         color: 'BLUE',
@@ -1334,6 +1350,10 @@ export const expectedTransformedProductsList = [
         url: 'ColorSwatch/202008/f670e53a-dcbe-11ea-90fc-002590aaee66.JPG',
       },
     ],
+    thumbnail: {
+      image: '202008/V/eadded7a-dc51-11ea-90e1-002590aaee66_V.png',
+      size: 512,
+    },
     variants: [
       {
         color: 'BLACK',
@@ -1382,6 +1402,10 @@ export const expectedTransformedProductsList = [
         url: 'ColorSwatch/202008/e2b665ba-dca0-11ea-90f2-002590aaee66.png',
       },
     ],
+    thumbnail: {
+      image: '202008/V/d497e1de-dca0-11ea-90f2-002590aaee66_V.png',
+      size: 512,
+    },
     variants: [
       {
         color: 'MULTI',
@@ -1430,6 +1454,10 @@ export const expectedTransformedProductsList = [
         url: 'ColorSwatch/202008/5122b8fa-dcba-11ea-90f9-002590aaee66.png',
       },
     ],
+    thumbnail: {
+      image: '202008/V/7cb3b42a-dcb4-11ea-90f6-002590aaee66_V.png',
+      size: 512,
+    },
     variants: [
       {
         color: 'BLACK',
@@ -1485,6 +1513,10 @@ export const expectedTransformedProductsList = [
         url: '202007/Z/4666631e-c90d-11ea-8b09-002590aaee66_Z.jpg',
       },
     ],
+    thumbnail: {
+      image: '202007/V/4666631e-c90d-11ea-8b09-002590aaee66_V.jpg',
+      size: 512,
+    },
     variants: [
       {
         color: 'MIX COLOR',
@@ -1540,6 +1572,10 @@ export const expectedTransformedProductsList = [
         url: '202007/Z/c11a131a-ccf2-11ea-8c7e-002590aaee66_Z.jpg',
       },
     ],
+    thumbnail: {
+      image: '202007/V/c11a131a-ccf2-11ea-8c7e-002590aaee66_V.jpg',
+      size: 512,
+    },
     variants: [
       {
         color: 'MIX COLOR',
@@ -1588,6 +1624,10 @@ export const expectedTransformedProductsList = [
         url: '202007/Z/a663eb4a-c27f-11ea-88db-002590aaee66_Z.jpg',
       },
     ],
+    thumbnail: {
+      image: '202007/V/a663eb4a-c27f-11ea-88db-002590aaee66_V.jpg',
+      size: 512,
+    },
     variants: [
       {
         color: 'WHITE',
