@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ProductService } from './Product.service';
 import { AutoSyncDto, ImportBulkCategoriesDto } from './Product.dto';
 import PromisePool from '@supercharge/promise-pool/dist';
-import { productCreateMock } from 'test/mocks/createProduct';
 
 @Controller()
 @ApiTags('auto-sync-product-api')
@@ -30,14 +29,5 @@ export class ProductController {
         return this.productService.autoSync(syncCategoriesRequest);
       });
     return syncCategories.results;
-  }
-
-  @Get('hello')
-  getHello(): any {
-    return this.productService.createSingleProduct(
-      productCreateMock.autoSyncInput,
-      productCreateMock.productData,
-      productCreateMock.addCategoryToShop,
-    );
   }
 }
