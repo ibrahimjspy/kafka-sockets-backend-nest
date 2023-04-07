@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import {
+  CategoryMappingDto,
   ProductMappingsDto,
   SyncCategoryMappingDto,
 } from './Product.mapping.types';
@@ -14,6 +15,7 @@ import {
 import { AutoSyncDto } from '../../Product.dto';
 import { ProductTransformedDto } from '../../transformer/Product.transformer.types';
 import polly from 'polly-js';
+import { validateSyncedRetailerMappings } from './Product.mapping.service.utils';
 @Injectable()
 export class ProductMappingService {
   private readonly logger = new Logger(ProductMappingService.name);
@@ -173,6 +175,49 @@ export class ProductMappingService {
           }
           return product;
         });
+      });
+  }
+
+  /**
+   * @description -- this method returns all synced retailers against a category
+   */
+  public async getSyncedRetailers(
+    categoryId: string,
+    currentPage = 1,
+  ): Promise<CategoryMappingDto[]> {
+    return polly()
+      .logger(function (error) {
+        Logger.error(error);
+      })
+      .waitAndRetry(RETRY_COUNT)
+      .executeForPromise(async () => {
+        let results = [];
+        const filters = JSON.stringify({
+          query: '',
+          page: { size: 50, current: currentPage },
+          filters: {
+            all: [
+              {
+                shr_category_id: `${categoryId}`,
+              },
+            ],
+          },
+        });
+        const syncedRetailers = await axios.post(
+          `${AUTO_SYNC_MAPPING_URL}/search`,
+          filters,
+          MAPPING_SERVICE_HEADERS,
+        );
+        const totalPages = syncedRetailers.data.meta.page.total_pages;
+        results = results.concat(syncedRetailers.data.results);
+        if (currentPage !== totalPages && totalPages !== 0) {
+          const nextPageRetailer = await this.getSyncedRetailers(
+            categoryId,
+            currentPage + 1,
+          );
+          results = results.concat(nextPageRetailer);
+        }
+        return validateSyncedRetailerMappings(results);
       });
   }
 }

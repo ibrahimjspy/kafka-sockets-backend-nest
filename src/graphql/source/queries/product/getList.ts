@@ -33,6 +33,15 @@ export const getProductsQuery = (
             }
             category {
               id
+              ancestors(first: 100) {
+                edges {
+                  node {
+                    id
+                    level
+                    name
+                  }
+                }
+              }
             }
             metadata {
               key

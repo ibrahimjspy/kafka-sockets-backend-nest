@@ -6,7 +6,10 @@ import { ProductTransformedDto } from './transformer/Product.transformer.types';
 import { ProductDestinationService } from 'src/graphql/destination/handlers/product';
 import { ProductVariantService } from './services/productVariant/Product.variants.service';
 import { ProductMediaService } from './services/productMedia/Product.media.service';
-import { ProductMappingsDto } from './services/productMapping/Product.mapping.types';
+import {
+  CategoryMappingDto,
+  ProductMappingsDto,
+} from './services/productMapping/Product.mapping.types';
 import { PromisePool } from '@supercharge/promise-pool';
 import { ProductMappingService } from './services/productMapping/Product.mapping.service';
 import { ShopDestinationService } from 'src/graphql/destination/handlers/shop';
@@ -20,6 +23,7 @@ import {
   PRODUCT_BATCH_SIZE,
 } from 'src/constants';
 import { isArrayEmpty } from './Product.utils';
+import { getStoreIdFromShop } from 'src/graphql/source/handler/shop';
 
 @Injectable()
 export class ProductService {
@@ -91,7 +95,7 @@ export class ProductService {
     while (pagination.hasNextPage) {
       const categoryData: GetProductsDto = await getProductsHandler(
         { first: pagination.first, after: pagination.endCursor },
-        { categories: [`${autoSyncInput.categoryId}`] },
+        { categories: [`${autoSyncInput.categoryId}`], ids: [] },
       );
 
       pagination.endCursor = categoryData.pageInfo.endCursor;
@@ -218,5 +222,55 @@ export class ProductService {
       productId,
       productData,
     );
+  }
+
+  /**
+   * @description -- this method handles if a new product is added in b2b it adds it against all retailers subscribed against its category
+   * @step -- fetch that product details
+   * @step -- transform that product
+   * @step -- fetch that product details
+   * @step -- fetch retailers that are synced to that product's category
+   * @step -- fetch stores against each retailer synced
+   * @step -- create product using transformed product and retailer shop and store ids
+   * @step -- store product mappings
+   * @link -- createSingleProduct()
+   */
+  public async handleNewProductCDC(productId: string) {
+    const productData = await getProductsHandler(
+      { first: 1 },
+      { categories: [], ids: [productId] },
+    );
+    const transformedProduct =
+      this.productTransformer.payloadBuilder(productData);
+    const categoryId = transformedProduct[0].categoryId;
+    const retailers = await this.productMappingService.getSyncedRetailers(
+      categoryId,
+    );
+    if (isArrayEmpty(retailers)) return retailers;
+    const { ...bulkProducts } = await PromisePool.for(retailers)
+      .withConcurrency(PRODUCT_BATCH_SIZE)
+      .handleError((error) => {
+        this.logger.error(error);
+      })
+      .process(async (retailer: CategoryMappingDto) => {
+        const shopId = retailer.shr_retailer_shop_id.raw;
+        const storeId = await getStoreIdFromShop(shopId);
+        const addCategoryToShop =
+          await this.shopDestinationApi.addCategoryToShop(storeId, categoryId);
+        const autoSyncInput: AutoSyncDto = {
+          shopId,
+          storeId,
+          categoryId,
+        };
+        return await this.createSingleProduct(
+          autoSyncInput,
+          transformedProduct[0],
+          addCategoryToShop,
+        );
+      });
+    await Promise.allSettled(
+      await this.productMappingService.saveBulkMappings(bulkProducts.results),
+    );
+    return bulkProducts.results;
   }
 }

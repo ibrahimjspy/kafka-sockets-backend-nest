@@ -10,6 +10,7 @@ export const getProductsHandler = async (
   paginate: PaginationDto,
   filter = {
     categories: [],
+    ids: [],
   },
 ) => {
   try {

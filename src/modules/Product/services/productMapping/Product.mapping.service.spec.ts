@@ -29,4 +29,10 @@ describe('This tests product mapping are correctly getting stored in elastic sea
       expect(data).toBeDefined();
     });
   });
+
+  it('fetching retailers against a category', async () => {
+    const data = await service.getSyncedRetailers('Q2F0ZWdvcnk6MTU=');
+    console.log(data);
+    expect(data).toBeDefined();
+  });
 });
