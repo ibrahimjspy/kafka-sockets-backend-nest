@@ -23,3 +23,19 @@ export const validateSingleProductMappings = (mappingsArray): any[] => {
     ).values(),
   ];
 };
+
+/**
+ * @description -- this method validates mapping list to check if it has any falsy value or if array is empty
+ */
+export const validateSaveMappingsList = (mappingsArray) => {
+  let isValidMapping = true;
+  mappingsArray.map((mapping) => {
+    if (!mapping) {
+      isValidMapping = false;
+    }
+  });
+  if (!mappingsArray.length) {
+    isValidMapping = false;
+  }
+  return isValidMapping;
+};

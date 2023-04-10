@@ -17,6 +17,7 @@ import { AutoSyncDto } from '../../Product.dto';
 import { ProductTransformedDto } from '../../transformer/Product.transformer.types';
 import polly from 'polly-js';
 import {
+  validateSaveMappingsList,
   validateSingleProductMappings,
   validateSyncedRetailerMappings,
 } from './Product.mapping.service.utils';
@@ -35,7 +36,7 @@ export class ProductMappingService {
       })
       .waitAndRetry(RETRY_COUNT)
       .executeForPromise(async () => {
-        if (mappingsList.length == 0) return;
+        if (!validateSaveMappingsList(mappingsList)) return;
         const addProductMapping = await axios.post(
           `${MAPPING_SERVICE_URL}/documents`,
           JSON.stringify(mappingsList),
