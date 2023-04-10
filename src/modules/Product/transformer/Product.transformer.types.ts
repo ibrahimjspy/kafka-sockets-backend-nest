@@ -5,8 +5,20 @@ import { ProductVariantDto } from '../services/productVariant/Product.variant.ty
 export interface ProductDto {
   id: string;
   slug: string;
+  channelListings: {
+    isAvailableForPurchase: boolean;
+  }[];
   category: {
     id: string;
+    ancestors: {
+      edges: {
+        node: {
+          id: string;
+          level: number;
+          name: string;
+        };
+      }[];
+    };
   };
   metadata: {
     key: string;
@@ -65,6 +77,8 @@ export interface ProductTransformedDto {
   name?: string;
   description?: string;
   categoryId?: string;
+  categoryTree?: string[];
+  isAvailableForPurchase?: boolean;
   styleNumber?: string;
   sourceId?: string;
   thumbnail?: ProductThumbnail;
@@ -72,4 +86,13 @@ export interface ProductTransformedDto {
   mediaUrls?: ProductMedia[];
   variantMedia?: ProductVariantMediaDto[];
   variants?: ProductVariantDto[];
+}
+
+export interface UpdatedProductFieldsDto {
+  name?: string;
+  description?: string;
+  categoryId?: string;
+  isAvailableForPurchase?: boolean;
+  resalePrice?: number;
+  costPrice?: number;
 }

@@ -10,3 +10,16 @@ export const validateSyncedRetailerMappings = (mappingsArray): any[] => {
     ).values(),
   ];
 };
+
+/**
+ * @description -- this method removes duplicate product ids against a retailer
+ */
+export const validateSingleProductMappings = (mappingsArray): any[] => {
+  const RETAILER_KEY = 'retailer_id';
+  const VALUE_TYPE = 'raw';
+  return [
+    ...new Map(
+      mappingsArray.map((item) => [item[RETAILER_KEY][VALUE_TYPE], item]),
+    ).values(),
+  ];
+};

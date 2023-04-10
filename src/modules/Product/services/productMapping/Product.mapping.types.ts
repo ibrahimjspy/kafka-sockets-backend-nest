@@ -25,3 +25,22 @@ export interface CategoryMappingDto {
     score: number;
   };
 }
+export interface ProductMappingResponseDto {
+  shr_b2c_product_id: {
+    raw: string;
+  };
+  retailer_id: {
+    raw: string;
+  };
+  id: {
+    raw: string;
+  };
+  _meta: {
+    id: string;
+    engine: string;
+    score: number;
+  };
+  shr_b2b_product_id: {
+    raw: string;
+  };
+}

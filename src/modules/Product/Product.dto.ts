@@ -61,8 +61,20 @@ export interface GetProductsDto {
       }[];
       id: string;
       slug: string;
+      channelListings: {
+        isAvailableForPurchase: boolean;
+      }[];
       category: {
         id: string;
+        ancestors: {
+          edges: {
+            node: {
+              id: string;
+              level: number;
+              name: string;
+            };
+          }[];
+        };
       };
       attributes: {
         attribute: {

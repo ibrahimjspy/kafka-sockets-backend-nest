@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { ProductTransformedDto } from '../../transformer/Product.transformer.types';
+import {
+  ProductTransformedDto,
+  UpdatedProductFieldsDto,
+} from '../../transformer/Product.transformer.types';
 import { ProductVariantDestinationService } from 'src/graphql/destination/handlers/productVariant';
 import { bulkVariantCreate } from 'src/graphql/destination/types/product';
 import { VARIANT_PRICE_RULE } from 'src/constants';
@@ -43,6 +46,16 @@ export class ProductVariantService {
       Math.round(
         (Number(variantCostPrice) * VARIANT_PRICE_RULE + Number.EPSILON) * 100,
       ) / 100
+    );
+  }
+
+  public async updateProductVariantPrice(
+    variantId: string,
+    updatedProductData: UpdatedProductFieldsDto,
+  ) {
+    return await this.productVariantApi.updateProductVariantPricing(
+      variantId,
+      updatedProductData,
     );
   }
 }

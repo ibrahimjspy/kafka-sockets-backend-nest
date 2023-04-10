@@ -7,7 +7,9 @@ import {
 
 export const getProductsQuery = (
   paginate: PaginationDto = { first: 100, after: '' },
-  filter,
+  filter = {
+    categories: [],
+  },
 ): string => {
   const THUMBNAIL_SIZE = 512;
   return gql`
