@@ -1,5 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import {
+  CategoryMappingDto,
+  ProductMappingResponseDto,
   ProductMappingsDto,
   SyncCategoryMappingDto,
 } from './Product.mapping.types';
@@ -14,6 +16,11 @@ import {
 import { AutoSyncDto } from '../../Product.dto';
 import { ProductTransformedDto } from '../../transformer/Product.transformer.types';
 import polly from 'polly-js';
+import {
+  validateSaveMappingsList,
+  validateSingleProductMappings,
+  validateSyncedRetailerMappings,
+} from './Product.mapping.service.utils';
 @Injectable()
 export class ProductMappingService {
   private readonly logger = new Logger(ProductMappingService.name);
@@ -29,7 +36,7 @@ export class ProductMappingService {
       })
       .waitAndRetry(RETRY_COUNT)
       .executeForPromise(async () => {
-        if (mappingsList.length == 0) return;
+        if (!validateSaveMappingsList(mappingsList)) return;
         const addProductMapping = await axios.post(
           `${MAPPING_SERVICE_URL}/documents`,
           JSON.stringify(mappingsList),
@@ -173,6 +180,92 @@ export class ProductMappingService {
           }
           return product;
         });
+      });
+  }
+
+  /**
+   * @description -- this method returns all synced retailers against a category
+   */
+  public async getSyncedRetailers(
+    categoryId: string,
+    currentPage = 1,
+  ): Promise<CategoryMappingDto[]> {
+    return polly()
+      .logger(function (error) {
+        Logger.error(error);
+      })
+      .waitAndRetry(RETRY_COUNT)
+      .executeForPromise(async () => {
+        let results = [];
+        const filters = JSON.stringify({
+          query: '',
+          page: { size: 1000, current: currentPage },
+          filters: {
+            all: [
+              {
+                shr_category_id: `${categoryId}`,
+              },
+            ],
+          },
+        });
+        const syncedRetailers = await axios.post(
+          `${AUTO_SYNC_MAPPING_URL}/search`,
+          filters,
+          MAPPING_SERVICE_HEADERS,
+        );
+        const totalPages = syncedRetailers.data.meta.page.total_pages;
+        results = results.concat(syncedRetailers.data.results);
+        if (currentPage !== totalPages && totalPages !== 0) {
+          const nextPageRetailer = await this.getSyncedRetailers(
+            categoryId,
+            currentPage + 1,
+          );
+          results = results.concat(nextPageRetailer);
+        }
+        return validateSyncedRetailerMappings(results);
+      });
+  }
+
+  /**
+   * @description -- this method returns product mapping against a single source product
+   */
+  public async getSingleProductMapping(
+    productId: string,
+    currentPage = 1,
+  ): Promise<ProductMappingResponseDto[]> {
+    return polly()
+      .logger(function (error) {
+        Logger.error(error);
+      })
+      .waitAndRetry(RETRY_COUNT)
+      .executeForPromise(async () => {
+        let results = [];
+        const filters = JSON.stringify({
+          query: '',
+          page: { size: 1000, current: currentPage },
+          filters: {
+            all: [
+              {
+                shr_b2b_product_id: productId,
+              },
+            ],
+          },
+        });
+        const productMappings = await axios.post(
+          `${MAPPING_SERVICE_URL}/search`,
+          filters,
+          MAPPING_SERVICE_HEADERS,
+        );
+        results = results.concat(productMappings.data.results);
+        const totalPages = productMappings.data.meta.page.total_pages;
+        if (currentPage !== totalPages && totalPages !== 0) {
+          const nextPageProductIds = await this.getSingleProductMapping(
+            productId,
+            currentPage + 1,
+          );
+          results = results.concat(nextPageProductIds);
+        }
+        return validateSingleProductMappings(results);
       });
   }
 }

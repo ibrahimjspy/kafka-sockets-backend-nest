@@ -25,6 +25,7 @@ export class ProductVariantTransformer {
         rawProductVariant,
         transformedProductVariant,
       );
+      this.addVariantResalePrice(rawProductVariant, transformedProductVariant);
       transformedProductVariant.sku = rawProductVariant.sku;
       transformedVariantsList.push(transformedProductVariant);
     });
@@ -60,7 +61,7 @@ export class ProductVariantTransformer {
     });
   }
 
-  public addVariantCostPrice(
+  public addVariantResalePrice(
     rawProductVariant: ProductVariantInterface,
     transformedProductVariant: ProductVariantDto,
   ) {

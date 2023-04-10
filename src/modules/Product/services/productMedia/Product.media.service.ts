@@ -4,6 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProductMedia, ProductThumbnail } from 'src/database/destination/media';
 import { ProductMediaTransformer } from './Product.media.transformer';
+import polly from 'polly-js';
+import { RETRY_COUNT } from 'src/constants';
 
 @Injectable()
 export class ProductMediaService {
@@ -22,18 +24,22 @@ export class ProductMediaService {
     productId: string,
     transformedProduct: ProductTransformedDto,
   ): Promise<any> {
-    this.productMediaTransformer.addDestinationProductIdToMedia(
-      productId,
-      transformedProduct.mediaUrls,
-    );
-    const media = await this.repository.save(transformedProduct.mediaUrls);
-    const defaultImage = media[0];
-    if (!defaultImage) return;
-    const createThumbnail = await this.storeMediaThumbnail(
-      defaultImage.id,
-      transformedProduct,
-    );
-    return createThumbnail;
+    polly()
+      .waitAndRetry(RETRY_COUNT)
+      .executeForPromise(async () => {
+        this.productMediaTransformer.addDestinationProductIdToMedia(
+          productId,
+          transformedProduct.mediaUrls,
+        );
+        const media = await this.repository.save(transformedProduct.mediaUrls);
+        const defaultImage = media[0];
+        if (!defaultImage) return;
+        const createThumbnail = await this.storeMediaThumbnail(
+          defaultImage.id,
+          transformedProduct,
+        );
+        return createThumbnail;
+      });
   }
 
   /**

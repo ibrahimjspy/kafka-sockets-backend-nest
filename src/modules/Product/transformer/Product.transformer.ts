@@ -4,6 +4,7 @@ import {
   ProductDto,
   ProductTransformedDto,
   ShopDetailsDto,
+  UpdatedProductFieldsDto,
 } from './Product.transformer.types';
 import { ProductMediaTransformer } from '../services/productMedia/Product.media.transformer';
 import { ProductVariantTransformer } from '../services/productVariant/Product.variant.transformer';
@@ -30,6 +31,7 @@ export class ProductTransformer {
       this.addShopDetails(product, transformedProduct);
       this.mediaTransformer.addMedia(product, transformedProduct);
       this.variantTransformer.addVariants(product, transformedProduct);
+      this.addCategoryIds(product, transformedProduct);
       transformedProducts.push(transformedProduct);
     });
     return transformedProducts;
@@ -64,8 +66,9 @@ export class ProductTransformer {
     transformedProduct.name = product.name;
     transformedProduct.sourceId = product.id;
     transformedProduct.description = product.description;
-    transformedProduct.categoryId = product.category.id;
     transformedProduct.styleNumber = this.getProductStyleNumber(product);
+    transformedProduct.isAvailableForPurchase =
+      product.channelListings[0]?.isAvailableForPurchase;
   }
 
   public getProductStyleNumber(product: ProductDto) {
@@ -90,5 +93,55 @@ export class ProductTransformer {
       shr_b2c_product_id: createdProductId,
       retailer_id: autoSyncInput.shopId,
     };
+  }
+
+  public addCategoryIds(
+    product: ProductDto,
+    transformedProduct: ProductTransformedDto,
+  ): void {
+    transformedProduct.categoryId = product.category.id;
+    transformedProduct.categoryTree = product.category.ancestors.edges.map(
+      (category) => {
+        return category.node.id;
+      },
+    );
+    transformedProduct.categoryTree = [
+      ...transformedProduct.categoryTree,
+      transformedProduct.categoryId,
+    ];
+  }
+
+  public getUpdatedProductFields(
+    sourceProduct: ProductTransformedDto,
+    destinationTransformedProduct: ProductTransformedDto,
+    destinationProduct: ProductDto,
+  ): UpdatedProductFieldsDto {
+    const updatedProductFields: UpdatedProductFieldsDto = {};
+    if (
+      sourceProduct.name !== destinationTransformedProduct.name ||
+      sourceProduct.description !== destinationTransformedProduct.description ||
+      sourceProduct.categoryId !== destinationTransformedProduct.categoryId
+    ) {
+      updatedProductFields.name = sourceProduct.name;
+      updatedProductFields.description = sourceProduct.description;
+      updatedProductFields.categoryId = sourceProduct.categoryId;
+    }
+
+    if (
+      sourceProduct.isAvailableForPurchase !==
+      destinationTransformedProduct.isAvailableForPurchase
+    ) {
+      updatedProductFields.isAvailableForPurchase =
+        sourceProduct.isAvailableForPurchase;
+    }
+
+    if (
+      sourceProduct.variants[0]?.resalePrice !==
+      destinationProduct.variants[0]?.channelListings[0]?.price?.amount
+    ) {
+      updatedProductFields.resalePrice = sourceProduct.variants[0].resalePrice;
+      updatedProductFields.costPrice = sourceProduct.variants[0].costPrice;
+    }
+    return updatedProductFields;
   }
 }

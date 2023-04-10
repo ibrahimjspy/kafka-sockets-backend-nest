@@ -1,7 +1,11 @@
-import { Body, Controller, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Logger, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ProductService } from './Product.service';
-import { AutoSyncDto, ImportBulkCategoriesDto } from './Product.dto';
+import {
+  AutoSyncDto,
+  ImportBulkCategoriesDto,
+  ProductIdDto,
+} from './Product.dto';
 import PromisePool from '@supercharge/promise-pool/dist';
 
 @Controller()
@@ -29,5 +33,19 @@ export class ProductController {
         return this.productService.autoSync(syncCategoriesRequest);
       });
     return syncCategories.results;
+  }
+
+  @Post('api/v1/product')
+  async handleNewProduct(@Body() productInput: ProductIdDto) {
+    return await this.productService.handleNewProductCDC(
+      productInput.productId,
+    );
+  }
+
+  @Put('api/v1/product')
+  async handleProductUpdate(@Body() productInput: ProductIdDto) {
+    return await this.productService.handleProductUpdateCDC(
+      productInput.productId,
+    );
   }
 }

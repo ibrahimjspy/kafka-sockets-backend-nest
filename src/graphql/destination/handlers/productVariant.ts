@@ -7,11 +7,15 @@ import {
   SKU_ATTRIBUTE_ID,
   COST_ATTRIBUTE_ID,
 } from 'src/constants';
-import { ProductTransformedDto } from 'src/modules/Product/transformer/Product.transformer.types';
+import {
+  ProductTransformedDto,
+  UpdatedProductFieldsDto,
+} from 'src/modules/Product/transformer/Product.transformer.types';
 import { graphqlCallDestination } from '../proxies/client';
 import { productVariantBulkCreateMutation } from '../mutations/productVariant.ts/bulkCreate';
 import { graphqlExceptionHandler } from 'src/graphql/utils/exceptionHandler';
 import { bulkVariantCreate } from '../types/product';
+import { productVariantPriceUpdateMutation } from '../mutations/productVariant.ts/updatePrice';
 
 @Injectable()
 export class ProductVariantDestinationService {
@@ -64,10 +68,31 @@ export class ProductVariantDestinationService {
         ]
           channelListings: { channelId: "${DEFAULT_CHANNEL_ID}", price: ${
         resalePrice || defaultVariantResalePrice
-      }}
+      }, costPrice: ${costPrice || defaultVariantCostPrice}}
          stocks: { warehouse:"${DEFAULT_WAREHOUSE_ID}"  quantity: 1000 }
         }
       `;
     });
+  }
+
+  /**
+   * @description -- this method updates product variant price
+   */
+  public async updateProductVariantPricing(
+    variantId: string,
+    updatedProductFields: UpdatedProductFieldsDto,
+  ) {
+    try {
+      const productsList = await graphqlCallDestination(
+        productVariantPriceUpdateMutation(variantId, updatedProductFields),
+      );
+      return productsList['productUpdate'];
+    } catch (err) {
+      this.logger.error(
+        'product variant price update call failed',
+        graphqlExceptionHandler(err),
+      );
+      throw err;
+    }
   }
 }

@@ -1,4 +1,7 @@
-import { ProductTransformedDto } from 'src/modules/Product/transformer/Product.transformer.types';
+import {
+  ProductTransformedDto,
+  UpdatedProductFieldsDto,
+} from 'src/modules/Product/transformer/Product.transformer.types';
 
 import { Injectable, Logger } from '@nestjs/common';
 import { graphqlCallDestination } from '../proxies/client';
@@ -14,6 +17,10 @@ import { storeProductCreateStatusMutation } from '../mutations/product/storeProd
 import { storeProductBrandMutation } from '../mutations/product/addProductBrand';
 import { ProductMappingsDto } from 'src/modules/Product/services/productMapping/Product.mapping.types';
 import { deleteProductMutation } from '../mutations/product/deleteProduct';
+import { getProductsQuery } from '../queries/products/getList';
+import { PaginationDto } from 'src/graphql/types/paginate';
+import { updateProductMutation } from '../mutations/product/updateProduct';
+import { updateProductListingMutation } from '../mutations/product/updateProductListing';
 
 /**
  * @description -- this layer connects with destination graphql api for and exposes handlers to perform transactions related to product such as create, metadata update etc
@@ -160,6 +167,67 @@ export class ProductDestinationService {
     } catch (err) {
       this.logger.error(
         'product delete call failed',
+        graphqlExceptionHandler(err),
+      );
+      throw err;
+    }
+  }
+
+  /**
+   * @description -- this method returns product from destination
+   */
+  public async getProducts(paginate: PaginationDto, filter) {
+    try {
+      const productsList = await graphqlCallDestination(
+        getProductsQuery(paginate, {
+          ...filter,
+        }),
+      );
+      return productsList['products'];
+    } catch (err) {
+      this.logger.error(
+        'product fetch call failed',
+        graphqlExceptionHandler(err),
+      );
+    }
+  }
+
+  /**
+   * @description -- this method updates product information such as name description etc
+   */
+  public async updateProduct(
+    productId: string,
+    updatedProductFields: UpdatedProductFieldsDto,
+  ) {
+    try {
+      const productsList = await graphqlCallDestination(
+        updateProductMutation(productId, updatedProductFields),
+      );
+      return productsList['productUpdate'];
+    } catch (err) {
+      this.logger.error(
+        'product update call failed',
+        graphqlExceptionHandler(err),
+      );
+      throw err;
+    }
+  }
+
+  /**
+   * @description -- this method updates product listing such as whether it available for purchase or not
+   */
+  public async updateProductListing(
+    productId: string,
+    updatedProductFields: UpdatedProductFieldsDto,
+  ) {
+    try {
+      const productsList = await graphqlCallDestination(
+        updateProductListingMutation(productId, updatedProductFields),
+      );
+      return productsList['productChannelListingUpdate'];
+    } catch (err) {
+      this.logger.error(
+        'product update call failed',
         graphqlExceptionHandler(err),
       );
       throw err;

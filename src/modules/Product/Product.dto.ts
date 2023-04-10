@@ -1,6 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsString, ArrayMinSize } from 'class-validator';
 
+export class ProductIdDto {
+  @ApiProperty({ required: true })
+  @IsString()
+  productId: string;
+}
 export class ImportBulkCategoriesDto {
   @ApiProperty({
     required: true,
@@ -56,8 +61,20 @@ export interface GetProductsDto {
       }[];
       id: string;
       slug: string;
+      channelListings: {
+        isAvailableForPurchase: boolean;
+      }[];
       category: {
         id: string;
+        ancestors: {
+          edges: {
+            node: {
+              id: string;
+              level: number;
+              name: string;
+            };
+          }[];
+        };
       };
       attributes: {
         attribute: {
