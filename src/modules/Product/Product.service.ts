@@ -329,42 +329,47 @@ export class ProductService {
    * @link -- updateProductFields()
    */
   public async handleProductUpdateCDC(productId: string) {
-    const sourceProductData = await getProductsHandler(
-      { first: 1 },
-      { categories: [], ids: [productId] },
-    );
-    const transformedProductSource =
-      this.productTransformer.payloadBuilder(sourceProductData)[0];
-    const productMappings =
-      await this.productMappingService.getSingleProductMapping(
-        transformedProductSource.sourceId,
+    try {
+      const sourceProductData = await getProductsHandler(
+        { first: 1 },
+        { categories: [], ids: [productId] },
       );
-    return await PromisePool.for(productMappings)
-      .withConcurrency(PRODUCT_BATCH_SIZE)
-      .handleError((error) => {
-        this.logger.error(error);
-      })
-      .process(async (destinationProduct: ProductMappingResponseDto) => {
-        const destinationProductId = destinationProduct.shr_b2c_product_id.raw;
-        const destinationProductsData =
-          await this.productDestinationApi.getProducts(
-            { first: 1 },
-            { categories: [], ids: [destinationProductId] },
-          );
-        const transformedProductDestination =
-          this.productTransformer.payloadBuilder(destinationProductsData)[0];
-        const updatedProductFields =
-          this.productTransformer.getUpdatedProductFields(
-            transformedProductSource,
-            transformedProductDestination,
-            this.productTransformer.removeEdges(destinationProductsData)[0],
-          );
-        return await this.updateProductFields(
-          destinationProductId,
-          updatedProductFields,
-          destinationProductsData,
+      const transformedProductSource =
+        this.productTransformer.payloadBuilder(sourceProductData)[0];
+      const productMappings =
+        await this.productMappingService.getSingleProductMapping(
+          transformedProductSource.sourceId,
         );
-      });
+      return await PromisePool.for(productMappings)
+        .withConcurrency(PRODUCT_BATCH_SIZE)
+        .handleError((error) => {
+          this.logger.error(error);
+        })
+        .process(async (destinationProduct: ProductMappingResponseDto) => {
+          const destinationProductId =
+            destinationProduct.shr_b2c_product_id.raw;
+          const destinationProductsData =
+            await this.productDestinationApi.getProducts(
+              { first: 1 },
+              { categories: [], ids: [destinationProductId] },
+            );
+          const transformedProductDestination =
+            this.productTransformer.payloadBuilder(destinationProductsData)[0];
+          const updatedProductFields =
+            this.productTransformer.getUpdatedProductFields(
+              transformedProductSource,
+              transformedProductDestination,
+              this.productTransformer.removeEdges(destinationProductsData)[0],
+            );
+          return await this.updateProductFields(
+            destinationProductId,
+            updatedProductFields,
+            destinationProductsData,
+          );
+        });
+    } catch (error) {
+      this.logger.error(error);
+    }
   }
 
   /**
