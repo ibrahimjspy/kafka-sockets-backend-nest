@@ -25,6 +25,7 @@ import {
   KAFKA_BULK_PRODUCT_CREATE_TOPIC,
   KAFKA_CREATE_PRODUCT_BATCHES_TOPIC,
   PRODUCT_BATCH_SIZE,
+  PRODUCT_UPDATE_BATCH_SIZE,
 } from 'src/constants';
 import { isArrayEmpty } from './Product.utils';
 import { getStoreIdFromShop } from 'src/graphql/source/handler/shop';
@@ -252,8 +253,8 @@ export class ProductService {
     );
     let syncedRetailerIds: CategoryMappingDto[] = [];
     const transformedProduct =
-      this.productTransformer.payloadBuilder(productData);
-    const categoryIds = transformedProduct[0].categoryTree;
+      this.productTransformer.payloadBuilder(productData)[0];
+    const categoryIds = transformedProduct.categoryTree;
     await Promise.all(
       categoryIds.map(async (categoryId) => {
         const retailerIds = await this.productMappingService.getSyncedRetailers(
@@ -266,7 +267,7 @@ export class ProductService {
 
     return await this.createNewProductCDC(
       syncedRetailerIds,
-      transformedProduct[0],
+      transformedProduct,
     );
   }
 
@@ -301,15 +302,15 @@ export class ProductService {
             storeId,
             categoryId,
           };
-          const productData = await this.productMappingService.validateMappings(
-            autoSyncInput,
-            [newProduct],
-          );
-          if (isArrayEmpty(productData)) return;
+          const validateProduct =
+            await this.productMappingService.validateMappings(autoSyncInput, [
+              newProduct,
+            ]);
+          if (isArrayEmpty(validateProduct)) return;
 
           return await this.createSingleProduct(
             autoSyncInput,
-            productData[0],
+            newProduct,
             addCategoryToShop,
           );
         });
@@ -333,10 +334,10 @@ export class ProductService {
       { categories: [], ids: [productId] },
     );
     const transformedProductSource =
-      this.productTransformer.payloadBuilder(sourceProductData);
+      this.productTransformer.payloadBuilder(sourceProductData)[0];
     const productMappings =
       await this.productMappingService.getSingleProductMapping(
-        transformedProductSource[0].sourceId,
+        transformedProductSource.sourceId,
       );
     return await PromisePool.for(productMappings)
       .withConcurrency(PRODUCT_BATCH_SIZE)
@@ -351,11 +352,11 @@ export class ProductService {
             { categories: [], ids: [destinationProductId] },
           );
         const transformedProductDestination =
-          this.productTransformer.payloadBuilder(destinationProductsData);
+          this.productTransformer.payloadBuilder(destinationProductsData)[0];
         const updatedProductFields =
           this.productTransformer.getUpdatedProductFields(
-            transformedProductSource[0],
-            transformedProductDestination[0],
+            transformedProductSource,
+            transformedProductDestination,
             this.productTransformer.removeEdges(destinationProductsData)[0],
           );
         return await this.updateProductFields(
@@ -391,7 +392,7 @@ export class ProductService {
       )[0];
       const productVariants = productData.variants;
       await PromisePool.for(productVariants)
-        .withConcurrency(3)
+        .withConcurrency(PRODUCT_UPDATE_BATCH_SIZE)
         .handleError((error) => {
           this.logger.error(error);
         })
