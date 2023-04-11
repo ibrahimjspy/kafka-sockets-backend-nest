@@ -156,6 +156,13 @@ export class ProductService {
         this.logger.error(error);
       })
       .onTaskFinished((product: ProductTransformedDto, pool) => {
+        const completedCount = pool.processedCount();
+        this.webSocketService.sendAutoSyncProgress(
+          pagination,
+          autoSyncInput,
+          eventId,
+          completedCount,
+        );
         this.logger.log(`Progress: ${pool.processedPercentage()}%`);
       })
       .process(async (product: ProductTransformedDto) => {
@@ -167,11 +174,6 @@ export class ProductService {
       });
     const [...storeMappings] = await Promise.all([
       this.productMappingService.saveBulkMappings(bulkProducts.results),
-      this.webSocketService.sendAutoSyncProgress(
-        pagination,
-        autoSyncInput,
-        eventId,
-      ),
     ]);
     return storeMappings;
   }
@@ -209,6 +211,14 @@ export class ProductService {
         this.productDestinationApi.storeProductBrand(productId, productData),
         this.productMediaService.bulkMediaCreate(productId, productData),
       ]);
+
+    const productMapping =
+      this.productTransformer.transformCreatedProductForMapping(
+        autoSyncInput,
+        productId,
+        productData,
+      );
+
     const [addProductToShop, storeProductStatus] = await Promise.allSettled([
       this.productDestinationApi.addProductToShop(
         storeId,
@@ -217,6 +227,7 @@ export class ProductService {
         createProductVariants['value'],
       ),
       this.productDestinationApi.saveProductCreateStatus(productId),
+      this.productDestinationApi.addProductsToStore([productMapping], storeId),
     ]);
 
     await this.productRollbackService.handleProductCreateRollbacks(productId, [
@@ -227,11 +238,7 @@ export class ProductService {
       storeProductStatus,
     ]);
 
-    return this.productTransformer.transformCreatedProductForMapping(
-      autoSyncInput,
-      productId,
-      productData,
-    );
+    return productMapping;
   }
 
   /**

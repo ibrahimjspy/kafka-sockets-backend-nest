@@ -9,19 +9,27 @@ export class SocketClientService {
     paginationData: PaginationDto,
     autoSyncInput: AutoSyncDto,
     eventId: string,
+    completedCount,
   ) {
     let productImportedCount =
       paginationData.batchNumber * paginationData.first;
     if (productImportedCount > paginationData.totalCount) {
       productImportedCount = paginationData.totalCount;
     }
+    const totalProducts = paginationData.totalCount;
+    const importedProducts =
+      productImportedCount - (paginationData.first - completedCount);
+    const importedPercentage = Math.round(
+      (importedProducts / totalProducts) * 100,
+    );
     //connecting web socket server
     const socket = io(SOCKET_ENDPOINT);
     socket.connect();
     socket.on('connect', async () => {
       return await socket.emit(SOCKET_CLIENT_MESSAGE_NAME, {
-        totalProducts: paginationData.totalCount,
-        imported: productImportedCount,
+        totalProducts: totalProducts,
+        imported: importedProducts,
+        percentage: importedPercentage,
         eventId,
         ...autoSyncInput,
       });
