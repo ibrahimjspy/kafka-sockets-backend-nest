@@ -54,6 +54,7 @@ export class ProductMediaService {
         defaultImageId,
         transformedProduct,
       );
+      if (!transformedProduct.thumbnail.image) return;
       return await this.thumbnailRepository.save(transformedProduct.thumbnail);
     } catch (error) {
       Logger.error(error);

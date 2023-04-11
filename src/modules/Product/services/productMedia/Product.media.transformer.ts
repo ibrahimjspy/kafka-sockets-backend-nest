@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   ProductDto,
   ProductTransformedDto,
@@ -66,10 +66,15 @@ export class ProductMediaTransformer {
     product: ProductDto,
     transformedProduct: ProductTransformedDto,
   ) {
-    transformedProduct.thumbnail = {
-      image: mediaUrlTransformer(product.thumbnail.url) || '',
-      size: PRODUCT_THUMBNAIL_SIZE,
-    };
+    try {
+      if (!product.thumbnail?.url) return;
+      transformedProduct.thumbnail = {
+        image: mediaUrlTransformer(product.thumbnail?.url) || '',
+        size: PRODUCT_THUMBNAIL_SIZE,
+      };
+    } catch (error) {
+      Logger.error(error);
+    }
   }
 
   /**
