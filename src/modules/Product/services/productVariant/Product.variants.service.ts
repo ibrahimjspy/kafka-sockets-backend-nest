@@ -6,6 +6,7 @@ import {
 import { ProductVariantDestinationService } from 'src/graphql/destination/handlers/productVariant';
 import { bulkVariantCreate } from 'src/graphql/destination/types/product';
 import { VARIANT_PRICE_RULE } from 'src/constants';
+import { isArrayEmpty } from '../../Product.utils';
 
 @Injectable()
 export class ProductVariantService {
@@ -21,6 +22,7 @@ export class ProductVariantService {
     transformedProduct: ProductTransformedDto,
   ): Promise<string[]> {
     const variantIds = [];
+    if (isArrayEmpty(transformedProduct.variants)) return variantIds;
     const createBulkVariants: bulkVariantCreate =
       await this.productVariantApi.createBulkVariants(
         productId,

@@ -21,6 +21,7 @@ import { getProductsQuery } from '../queries/products/getList';
 import { PaginationDto } from 'src/graphql/types/paginate';
 import { updateProductMutation } from '../mutations/product/updateProduct';
 import { updateProductListingMutation } from '../mutations/product/updateProductListing';
+import { isArrayEmpty } from 'src/modules/Product/Product.utils';
 
 /**
  * @description -- this layer connects with destination graphql api for and exposes handlers to perform transactions related to product such as create, metadata update etc
@@ -140,7 +141,7 @@ export class ProductDestinationService {
     productVariantIds: string[],
   ) {
     try {
-      if (!product) return;
+      if (!product || isArrayEmpty(productVariantIds)) return;
       return await graphqlCallDestination(
         addProductToStoreMutation(
           storeId,
