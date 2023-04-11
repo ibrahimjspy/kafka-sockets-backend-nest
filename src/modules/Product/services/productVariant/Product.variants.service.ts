@@ -42,6 +42,7 @@ export class ProductVariantService {
    * @description -- this returns price which should be added to destination after transforming cost price received from source
    */
   public getVariantResalePrice(variantCostPrice: number): number {
+    if (!variantCostPrice) return;
     return (
       Math.round(
         (Number(variantCostPrice) * VARIANT_PRICE_RULE + Number.EPSILON) * 100,
