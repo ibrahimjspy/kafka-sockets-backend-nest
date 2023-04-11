@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ProductTransformedDto } from '../../transformer/Product.transformer.types';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -49,10 +49,14 @@ export class ProductMediaService {
     defaultImageId: number,
     transformedProduct: ProductTransformedDto,
   ): Promise<any> {
-    this.productMediaTransformer.addMediaIdToThumbnail(
-      defaultImageId,
-      transformedProduct,
-    );
-    return await this.thumbnailRepository.save(transformedProduct.thumbnail);
+    try {
+      this.productMediaTransformer.addMediaIdToThumbnail(
+        defaultImageId,
+        transformedProduct,
+      );
+      return await this.thumbnailRepository.save(transformedProduct.thumbnail);
+    } catch (error) {
+      Logger.error(error);
+    }
   }
 }
