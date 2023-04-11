@@ -91,43 +91,48 @@ export class ProductService {
     addCategoryToShop,
     eventId,
   }) {
-    const pagination: PaginationDto = {
-      hasNextPage: true,
-      endCursor: '',
-      first: 50,
-      totalCount: 0,
-      batchNumber: 0,
-    };
-    while (pagination.hasNextPage) {
-      const categoryData: GetProductsDto = await getProductsHandler(
-        { first: pagination.first, after: pagination.endCursor },
-        {
-          categories: [`${autoSyncInput.categoryId}`],
-          ids: [],
-          isAvailable: true,
-        },
-      );
-
-      pagination.endCursor = categoryData.pageInfo.endCursor;
-      pagination.hasNextPage = categoryData.pageInfo.hasNextPage;
-      pagination.totalCount = categoryData.totalCount;
-      pagination.batchNumber = pagination.batchNumber + 1;
-
-      const productsData = this.productTransformer.payloadBuilder(categoryData);
-      await this.kafkaService.pushProductBatch({
-        topic: KAFKA_BULK_PRODUCT_CREATE_TOPIC,
-        messages: [
+    try {
+      const pagination: PaginationDto = {
+        hasNextPage: true,
+        endCursor: '',
+        first: 50,
+        totalCount: 0,
+        batchNumber: 0,
+      };
+      while (pagination.hasNextPage) {
+        const categoryData: GetProductsDto = await getProductsHandler(
+          { first: pagination.first, after: pagination.endCursor },
           {
-            value: JSON.stringify({
-              autoSyncInput,
-              productsData,
-              addCategoryToShop,
-              pagination,
-              eventId,
-            }),
+            categories: [`${autoSyncInput.categoryId}`],
+            ids: [],
+            isAvailable: true,
           },
-        ],
-      });
+        );
+
+        pagination.endCursor = categoryData.pageInfo.endCursor;
+        pagination.hasNextPage = categoryData.pageInfo.hasNextPage;
+        pagination.totalCount = categoryData.totalCount;
+        pagination.batchNumber = pagination.batchNumber + 1;
+
+        const productsData =
+          this.productTransformer.payloadBuilder(categoryData);
+        await this.kafkaService.pushProductBatch({
+          topic: KAFKA_BULK_PRODUCT_CREATE_TOPIC,
+          messages: [
+            {
+              value: JSON.stringify({
+                autoSyncInput,
+                productsData,
+                addCategoryToShop,
+                pagination,
+                eventId,
+              }),
+            },
+          ],
+        });
+      }
+    } catch (error) {
+      this.logger.error(error);
     }
   }
 
