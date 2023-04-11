@@ -68,7 +68,7 @@ export class ProductVariantTransformer {
     rawProductVariant.channelListings.map((channelListing) => {
       transformedProductVariant.resalePrice =
         this.productVariantService.getVariantResalePrice(
-          channelListing.price.amount,
+          channelListing?.price?.amount,
         );
     });
   }

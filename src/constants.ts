@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 // kafka
-export const KAFKA_CONSUMER_GROUP = 'auto-sync-kafka-consumer-13';
+export const KAFKA_CONSUMER_GROUP = 'auto-sync-kafka-consumer-14';
 export const KAFKA_BROKER_ENDPOINT = process.env.KAFKA_BROKER_ENDPOINT;
 export const KAFKA_BULK_PRODUCT_CREATE_TOPIC = 'autoSyncBulkCreate';
 export const KAFKA_CREATE_PRODUCT_BATCHES_TOPIC = 'autoSyncCreateBatches';
