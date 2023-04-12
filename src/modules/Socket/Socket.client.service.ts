@@ -11,11 +11,8 @@ export class SocketClientService {
     eventId: string,
     completedCount,
   ) {
-    let productImportedCount =
+    const productImportedCount =
       paginationData.batchNumber * paginationData.first;
-    if (productImportedCount > paginationData.totalCount) {
-      productImportedCount = paginationData.totalCount;
-    }
     const totalProducts = paginationData.totalCount;
     const importedProducts =
       productImportedCount - (paginationData.first - completedCount);

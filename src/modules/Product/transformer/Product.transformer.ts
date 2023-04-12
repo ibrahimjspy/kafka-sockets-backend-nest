@@ -29,6 +29,7 @@ export class ProductTransformer {
       const transformedProduct: ProductTransformedDto = {};
       this.addProductDetails(product, transformedProduct);
       this.addShopDetails(product, transformedProduct);
+      this.addProductSlug(product, transformedProduct);
       this.mediaTransformer.addMedia(product, transformedProduct);
       this.variantTransformer.addVariants(product, transformedProduct);
       this.addCategoryIds(product, transformedProduct);
@@ -143,5 +144,14 @@ export class ProductTransformer {
       updatedProductFields.costPrice = sourceProduct.variants[0].costPrice;
     }
     return updatedProductFields;
+  }
+
+  public addProductSlug(
+    product: ProductDto,
+    transformedProduct: ProductTransformedDto,
+  ) {
+    const uniqueString = (Math.random() + 1).toString(36).substring(7); //e.g ~~ jce4r
+    const validProductName = product.slug.replace(/\s+/g, '').toLowerCase();
+    transformedProduct.slug = `${validProductName}${uniqueString}`;
   }
 }
