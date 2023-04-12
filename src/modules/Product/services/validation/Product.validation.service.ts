@@ -16,9 +16,9 @@ export class ValidationService {
     if (isArrayEmpty(transformedProducts) || !addCategoryToShop) return [];
     return transformedProducts.filter((product) => {
       if (!isArrayEmpty(product.mediaUrls) && !isArrayEmpty(product.variants)) {
-        this.logger.log('product validation failed', product);
         return product;
       }
+      this.logger.log('product validation failed', product.sourceId);
     });
   }
 
