@@ -16,6 +16,7 @@ export class ValidationService {
     if (isArrayEmpty(transformedProducts) || !addCategoryToShop) return [];
     return transformedProducts.filter((product) => {
       if (!isArrayEmpty(product.mediaUrls) && !isArrayEmpty(product.variants)) {
+        this.logger.log('product validation failed', product);
         return product;
       }
     });
@@ -25,8 +26,10 @@ export class ValidationService {
    * @description -- this method validates products before adding to shop
    */
   public addProductToShop(product: string, productVariantIds: string[]) {
-    if (!product || !productVariantIds || isArrayEmpty(productVariantIds))
+    if (!product || !productVariantIds || isArrayEmpty(productVariantIds)) {
+      this.logger.log('product validation failed', product);
       return false;
+    }
     return true;
   }
 }
