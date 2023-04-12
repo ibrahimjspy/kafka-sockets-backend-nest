@@ -182,10 +182,8 @@ export class ProductService {
           addCategoryToShop,
         );
       });
-    const [...storeMappings] = await Promise.all([
-      this.productMappingService.saveBulkMappings(bulkProducts.results),
-    ]);
-    return storeMappings;
+
+    return bulkProducts;
   }
 
   /**
@@ -238,6 +236,7 @@ export class ProductService {
       ),
       this.productDestinationApi.saveProductCreateStatus(productId),
       this.productDestinationApi.addProductsToStore([productMapping], storeId),
+      this.productMappingService.saveBulkMappings([productMapping]), //TODO move these mappings to bulk once shop service is updated
     ]);
 
     await this.productRollbackService.handleProductCreateRollbacks(productId, [
