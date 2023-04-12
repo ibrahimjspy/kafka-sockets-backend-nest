@@ -30,6 +30,7 @@ import {
 import { isArrayEmpty } from './Product.utils';
 import { getStoreIdFromShop } from 'src/graphql/source/handler/shop';
 import { ProductVariantInterface } from './services/productVariant/Product.variant.types';
+import { ValidationService } from './services/validation/Product.validation.service';
 
 @Injectable()
 export class ProductService {
@@ -43,6 +44,7 @@ export class ProductService {
     private readonly productRollbackService: RollbackService,
     private readonly webSocketService: SocketClientService,
     private readonly kafkaService: KafkaController,
+    private readonly validationService: ValidationService,
   ) {}
   private readonly logger = new Logger(ProductService.name);
 
@@ -95,7 +97,7 @@ export class ProductService {
       const pagination: PaginationDto = {
         hasNextPage: true,
         endCursor: '',
-        first: 50,
+        first: 100,
         totalCount: 0,
         batchNumber: 0,
       };
@@ -153,9 +155,12 @@ export class ProductService {
       autoSyncInput,
       productsData,
     );
-    if (isArrayEmpty(productsList) || !addCategoryToShop) return;
+    const validateProducts = this.validationService.transformedProducts(
+      productsList,
+      addCategoryToShop,
+    );
 
-    const { ...bulkProducts } = await PromisePool.for(productsList)
+    const { ...bulkProducts } = await PromisePool.for(validateProducts)
       .withConcurrency(PRODUCT_BATCH_SIZE)
       .handleError((error) => {
         this.logger.error(error);

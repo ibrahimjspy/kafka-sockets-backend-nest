@@ -3,7 +3,7 @@ import { DEFAULT_PRODUCT_TYPE, STYLE_ATTRIBUTE_ID } from 'src/constants';
 import { ProductTransformedDto } from 'src/modules/Product/transformer/Product.transformer.types';
 
 export const createProductMutation = (productData: ProductTransformedDto) => {
-  const { name, categoryId, description, styleNumber } = productData;
+  const { name, categoryId, description, styleNumber, slug } = productData;
   return gql`
       mutation {
         productCreate(
@@ -11,6 +11,7 @@ export const createProductMutation = (productData: ProductTransformedDto) => {
             productType: "${DEFAULT_PRODUCT_TYPE}"
             description:${JSON.stringify(description)}
             name: "${name}"
+            slug: "${slug}"
             attributes:[{
               id:"${STYLE_ATTRIBUTE_ID}",
               values:["${styleNumber}"]

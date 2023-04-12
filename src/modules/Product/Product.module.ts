@@ -16,6 +16,7 @@ import { RollbackService } from './services/rollback/Rollback.service';
 import { SocketClientService } from '../Socket/Socket.client.service';
 import { KafkaController } from './services/kafka/Kafka.controller';
 import { ProducerService } from './services/kafka/Kafka.producer.service';
+import { ValidationService } from './services/validation/Product.validation.service';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ProducerService } from './services/kafka/Kafka.producer.service';
     SocketClientService,
     KafkaController,
     ProducerService,
+    ValidationService,
   ],
 })
 export class ProductModule {}

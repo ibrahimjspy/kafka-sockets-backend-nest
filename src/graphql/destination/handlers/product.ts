@@ -21,7 +21,7 @@ import { getProductsQuery } from '../queries/products/getList';
 import { PaginationDto } from 'src/graphql/types/paginate';
 import { updateProductMutation } from '../mutations/product/updateProduct';
 import { updateProductListingMutation } from '../mutations/product/updateProductListing';
-import { isArrayEmpty } from 'src/modules/Product/Product.utils';
+import { ValidationService } from 'src/modules/Product/services/validation/Product.validation.service';
 
 /**
  * @description -- this layer connects with destination graphql api for and exposes handlers to perform transactions related to product such as create, metadata update etc
@@ -29,6 +29,7 @@ import { isArrayEmpty } from 'src/modules/Product/Product.utils';
 @Injectable()
 export class ProductDestinationService {
   private readonly logger = new Logger(ProductDestinationService.name);
+  constructor(private readonly validationService: ValidationService) {}
 
   /**
    * @description -- this method creates product in destination
@@ -40,9 +41,6 @@ export class ProductDestinationService {
       const createProduct: productCreate = await graphqlCallDestination(
         createProductMutation(transformedProduct),
       );
-      if (createProduct.productCreate.errors[0]) {
-        throw new Error(createProduct?.productCreate?.errors[0]?.message);
-      }
       const productId = createProduct?.productCreate?.product?.id;
       this.logger.verbose('Product created', createProduct);
       return productId;
@@ -141,7 +139,8 @@ export class ProductDestinationService {
     productVariantIds: string[],
   ) {
     try {
-      if (!product || isArrayEmpty(productVariantIds)) return;
+      if (!this.validationService.addProductToShop(product, productVariantIds))
+        return;
       return await graphqlCallDestination(
         addProductToStoreMutation(
           storeId,

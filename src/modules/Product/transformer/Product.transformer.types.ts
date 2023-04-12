@@ -76,6 +76,7 @@ export interface ShopDetailsDto {
 export interface ProductTransformedDto {
   name?: string;
   description?: string;
+  slug?: string;
   categoryId?: string;
   categoryTree?: string[];
   isAvailableForPurchase?: boolean;
