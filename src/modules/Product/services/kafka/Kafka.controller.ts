@@ -39,6 +39,7 @@ export class KafkaController {
 
   pushProductBatch(@Payload() message: ProducerRecord) {
     try {
+      this.logger.log('Pushing product batch to create');
       return this.kafkaProductService.produce(message);
     } catch (error) {
       this.logger.error(error);

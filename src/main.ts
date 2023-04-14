@@ -6,6 +6,7 @@ import { HttpExceptionFilter } from './app.filters';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import {
   KAFKA_BROKER_ENDPOINT,
+  KAFKA_CLIENT_ID,
   KAFKA_CONSUMER_GROUP,
   KAFKA_HEARTBEAT_INTERVAL,
   KAFKA_RETRIES,
@@ -46,6 +47,7 @@ async function bootstrap() {
     transport: Transport.KAFKA,
     options: {
       client: {
+        clientId: KAFKA_CLIENT_ID,
         brokers: [KAFKA_BROKER_ENDPOINT],
       },
       consumer: {
