@@ -97,7 +97,7 @@ export class ProductService {
       const pagination: PaginationDto = {
         hasNextPage: true,
         endCursor: '',
-        first: 100,
+        first: 50,
         totalCount: 0,
         batchNumber: 0,
       };
