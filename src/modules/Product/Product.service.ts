@@ -27,7 +27,7 @@ import {
   PRODUCT_BATCH_SIZE,
   PRODUCT_UPDATE_BATCH_SIZE,
 } from 'src/constants';
-import { isArrayEmpty } from './Product.utils';
+import { isArrayEmpty, productTotalCountTransformer } from './Product.utils';
 import { getStoreIdFromShop } from 'src/graphql/source/handler/shop';
 import { ProductVariantInterface } from './services/productVariant/Product.variant.types';
 import { ValidationService } from './services/validation/Product.validation.service';
@@ -101,7 +101,7 @@ export class ProductService {
         totalCount: 0,
         batchNumber: 0,
       };
-      while (pagination.hasNextPage) {
+      while (pagination.hasNextPage && pagination.batchNumber < 2) {
         const categoryData: GetProductsDto = await getProductsHandler(
           { first: pagination.first, after: pagination.endCursor },
           {
@@ -113,7 +113,9 @@ export class ProductService {
 
         pagination.endCursor = categoryData.pageInfo.endCursor;
         pagination.hasNextPage = categoryData.pageInfo.hasNextPage;
-        pagination.totalCount = categoryData.totalCount;
+        pagination.totalCount = productTotalCountTransformer(
+          categoryData.totalCount,
+        );
         pagination.batchNumber = pagination.batchNumber + 1;
 
         const productsData =
