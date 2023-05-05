@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import {
-  DESTINATION_MEDIA_TABLE_NAME,
   DESTINATION_SALEOR_DB_SCHEMA_NAME,
-  DESTINATION_THUMBNAIL_TABLE_NAME,
+  MEDIA_TABLE,
+  THUMBNAIL_TABLE,
 } from '../db.constants';
 
 /**
@@ -10,7 +10,7 @@ import {
  */
 @Entity({
   schema: DESTINATION_SALEOR_DB_SCHEMA_NAME,
-  name: DESTINATION_MEDIA_TABLE_NAME,
+  name: MEDIA_TABLE,
 })
 export class ProductMedia {
   @PrimaryGeneratedColumn({ type: 'int8' })
@@ -43,7 +43,7 @@ export class ProductMedia {
  */
 @Entity({
   schema: DESTINATION_SALEOR_DB_SCHEMA_NAME,
-  name: DESTINATION_THUMBNAIL_TABLE_NAME,
+  name: THUMBNAIL_TABLE,
 })
 export class ProductThumbnail {
   @PrimaryGeneratedColumn({ type: 'int8' })

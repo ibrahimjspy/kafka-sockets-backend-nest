@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import {
-  DESTINATION_SHOP_PRODUCT_VARIANT_MAPPING_TABLE_NAME,
   DESTINATION_SHOP_SERVICE_DB_SCHEMA_NAME,
+  SHOP_PRODUCT_VARIANT_MAPPING,
 } from '../db.constants';
 
 /**
@@ -9,7 +9,7 @@ import {
  */
 @Entity({
   schema: DESTINATION_SHOP_SERVICE_DB_SCHEMA_NAME,
-  name: DESTINATION_SHOP_PRODUCT_VARIANT_MAPPING_TABLE_NAME,
+  name: SHOP_PRODUCT_VARIANT_MAPPING,
 })
 export class ProductVariantShopMapping {
   @PrimaryGeneratedColumn({ type: 'int8' })

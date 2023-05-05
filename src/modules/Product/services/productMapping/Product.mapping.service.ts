@@ -298,10 +298,7 @@ export class ProductMappingService {
             const deleteProductMapping = await axios({
               method: 'delete',
               url: `${MAPPING_SERVICE_URL}/documents`,
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer private-${MAPPING_SERVICE_TOKEN}`,
-              },
+              headers: MAPPING_SERVICE_HEADERS.headers,
               data: documentIds,
             });
             return deleteProductMapping?.data;
@@ -343,10 +340,7 @@ export class ProductMappingService {
         const deleteCategoryMapping = await axios({
           method: 'delete',
           url: `${AUTO_SYNC_MAPPING_URL}/documents`,
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer private-${MAPPING_SERVICE_TOKEN}`,
-          },
+          headers: MAPPING_SERVICE_HEADERS.headers,
           data: documentIds,
         });
         return deleteCategoryMapping?.data;
