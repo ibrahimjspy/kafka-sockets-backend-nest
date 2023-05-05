@@ -47,6 +47,19 @@ export class AutoSyncDto {
   @IsString()
   storeId: string;
 }
+
+export class DeActivateAutoSyncDto {
+  @ApiProperty({ required: true, description: 'b2b shop id of retailer' })
+  @IsString()
+  shopId: string;
+
+  @ApiProperty({
+    required: true,
+    description: 'b2c store id for which products should be added against',
+  })
+  @IsString()
+  storeId: string;
+}
 export interface GetProductsDto {
   pageInfo: {
     hasNextPage: boolean;
