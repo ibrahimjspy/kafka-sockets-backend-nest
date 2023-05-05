@@ -3,6 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { ProductService } from './Product.service';
 import {
   AutoSyncDto,
+  DeActivateAutoSyncDto,
   ImportBulkCategoriesDto,
   ProductIdDto,
 } from './Product.dto';
@@ -54,7 +55,9 @@ export class ProductController {
   }
 
   @Delete('api/v1/auto/sync')
-  async removeAutoSyncMapping(@Body() autoSyncInput: AutoSyncDto) {
-    return await this.productMappingService.removeMappings(autoSyncInput);
+  async removeAutoSyncMapping(
+    @Body() deActivateAutoSync: DeActivateAutoSyncDto,
+  ) {
+    return await this.productMappingService.removeMappings(deActivateAutoSync);
   }
 }
