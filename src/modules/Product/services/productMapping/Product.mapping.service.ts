@@ -13,7 +13,7 @@ import {
   PRODUCT_BATCH_SIZE,
   RETRY_COUNT,
 } from '../../../../constants';
-import { AutoSyncDto } from '../../Product.dto';
+import { AutoSyncDto, DeActivateAutoSyncDto } from '../../Product.dto';
 import { ProductTransformedDto } from '../../transformer/Product.transformer.types';
 import polly from 'polly-js';
 import {
@@ -28,6 +28,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { isArrayEmpty } from '../../Product.utils';
 import PromisePool from '@supercharge/promise-pool/dist';
+import { getShopDetails } from 'src/graphql/source/handler/shop';
+import { getShopFieldValues } from 'src/graphql/utils/getShop';
 @Injectable()
 export class ProductMappingService {
   private readonly logger = new Logger(ProductMappingService.name);
@@ -340,8 +342,16 @@ export class ProductMappingService {
       });
   }
 
-  public async removeMappings({ shopId, storeId }) {
+  public async removeMappings(deActivateAutoSync: DeActivateAutoSyncDto) {
     try {
+      let { shopId, storeId } = deActivateAutoSync;
+      const { email } = deActivateAutoSync;
+      if (email) {
+        const shopDetails = await getShopDetails(email);
+        shopId = shopDetails['id'];
+        storeId =
+          getShopFieldValues(shopDetails['fields'], 'storefrontids')[0] || null;
+      }
       return await Promise.all([
         this.removeProductMappingsFromElasticSearch(shopId),
         this.productVariantMappingRepository.delete({

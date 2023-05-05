@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsString, ArrayMinSize } from 'class-validator';
+import { IsArray, IsString, ArrayMinSize, IsOptional } from 'class-validator';
 
 export class ProductIdDto {
   @ApiProperty({ required: true })
@@ -49,15 +49,22 @@ export class AutoSyncDto {
 }
 
 export class DeActivateAutoSyncDto {
-  @ApiProperty({ required: true, description: 'b2b shop id of retailer' })
-  @IsString()
+  @ApiProperty({
+    required: false,
+    description: 'email against which you have created storefront',
+  })
+  @IsOptional()
+  email: string;
+
+  @ApiProperty({ required: false, description: 'b2b shop id of retailer' })
+  @IsOptional()
   shopId: string;
 
   @ApiProperty({
-    required: true,
+    required: false,
     description: 'b2c store id for which products should be added against',
   })
-  @IsString()
+  @IsOptional()
   storeId: string;
 }
 export interface GetProductsDto {
