@@ -9,7 +9,6 @@ import axios from 'axios';
 import {
   AUTO_SYNC_MAPPING_URL,
   MAPPING_SERVICE_HEADERS,
-  MAPPING_SERVICE_TOKEN,
   MAPPING_SERVICE_URL,
   PRODUCT_BATCH_SIZE,
   RETRY_COUNT,
@@ -51,10 +50,7 @@ export class ProductMappingService {
           `${MAPPING_SERVICE_URL}/documents`,
           JSON.stringify(mappingsList),
           {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer private-${MAPPING_SERVICE_TOKEN}`,
-            },
+            headers: MAPPING_SERVICE_HEADERS.headers,
           },
         );
         return addProductMapping.data;
@@ -79,10 +75,7 @@ export class ProductMappingService {
           `${AUTO_SYNC_MAPPING_URL}/documents`,
           JSON.stringify(mappingObject),
           {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer private-${MAPPING_SERVICE_TOKEN}`,
-            },
+            headers: MAPPING_SERVICE_HEADERS.headers,
           },
         );
         return addProductMapping.data;
