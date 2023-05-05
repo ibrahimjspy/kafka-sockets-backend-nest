@@ -17,11 +17,13 @@ import { SocketClientService } from '../Socket/Socket.client.service';
 import { KafkaController } from './services/kafka/Kafka.controller';
 import { ProducerService } from './services/kafka/Kafka.producer.service';
 import { ValidationService } from './services/validation/Product.validation.service';
+import { ProductVariantShopMapping } from 'src/database/destination/addProductToShop';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ProductMedia]),
     TypeOrmModule.forFeature([ProductThumbnail]),
+    TypeOrmModule.forFeature([ProductVariantShopMapping]),
   ],
   controllers: [KafkaController, ProductController],
   providers: [

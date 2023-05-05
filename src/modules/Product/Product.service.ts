@@ -355,9 +355,10 @@ export class ProductService {
       const transformedProductSource =
         this.productTransformer.payloadBuilder(sourceProductData)[0];
       const productMappings =
-        await this.productMappingService.getSingleProductMapping(
-          transformedProductSource.sourceId,
-        );
+        await this.productMappingService.getAllProductMappings({
+          productId: transformedProductSource.sourceId,
+          shopId: null,
+        });
       return await PromisePool.for(productMappings)
         .withConcurrency(PRODUCT_BATCH_SIZE)
         .handleError((error) => {

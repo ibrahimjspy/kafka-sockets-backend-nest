@@ -1,4 +1,4 @@
-import { Body, Controller, Logger, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Logger, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ProductService } from './Product.service';
 import {
@@ -7,13 +7,17 @@ import {
   ProductIdDto,
 } from './Product.dto';
 import PromisePool from '@supercharge/promise-pool/dist';
+import { ProductMappingService } from './services/productMapping/Product.mapping.service';
 
 @Controller()
 @ApiTags('auto-sync-product-api')
 export class ProductController {
   private readonly logger = new Logger(ProductController.name);
 
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private readonly productMappingService: ProductMappingService,
+  ) {}
   @Post('api/v1/auto/sync')
   async autoSync(@Body() autoSyncInput: ImportBulkCategoriesDto) {
     const BATCH_SIZE = 1;
@@ -47,5 +51,10 @@ export class ProductController {
     return await this.productService.handleProductUpdateCDC(
       productInput.productId,
     );
+  }
+
+  @Delete('api/v1/auto/sync')
+  async removeAutoSyncMapping(@Body() autoSyncInput: AutoSyncDto) {
+    return await this.productMappingService.removeMappings(autoSyncInput);
   }
 }
