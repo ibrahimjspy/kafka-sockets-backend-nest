@@ -58,7 +58,7 @@ async function bootstrap() {
       },
     },
   });
-  await app.startAllMicroservices();
+  app.startAllMicroservices();
   const config = new DocumentBuilder()
     .setTitle('autosync')
     .setDescription(packageInfo.description)

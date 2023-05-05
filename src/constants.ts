@@ -41,10 +41,6 @@ export const SOURCE_GRAPHQL_ALL_ACCESS_TOKEN =
 
 // destination
 export const VARIANT_PRICE_RULE = Number(process.env.VARIANT_PRICE_RULE) || 1.6;
-
-export const DESTINATION_DB_SCHEMA_NAME = 'saleor';
-export const DESTINATION_MEDIA_TABLE_NAME = 'product_productmedia';
-export const DESTINATION_THUMBNAIL_TABLE_NAME = 'thumbnail_thumbnail';
 export const MEDIA_URL_PREFIX = 'media/';
 
 export const DESTINATION_GRAPHQL_ENDPOINT =
@@ -59,7 +55,7 @@ export const COST_ATTRIBUTE_ID = process.env.COST_ATTRIBUTE_ID;
 export const SIZE_ATTRIBUTE_ID = process.env.SIZE_ATTRIBUTE_ID;
 export const SKU_ATTRIBUTE_ID = process.env.SKU_ATTRIBUTE_ID;
 export const DEFAULT_WAREHOUSE_ID = process.env.DEFAULT_WAREHOUSE_ID;
-export const MAPPING_MAPPING_TOKEN = process.env.MAPPING_MAPPING_TOKEN;
+export const MAPPING_SERVICE_TOKEN = process.env.MAPPING_MAPPING_TOKEN;
 export const MAPPING_SERVICE_URL = process.env.MAPPING_SERVICE_URL;
 export const AUTO_SYNC_MAPPING_URL = process.env.AUTO_SYNC_MAPPING_URL;
 export const PRODUCT_THUMBNAIL_SIZE = 512;
@@ -72,6 +68,6 @@ export const mediaCreateDefaults = {
 export const MAPPING_SERVICE_HEADERS = {
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer private-${MAPPING_MAPPING_TOKEN}`,
+    Authorization: `Bearer private-${MAPPING_SERVICE_TOKEN}`,
   },
 };

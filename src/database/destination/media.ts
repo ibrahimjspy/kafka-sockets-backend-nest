@@ -1,15 +1,15 @@
-import {
-  DESTINATION_DB_SCHEMA_NAME,
-  DESTINATION_MEDIA_TABLE_NAME,
-  DESTINATION_THUMBNAIL_TABLE_NAME,
-} from 'src/constants';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  DESTINATION_MEDIA_TABLE_NAME,
+  DESTINATION_SALEOR_DB_SCHEMA_NAME,
+  DESTINATION_THUMBNAIL_TABLE_NAME,
+} from '../db.constants';
 
 /**
  * @description -- class to connect with product media table in destination which we use for inserting product media urls directly in database
  */
 @Entity({
-  schema: DESTINATION_DB_SCHEMA_NAME,
+  schema: DESTINATION_SALEOR_DB_SCHEMA_NAME,
   name: DESTINATION_MEDIA_TABLE_NAME,
 })
 export class ProductMedia {
@@ -42,7 +42,7 @@ export class ProductMedia {
  * @description -- class to connect with product thumbnail table in destination which we use for inserting product media urls directly in database
  */
 @Entity({
-  schema: DESTINATION_DB_SCHEMA_NAME,
+  schema: DESTINATION_SALEOR_DB_SCHEMA_NAME,
   name: DESTINATION_THUMBNAIL_TABLE_NAME,
 })
 export class ProductThumbnail {
