@@ -37,8 +37,8 @@ export const transformMappings = (
       shop_id: storeId,
       product_id: transformProduct,
       category_id: categoryId,
-      created_at: `${+new Date()}`,
-      updated_at: `${+new Date()}`,
+      created_at: `${new Date().toISOString()}`,
+      updated_at: `${new Date().toISOString()}`,
       is_deleted: false,
       channel_slug: 'default-channel',
     });
