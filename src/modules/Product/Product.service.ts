@@ -27,10 +27,18 @@ import {
   PRODUCT_BATCH_SIZE,
   PRODUCT_UPDATE_BATCH_SIZE,
 } from 'src/constants';
-import { isArrayEmpty, productTotalCountTransformer } from './Product.utils';
+import {
+  isArrayEmpty,
+  productTotalCountTransformer,
+  transformMappings,
+} from './Product.utils';
 import { getStoreIdFromShop } from 'src/graphql/source/handler/shop';
 import { ProductVariantInterface } from './services/productVariant/Product.variant.types';
 import { ValidationService } from './services/validation/Product.validation.service';
+import { idBase64Decode } from './services/productMedia/Product.media.utils';
+import { SyncMappingsRepository } from 'src/database/destination/repositories/syncProducts';
+import { ProductVariantMappingRepository } from 'src/database/destination/repositories/addProductToShop';
+import { CreateProductCopiesRepository } from 'src/database/destination/repositories/copyProducts';
 
 @Injectable()
 export class ProductService {
@@ -45,6 +53,9 @@ export class ProductService {
     private readonly webSocketService: SocketClientService,
     private readonly kafkaService: KafkaController,
     private readonly validationService: ValidationService,
+    private readonly syncMappingsRepository: SyncMappingsRepository,
+    private readonly productVariantMappingRepository: ProductVariantMappingRepository,
+    private readonly createProductCopiesRepository: CreateProductCopiesRepository,
   ) {}
   private readonly logger = new Logger(ProductService.name);
 
@@ -436,5 +447,37 @@ export class ProductService {
     }
 
     return productId;
+  }
+
+  /**
+   * @description -- this syncs a category by firstly getting all category ids and then calling a stored procedure
+   * which creates copies of products in b2c database
+   * we then take these product ids from a table that stores event id and products mappings
+   * after getting product mappings we then store mappings in elastic search and shop service
+   */
+  public async autoSyncV2(autoSyncInput: AutoSyncDto): Promise<any> {
+    try {
+      const { storeId, categoryId } = autoSyncInput;
+      const eventId = uuidv4();
+      const [addCategoryToShop] = await Promise.all([
+        this.shopDestinationApi.addCategoryToShop(storeId, categoryId),
+        this.productMappingService.saveSyncCategoryMapping(autoSyncInput),
+      ]);
+      const parentCategoryId = idBase64Decode(categoryId);
+      await this.createProductCopiesRepository.createProductCopies(
+        parentCategoryId,
+        eventId,
+      );
+      const mappings = await this.syncMappingsRepository.getSyncedProducts(
+        eventId,
+      );
+      const saveMappings =
+        await this.productVariantMappingRepository.saveProductVariantMappings(
+          transformMappings(mappings, storeId, addCategoryToShop),
+        );
+      return saveMappings;
+    } catch (error) {
+      this.logger.error(error);
+    }
   }
 }

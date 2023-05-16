@@ -60,4 +60,25 @@ export class ProductController {
   ) {
     return await this.productMappingService.removeMappings(deActivateAutoSync);
   }
+
+  @Post('api/v2/auto/sync')
+  async autoSyncV2(@Body() autoSyncInput: ImportBulkCategoriesDto) {
+    const BATCH_SIZE = 1;
+    const { ...syncCategories } = await PromisePool.for(
+      autoSyncInput.categoryIds,
+    )
+      .withConcurrency(BATCH_SIZE)
+      .handleError((error) => {
+        this.logger.error(error);
+      })
+      .process(async (category: string) => {
+        const syncCategoriesRequest: AutoSyncDto = {
+          shopId: autoSyncInput.shopId,
+          storeId: autoSyncInput.storeId,
+          categoryId: category,
+        };
+        return this.productService.autoSyncV2(syncCategoriesRequest);
+      });
+    return syncCategories.results;
+  }
 }

@@ -1,3 +1,7 @@
+import { ProductVariantShopMapping } from 'src/database/destination/addProductToShop';
+import { SyncMappings } from 'src/database/destination/mapping';
+import { v4 as uuidv4 } from 'uuid';
+
 export const isArrayEmpty = (array) => {
   return array.length == 0;
 };
@@ -13,4 +17,31 @@ export const productTotalCountTransformer = (totalCount: number) => {
     return totalCount;
   }
   return DEFAULT_TOTAL_COUNT;
+};
+
+/**
+ * @description -- this method transforms mappings stored in cdc table which are generated after stored procedure is completed
+ * it transforms these mappings according to variant mapping table which adds products against shop
+ * @post_condition -- this returns empty array if there is no mappings from cdc mapping table
+ */
+export const transformMappings = (
+  mappings: SyncMappings[],
+  storeId: string,
+  categoryId: string,
+): ProductVariantShopMapping[] => {
+  const transformedMappings: ProductVariantShopMapping[] = [];
+  mappings.map((mapping) => {
+    const transformProduct = btoa(`Product:${mapping.new_product_id}`);
+    transformedMappings.push({
+      product_variant_id: uuidv4(),
+      shop_id: storeId,
+      product_id: transformProduct,
+      category_id: categoryId,
+      created_at: `${new Date().toISOString()}`,
+      updated_at: `${new Date().toISOString()}`,
+      is_deleted: false,
+      channel_slug: 'default-channel',
+    });
+  });
+  return transformedMappings;
 };

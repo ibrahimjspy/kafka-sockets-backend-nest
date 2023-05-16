@@ -18,12 +18,17 @@ import { KafkaController } from './services/kafka/Kafka.controller';
 import { ProducerService } from './services/kafka/Kafka.producer.service';
 import { ValidationService } from './services/validation/Product.validation.service';
 import { ProductVariantShopMapping } from 'src/database/destination/addProductToShop';
+import { SyncMappings } from 'src/database/destination/mapping';
+import { ProductVariantMappingRepository } from 'src/database/destination/repositories/addProductToShop';
+import { CreateProductCopiesRepository } from 'src/database/destination/repositories/copyProducts';
+import { SyncMappingsRepository } from 'src/database/destination/repositories/syncProducts';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ProductMedia]),
     TypeOrmModule.forFeature([ProductThumbnail]),
     TypeOrmModule.forFeature([ProductVariantShopMapping]),
+    TypeOrmModule.forFeature([SyncMappings]),
   ],
   controllers: [KafkaController, ProductController],
   providers: [
@@ -42,6 +47,9 @@ import { ProductVariantShopMapping } from 'src/database/destination/addProductTo
     KafkaController,
     ProducerService,
     ValidationService,
+    SyncMappingsRepository,
+    ProductVariantMappingRepository,
+    CreateProductCopiesRepository,
   ],
 })
 export class ProductModule {}

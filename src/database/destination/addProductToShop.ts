@@ -26,4 +26,16 @@ export class ProductVariantShopMapping {
 
   @Column({ type: 'varchar' })
   public category_id?: string;
+
+  @Column({ type: 'varchar', length: 100 })
+  public channel_slug: string;
+
+  @Column({ type: 'timestamptz' })
+  public created_at: string;
+
+  @Column({ type: 'bool' })
+  public is_deleted: boolean;
+
+  @Column({ type: 'timestamptz' })
+  public updated_at: string;
 }
