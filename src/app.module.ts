@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductMedia, ProductThumbnail } from './database/destination/media';
 import { ProductVariantShopMapping } from './database/destination/addProductToShop';
+import { SyncMappings } from './database/destination/mapping';
 @Module({
   imports: [
     TerminusModule,
@@ -23,7 +24,12 @@ import { ProductVariantShopMapping } from './database/destination/addProductToSh
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DATABASE'),
-        entities: [ProductMedia, ProductThumbnail, ProductVariantShopMapping],
+        entities: [
+          ProductMedia,
+          ProductThumbnail,
+          ProductVariantShopMapping,
+          SyncMappings,
+        ],
         synchronize: false,
       }),
       inject: [ConfigService],
