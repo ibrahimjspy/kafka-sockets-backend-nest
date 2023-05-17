@@ -9,8 +9,7 @@ export const storeProductBrandMutation = (
     mutation {
       updateMetadata(
         id: "${productId}"
-        input: [{ key: "vendorId", value: "${vendorId}" }, { key: "vendorName", value: "${vendorName}" }
-        { key: "isMaster", value: "true" }, { key: "parentId", value: "null" }]
+        input: [{ key: "vendorId", value: "${vendorId}" }, { key: "vendorName", value: "${vendorName}" }]
       ) {
         item {
           metadata {
