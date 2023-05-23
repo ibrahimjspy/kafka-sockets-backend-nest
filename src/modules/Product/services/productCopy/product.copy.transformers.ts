@@ -141,18 +141,20 @@ export class ProductCopyTransformerService {
     copiedAssignments: AttributeAssignedProductAttribute[],
   ): Map<number, number> {
     const productMapping = this.getProductMapping(copiedProducts, 'child');
+    const masterAssignmentIdMapping: Map<string, number> = new Map();
     const assignmentIdsMapping: Map<number, number> = new Map();
-    originalAssignments.forEach((assignment) => {
-      const masterProductId = productMapping.get(assignment.productId);
-      const masterAssignmentId = assignment.id;
-      const copiedAssignment = copiedAssignments.find(
-        (a) =>
-          a.productId === masterProductId &&
-          a.assignmentId === assignment.assignmentId,
+    originalAssignments.map((assignment) => {
+      masterAssignmentIdMapping.set(
+        JSON.stringify([assignment.productId, assignment.assignmentId]),
+        assignment.id,
       );
-      if (copiedAssignment) {
-        assignmentIdsMapping.set(masterAssignmentId, copiedAssignment.id);
-      }
+    });
+    copiedAssignments.map((copiedAssignment) => {
+      const masterProductId = productMapping.get(copiedAssignment.productId);
+      const masterAssignmentId = masterAssignmentIdMapping.get(
+        JSON.stringify([masterProductId, copiedAssignment.assignmentId]),
+      );
+      assignmentIdsMapping.set(masterAssignmentId, copiedAssignment.id);
     });
     return assignmentIdsMapping;
   }
@@ -173,18 +175,22 @@ export class ProductCopyTransformerService {
       copiedVariants,
       'child',
     );
+    const masterAssignmentIdMapping: Map<string, number> = new Map();
     const assignmentIdsMapping: Map<number, number> = new Map();
-    originalAssignments.forEach((assignment) => {
-      const masterVariantId = productVariantMapping.get(assignment.variantId);
-      const masterAssignmentId = assignment.id;
-      const copiedAssignment = copiedAssignments.find(
-        (a) =>
-          a.variantId === masterVariantId &&
-          a.assignmentId === assignment.assignmentId,
+    originalAssignments.map((assignment) => {
+      masterAssignmentIdMapping.set(
+        JSON.stringify([assignment.variantId, assignment.assignmentId]),
+        assignment.id,
       );
-      if (copiedAssignment) {
-        assignmentIdsMapping.set(masterAssignmentId, copiedAssignment.id);
-      }
+    });
+    copiedAssignments.map((copiedAssignment) => {
+      const masterVariantId = productVariantMapping.get(
+        copiedAssignment.variantId,
+      );
+      const masterAssignmentId = masterAssignmentIdMapping.get(
+        JSON.stringify([masterVariantId, copiedAssignment.assignmentId]),
+      );
+      assignmentIdsMapping.set(masterAssignmentId, copiedAssignment.id);
     });
     return assignmentIdsMapping;
   }
