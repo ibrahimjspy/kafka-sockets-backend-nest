@@ -9,6 +9,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductMedia, ProductThumbnail } from './database/destination/media';
 import { ProductVariantShopMapping } from './database/destination/addProductToShop';
 import { SyncMappings } from './database/destination/mapping';
+import { ProductProduct } from './database/destination/product/product';
+import { ProductProductChannelListing } from './database/destination/product/channnelListing';
+import { ProductProductMedia } from './database/destination/product/media';
+import { ProductProductVariant } from './database/destination/productVariant/productVariant';
+import { ProductProductVariantChannelListing } from './database/destination/productVariant/channelListing';
 @Module({
   imports: [
     TerminusModule,
@@ -29,6 +34,11 @@ import { SyncMappings } from './database/destination/mapping';
           ProductThumbnail,
           ProductVariantShopMapping,
           SyncMappings,
+          ProductProduct,
+          ProductProductChannelListing,
+          ProductProductMedia,
+          ProductProductVariant,
+          ProductProductVariantChannelListing,
         ],
         synchronize: false,
       }),

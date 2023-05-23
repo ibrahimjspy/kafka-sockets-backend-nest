@@ -22,6 +22,12 @@ import { SyncMappings } from 'src/database/destination/mapping';
 import { ProductVariantMappingRepository } from 'src/database/destination/repositories/addProductToShop';
 import { CreateProductCopiesRepository } from 'src/database/destination/repositories/copyProducts';
 import { SyncMappingsRepository } from 'src/database/destination/repositories/syncProducts';
+import { ProductProduct } from 'src/database/destination/product/product';
+import { ProductCopyService } from './services/productCopy/product.copy.service';
+import { ProductProductChannelListing } from 'src/database/destination/product/channnelListing';
+import { ProductProductMedia } from 'src/database/destination/product/media';
+import { ProductProductVariant } from 'src/database/destination/productVariant/productVariant';
+import { ProductProductVariantChannelListing } from 'src/database/destination/productVariant/channelListing';
 
 @Module({
   imports: [
@@ -29,11 +35,17 @@ import { SyncMappingsRepository } from 'src/database/destination/repositories/sy
     TypeOrmModule.forFeature([ProductThumbnail]),
     TypeOrmModule.forFeature([ProductVariantShopMapping]),
     TypeOrmModule.forFeature([SyncMappings]),
+    TypeOrmModule.forFeature([ProductProduct]),
+    TypeOrmModule.forFeature([ProductProductChannelListing]),
+    TypeOrmModule.forFeature([ProductProductMedia]),
+    TypeOrmModule.forFeature([ProductProductVariant]),
+    TypeOrmModule.forFeature([ProductProductVariantChannelListing]),
   ],
   controllers: [KafkaController, ProductController],
   providers: [
     ProductService,
     ProductTransformer,
+    ProductCopyService,
     ProductMediaTransformer,
     ProductVariantTransformer,
     ProductDestinationService,
@@ -50,6 +62,10 @@ import { SyncMappingsRepository } from 'src/database/destination/repositories/sy
     SyncMappingsRepository,
     ProductVariantMappingRepository,
     CreateProductCopiesRepository,
+    ProductProductChannelListing,
+    ProductProductMedia,
+    ProductProductVariant,
+    ProductProductVariantChannelListing,
   ],
 })
 export class ProductModule {}
