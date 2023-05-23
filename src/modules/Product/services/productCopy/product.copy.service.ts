@@ -40,6 +40,7 @@ export class ProductCopyService {
    * @returns A Promise that resolves to the copied products.
    */
   async createCopiesForCategory(categoryId: number): Promise<ProductProduct[]> {
+    // Retrieve the master products for the given category
     const masterProducts = await this.productRepository
       .createQueryBuilder('product')
       .where('product.category_id = :categoryId', { categoryId })
@@ -49,33 +50,42 @@ export class ProductCopyService {
       })
       .getMany();
 
-    const copiedProducts: ProductProduct[] = [];
+    // Create copies of the master products
+    const copiedProducts: ProductProduct[] = masterProducts.map(
+      (masterProduct) => {
+        const copiedProduct: ProductProduct = {
+          ...masterProduct,
+          id: undefined,
+          slug: this.transformerService.getProductSlug(masterProduct),
+          default_variant_id: null,
+          category_id: null,
+          metadata: {
+            ...masterProduct.metadata,
+            parentId: masterProduct.id,
+            isMaster: 'false',
+          },
+        };
 
-    for (const masterProduct of masterProducts) {
-      const copiedProduct = { ...masterProduct };
-      delete copiedProduct.id;
-      copiedProduct.slug =
-        this.transformerService.getProductSlug(masterProduct);
-      copiedProduct.default_variant_id = null;
-      copiedProduct.category_id = null;
-      copiedProduct.metadata = {
-        ...copiedProduct.metadata,
-        parentId: masterProduct.id,
-        isMaster: 'false',
-      };
+        return copiedProduct;
+      },
+    );
 
-      copiedProducts.push(copiedProduct);
-    }
+    // Save the copied products
+    const copiedProductsResult = await this.productRepository.save(
+      copiedProducts,
+    );
 
-    const copyProducts = await this.productRepository.save(copiedProducts);
+    // Perform additional copying tasks
     await Promise.all([
-      this.productAttributeCopyService.copyProductAttributes(copyProducts),
-      this.copyChannelListingsForCopiedProducts(copyProducts),
-      this.copyVariants(copiedProducts, masterProducts),
-      this.copyProductMedia(copyProducts),
+      this.productAttributeCopyService.copyProductAttributes(
+        copiedProductsResult,
+      ),
+      this.copyChannelListingsForCopiedProducts(copiedProductsResult),
+      this.copyVariants(copiedProductsResult, masterProducts),
+      this.copyProductMedia(copiedProductsResult),
     ]);
 
-    return copyProducts;
+    return copiedProductsResult;
   }
 
   /**
@@ -86,26 +96,32 @@ export class ProductCopyService {
   async copyChannelListingsForCopiedProducts(
     copiedProducts: ProductProduct[],
   ): Promise<void> {
+    // Retrieve the product IDs of the master products and create a mapping
     const productIds =
       this.transformerService.getMasterProducts(copiedProducts);
     const productMapping =
       this.transformerService.getProductMapping(copiedProducts);
+
+    // Retrieve the original channel listings for the master products
     const originalChannelListings =
       await this.productChannelListingRepository.find({
         where: { product_id: In(productIds) },
       });
 
+    // Create copies of the channel listings and update the product IDs
     const copiedChannelListings = originalChannelListings.map(
       (originalChannelListing) => {
-        const copyChannelListing = { ...originalChannelListing };
-        delete copyChannelListing.id;
-        copyChannelListing.product_id = productMapping.get(
-          originalChannelListing.product_id,
-        );
+        const copyChannelListing = {
+          ...originalChannelListing,
+          id: undefined,
+          product_id: productMapping.get(originalChannelListing.product_id),
+        };
+
         return copyChannelListing;
       },
     );
 
+    // Save the copied channel listings
     await this.productChannelListingRepository.save(copiedChannelListings);
   }
 
@@ -115,26 +131,39 @@ export class ProductCopyService {
    * @returns A Promise that resolves when the product media copying is complete.
    */
   async copyProductMedia(copiedProducts: ProductProduct[]): Promise<void> {
+    // Retrieve the product IDs of the master products and create a mapping
     const productIds =
       this.transformerService.getMasterProducts(copiedProducts);
     const productMapping =
       this.transformerService.getProductMapping(copiedProducts);
+
+    // Retrieve all media for the master products
     const allMedia = await this.productMediaRepository.find({
       where: { product_id: In(productIds) },
     });
 
+    // Create copies of the media and update the product IDs
     const copiedMedia = allMedia.map((media) => {
-      const copyMedia = { ...media };
-      copyMedia.oembed_data.parentId = media.id;
-      delete copyMedia.id;
-      copyMedia.product_id = productMapping.get(media.product_id);
+      const copyMedia = {
+        ...media,
+        id: undefined,
+        product_id: productMapping.get(media.product_id),
+        oembed_data: {
+          ...media.oembed_data,
+          parentId: media.id,
+        },
+      };
+
       return copyMedia;
     });
 
-    const copiedMediaResponse = await this.productMediaRepository.save(
+    // Save the copied media
+    const copiedMediaResult = await this.productMediaRepository.save(
       copiedMedia,
     );
-    await this.copyProductThumbnails(copiedMediaResponse);
+
+    // Copy the product thumbnails for the copied media
+    await this.copyProductThumbnails(copiedMediaResult);
   }
 
   /**
@@ -147,32 +176,45 @@ export class ProductCopyService {
     copiedProducts: ProductProduct[],
     masterProducts: ProductProduct[],
   ): Promise<void> {
+    // Retrieve the product IDs of the master products and create a mapping
     const productIds =
       this.transformerService.getMasterProducts(copiedProducts);
     const productMapping =
       this.transformerService.getProductMapping(copiedProducts);
+
+    // Retrieve all variants for the master products
     const allVariants = await this.productVariantRepository.find({
       where: { product_id: In(productIds) },
     });
 
+    // Create copies of the variants and update the product IDs
     const copiedVariants = allVariants.map((variant) => {
-      const copyVariant = { ...variant };
-      copyVariant.metadata.parentId = variant.id;
-      delete copyVariant.id;
-      copyVariant.product_id = productMapping.get(variant.product_id);
+      const copyVariant = {
+        ...variant,
+        id: undefined,
+        product_id: productMapping.get(variant.product_id),
+        metadata: {
+          ...variant.metadata,
+          parentId: variant.id,
+        },
+      };
+
       return copyVariant;
     });
 
-    const copiedVariantsResponse = await this.productVariantRepository.save(
+    // Save the copied variants
+    const copiedVariantsResult = await this.productVariantRepository.save(
       copiedVariants,
     );
+
+    // Perform additional operations on the copied variants
     await Promise.all([
       this.variantAttributeCopyService.copyVariantAttributes(
-        copiedVariantsResponse,
+        copiedVariantsResult,
       ),
-      this.copyVariantChannelListing(copiedVariantsResponse),
-      this.copyVariantsStockListing(copiedVariantsResponse),
-      this.assignDefaultVariant(masterProducts, copiedVariantsResponse),
+      this.copyVariantChannelListing(copiedVariantsResult),
+      this.copyVariantsStockListing(copiedVariantsResult),
+      this.assignDefaultVariant(masterProducts, copiedVariantsResult),
     ]);
   }
 
@@ -184,21 +226,29 @@ export class ProductCopyService {
   async copyVariantChannelListing(
     copiedVariants: ProductProductVariant[],
   ): Promise<void> {
+    // Retrieve the variant IDs of the master variants and create a mapping
     const variantIds =
       this.transformerService.getMasterProductVariants(copiedVariants);
     const variantMapping =
       this.transformerService.getProductVariantMapping(copiedVariants);
+
+    // Retrieve all variant channel listings for the master variants
     const allListings = await this.productVariantChannelListingRepository.find({
       where: { variant_id: In(variantIds) },
     });
 
+    // Create copies of the variant channel listings and update the variant IDs
     const copiedListings = allListings.map((listing) => {
-      const copyListing = { ...listing };
-      delete copyListing.id;
-      copyListing.variant_id = variantMapping.get(listing.variant_id);
+      const copyListing = {
+        ...listing,
+        id: undefined,
+        variant_id: variantMapping.get(listing.variant_id),
+      };
+
       return copyListing;
     });
 
+    // Save the copied variant channel listings
     await this.productVariantChannelListingRepository.save(copiedListings);
   }
 
@@ -210,22 +260,28 @@ export class ProductCopyService {
   async copyProductThumbnails(
     copiedMedia: ProductProductMedia[],
   ): Promise<void> {
+    // Retrieve the media IDs of the master media and create a mapping
     const mediaIds = this.transformerService.getMasterProductMedia(copiedMedia);
     const mediaMapping =
       this.transformerService.getProductMediaMapping(copiedMedia);
+
+    // Retrieve all product thumbnails for the master media
     const allThumbnails = await this.productThumbnailRepository.find({
       where: { product_media_id: In(mediaIds) },
     });
 
+    // Create copies of the product thumbnails and update the media IDs
     const copiedThumbnails = allThumbnails.map((thumbnail) => {
-      const copyThumbnail = { ...thumbnail };
-      delete copyThumbnail.id;
-      copyThumbnail.product_media_id = mediaMapping.get(
-        thumbnail.product_media_id,
-      );
+      const copyThumbnail = {
+        ...thumbnail,
+        id: undefined,
+        product_media_id: mediaMapping.get(thumbnail.product_media_id),
+      };
+
       return copyThumbnail;
     });
 
+    // Save the copied product thumbnails
     await this.productThumbnailRepository.save(copiedThumbnails);
   }
 
@@ -237,31 +293,37 @@ export class ProductCopyService {
   async copyVariantsStockListing(
     copiedVariants: ProductProductVariant[],
   ): Promise<void> {
+    // Retrieve the variant IDs of the master variants and create a mapping
     const variantIds =
       this.transformerService.getMasterProductVariants(copiedVariants);
     const variantMapping =
       this.transformerService.getProductVariantMapping(copiedVariants);
+
+    // Retrieve the stock listings for the master variants
     const stockListings = await this.warehouseStockRepository.find({
       where: { product_variant_id: In(variantIds) },
     });
 
+    // Create copies of the stock listings and update the variant IDs
     const copiedListings = stockListings.map((stockListing) => {
-      const copyListing = { ...stockListing };
-      delete copyListing.id;
-      copyListing.product_variant_id = variantMapping.get(
-        stockListing.product_variant_id,
-      );
+      const copyListing = {
+        ...stockListing,
+        id: undefined,
+        product_variant_id: variantMapping.get(stockListing.product_variant_id),
+      };
+
       return copyListing;
     });
 
+    // Save the copied stock listings
     await this.warehouseStockRepository.save(copiedListings);
   }
 
   /**
-   * Assigns the default variant to copied products.
-   * @param masterProducts The master products used for mapping.
-   * @param copiedVariants The copied variants to update.
-   * @returns A Promise that resolves when the update is completed.
+   * Assigns the default variant for the copied products.
+   * @param masterProducts The master products.
+   * @param copiedVariants The copied variants.
+   * @returns A Promise that resolves when the default variant assignment is complete.
    */
   async assignDefaultVariant(
     masterProducts: ProductProduct[],
@@ -287,7 +349,5 @@ export class ProductCopyService {
     });
 
     await Promise.all(updatePromises);
-
-    console.log('Bulk update completed successfully.');
   }
 }
