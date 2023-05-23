@@ -28,6 +28,15 @@ import { ProductProductChannelListing } from 'src/database/destination/product/c
 import { ProductProductMedia } from 'src/database/destination/product/media';
 import { ProductProductVariant } from 'src/database/destination/productVariant/productVariant';
 import { ProductProductVariantChannelListing } from 'src/database/destination/productVariant/channelListing';
+import { WarehouseStock } from 'src/database/destination/productVariant/warehouseStock';
+import { AttributeAssignedProductAttribute } from 'src/database/destination/product/attributes/assignment';
+import { AttributeAssignedProductAttributeValue } from 'src/database/destination/product/attributes/value';
+import { ProductCopyTransformerService } from './services/productCopy/product.copy.transformers';
+import { ProductAttributeCopyService } from './services/productCopy/product.attributes.copy.service';
+import { AttributeAttributeValue } from 'src/database/destination/attributes';
+import { AttributeAssignedVariantAttribute } from 'src/database/destination/productVariant/attributes/assignment';
+import { AttributeAssignedVariantAttributeValue } from 'src/database/destination/productVariant/attributes/value';
+import { ProductVariantAttributeCopyService } from './services/productCopy/product.variant.attribute.copy.service';
 
 @Module({
   imports: [
@@ -40,6 +49,12 @@ import { ProductProductVariantChannelListing } from 'src/database/destination/pr
     TypeOrmModule.forFeature([ProductProductMedia]),
     TypeOrmModule.forFeature([ProductProductVariant]),
     TypeOrmModule.forFeature([ProductProductVariantChannelListing]),
+    TypeOrmModule.forFeature([WarehouseStock]),
+    TypeOrmModule.forFeature([AttributeAssignedProductAttribute]),
+    TypeOrmModule.forFeature([AttributeAssignedProductAttributeValue]),
+    TypeOrmModule.forFeature([AttributeAttributeValue]),
+    TypeOrmModule.forFeature([AttributeAssignedVariantAttribute]),
+    TypeOrmModule.forFeature([AttributeAssignedVariantAttributeValue]),
   ],
   controllers: [KafkaController, ProductController],
   providers: [
@@ -63,9 +78,18 @@ import { ProductProductVariantChannelListing } from 'src/database/destination/pr
     ProductVariantMappingRepository,
     CreateProductCopiesRepository,
     ProductProductChannelListing,
+    WarehouseStock,
     ProductProductMedia,
     ProductProductVariant,
     ProductProductVariantChannelListing,
+    AttributeAssignedProductAttribute,
+    AttributeAssignedProductAttributeValue,
+    ProductCopyTransformerService,
+    AttributeAttributeValue,
+    ProductVariantAttributeCopyService,
+    AttributeAssignedVariantAttribute,
+    ProductAttributeCopyService,
+    AttributeAssignedVariantAttributeValue,
   ],
 })
 export class ProductModule {}
