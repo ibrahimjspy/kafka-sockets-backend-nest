@@ -1,6 +1,7 @@
+import { PRODUCT_VARIANT_CHANNEL_LISTING_TABLE } from 'src/database/db.constants';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity('saleor.product_productvariantchannellisting')
+@Entity(PRODUCT_VARIANT_CHANNEL_LISTING_TABLE)
 export class ProductProductVariantChannelListing {
   @PrimaryGeneratedColumn()
   id: number;

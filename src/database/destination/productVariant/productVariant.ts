@@ -1,6 +1,7 @@
+import { PRODUCT_VARIANT_TABLE } from 'src/database/db.constants';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity('saleor.product_productvariant')
+@Entity(PRODUCT_VARIANT_TABLE)
 export class ProductProductVariant {
   @PrimaryGeneratedColumn()
   id: number;

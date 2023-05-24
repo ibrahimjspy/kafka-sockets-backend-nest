@@ -1,6 +1,10 @@
+import {
+  DESTINATION_SALEOR_DB_SCHEMA_NAME,
+  MEDIA_TABLE,
+} from 'src/database/db.constants';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity({ name: 'product_productmedia', schema: 'saleor' })
+@Entity({ name: MEDIA_TABLE, schema: DESTINATION_SALEOR_DB_SCHEMA_NAME })
 export class ProductProductMedia {
   @PrimaryGeneratedColumn()
   id: number;

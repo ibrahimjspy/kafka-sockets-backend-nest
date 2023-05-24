@@ -1,6 +1,13 @@
+import {
+  PRODUCT_CHANNEL_LISTING_TABLE,
+  DESTINATION_SALEOR_DB_SCHEMA_NAME,
+} from 'src/database/db.constants';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'product_productchannellisting', schema: 'saleor' })
+@Entity({
+  name: PRODUCT_CHANNEL_LISTING_TABLE,
+  schema: DESTINATION_SALEOR_DB_SCHEMA_NAME,
+})
 export class ProductProductChannelListing {
   @PrimaryGeneratedColumn()
   id: number;

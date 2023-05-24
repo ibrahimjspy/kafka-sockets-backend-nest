@@ -1,6 +1,7 @@
+import { PRODUCT_VARIANT_ATTRIBUTE_VALUE_TABLE } from 'src/database/db.constants';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'saleor.attribute_assignedvariantattributevalue' })
+@Entity({ name: PRODUCT_VARIANT_ATTRIBUTE_VALUE_TABLE })
 export class AttributeAssignedVariantAttributeValue {
   @PrimaryGeneratedColumn()
   id: number;

@@ -1,6 +1,7 @@
+import { WAREHOUSE_STOCK_TABLE } from 'src/database/db.constants';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity('saleor.warehouse_stock')
+@Entity(WAREHOUSE_STOCK_TABLE)
 export class WarehouseStock {
   @PrimaryGeneratedColumn()
   id: number;

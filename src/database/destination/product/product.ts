@@ -1,6 +1,10 @@
+import {
+  DESTINATION_SALEOR_DB_SCHEMA_NAME,
+  PRODUCT_TABLE,
+} from 'src/database/db.constants';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'product_product', schema: 'saleor' })
+@Entity({ name: PRODUCT_TABLE, schema: DESTINATION_SALEOR_DB_SCHEMA_NAME })
 export class ProductProduct {
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
