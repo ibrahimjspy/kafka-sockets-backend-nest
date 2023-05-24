@@ -20,6 +20,7 @@ import { AttributeAssignedProductAttributeValue } from './database/destination/p
 import { AttributeAttributeValue } from './database/destination/attributes';
 import { AttributeAssignedVariantAttribute } from './database/destination/productVariant/attributes/assignment';
 import { AttributeAssignedVariantAttributeValue } from './database/destination/productVariant/attributes/value';
+import { ProductCategory } from './database/destination/category';
 @Module({
   imports: [
     TerminusModule,
@@ -51,6 +52,7 @@ import { AttributeAssignedVariantAttributeValue } from './database/destination/p
           AttributeAttributeValue,
           AttributeAssignedVariantAttribute,
           AttributeAssignedVariantAttributeValue,
+          ProductCategory,
         ],
         synchronize: false,
       }),

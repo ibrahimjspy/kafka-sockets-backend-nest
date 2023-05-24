@@ -83,11 +83,4 @@ export class ProductController {
       });
     return syncCategories.results;
   }
-
-  @Post('api/v3/auto/sync')
-  async autoSyncV2Create(@Body() productInput: AutoSyncDto) {
-    return await this.productCopyService.createCopiesForCategory(
-      Number(productInput.categoryId),
-    );
-  }
 }

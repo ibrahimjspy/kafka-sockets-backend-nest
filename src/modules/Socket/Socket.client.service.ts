@@ -35,4 +35,28 @@ export class SocketClientService {
       this.logger.error('sending progress to socket failed');
     });
   }
+
+  async sendAutoSyncProgressV2(
+    totalCount,
+    completedCount,
+    autoSyncInput: AutoSyncDto,
+    eventId: string,
+  ) {
+    const importedPercentage = Math.round((completedCount / totalCount) * 100);
+    //connecting web socket server
+    const socket = io(SOCKET_ENDPOINT);
+    socket.connect();
+    socket.on('connect', async () => {
+      return await socket.emit(SOCKET_CLIENT_MESSAGE_NAME, {
+        totalProducts: totalCount,
+        imported: completedCount,
+        percentage: importedPercentage,
+        eventId,
+        ...autoSyncInput,
+      });
+    });
+    socket.on('connect_error', () => {
+      this.logger.error('sending progress to socket failed');
+    });
+  }
 }

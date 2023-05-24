@@ -8,6 +8,7 @@ export const KAFKA_CLIENT_ID =
 export const KAFKA_BROKER_ENDPOINT = process.env.KAFKA_BROKER_ENDPOINT;
 export const KAFKA_BULK_PRODUCT_CREATE_TOPIC = 'autoSyncBulkCreate';
 export const KAFKA_CREATE_PRODUCT_BATCHES_TOPIC = 'autoSyncCreateBatches';
+export const KAFKA_CREATE_PRODUCT_COPIES_TOPIC = 'autoSyncCreateCopies';
 export const KAFKA_HEARTBEAT_INTERVAL =
   Number(process.env.KAFKA_HEARTBEAT_INTERVAL) || 1000;
 export const KAFKA_RETRIES = Number(process.env.KAFKA_RETRIES) || 5;

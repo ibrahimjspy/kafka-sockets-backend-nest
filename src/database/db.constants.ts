@@ -25,3 +25,4 @@ export const PRODUCT_ATTRIBUTE_ASSIGNED_TABLE =
 export const PRODUCT_ATTRIBUTE_VALUE_TABLE =
   'saleor.attribute_assignedproductattributevalue';
 export const PRODUCT_TABLE = 'product_product';
+export const CATEGORY_TABLE = 'product_category';

@@ -1,5 +1,7 @@
 import { ProductVariantShopMapping } from 'src/database/destination/addProductToShop';
+import { ProductCategory } from 'src/database/destination/category';
 import { SyncMappings } from 'src/database/destination/mapping';
+import { ProductProduct } from 'src/database/destination/product/product';
 import { v4 as uuidv4 } from 'uuid';
 
 export const isArrayEmpty = (array) => {
@@ -44,4 +46,30 @@ export const transformMappings = (
     });
   });
   return transformedMappings;
+};
+
+/**
+ * Returns an array of category IDs extracted from the given array of ProductCategory objects.
+ * @param categories An array of ProductCategory objects.
+ * @returns An array of category IDs.
+ */
+export const getCategoryIds = (categories: ProductCategory[]): number[] => {
+  return categories.map((category) => category.id);
+};
+
+/**
+ * Transforms a 2D array of ProductProduct objects into an array of SyncMappings objects.
+ * @param products2dArray A 2D array of ProductProduct objects.
+ * @returns An array of SyncMappings objects.
+ */
+export const transformProductsListSync = (
+  products2dArray: ProductProduct[][],
+): SyncMappings[] => {
+  const mappings = [];
+  for (const productArray of products2dArray) {
+    for (const product of productArray) {
+      mappings.push({ new_product_id: String(product.id) });
+    }
+  }
+  return mappings as SyncMappings[];
 };
