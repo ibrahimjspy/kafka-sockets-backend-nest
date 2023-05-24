@@ -1,4 +1,4 @@
-import { ProductCopyTransformerService } from './product.copy.transformers';
+import { ProductCopyTransformerService } from './Copy.transformers';
 
 describe('ProductCopyTransformerService', () => {
   let service: ProductCopyTransformerService;

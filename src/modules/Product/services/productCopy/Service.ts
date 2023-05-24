@@ -8,9 +8,9 @@ import { ProductProductVariant } from 'src/database/destination/productVariant/p
 import { ProductProductVariantChannelListing } from 'src/database/destination/productVariant/channelListing';
 import { ProductThumbnail } from 'src/database/destination/media';
 import { WarehouseStock } from 'src/database/destination/productVariant/warehouseStock';
-import { ProductCopyTransformerService } from './product.copy.transformers';
-import { ProductAttributeCopyService } from './product.attributes.copy.service';
-import { ProductVariantAttributeCopyService } from './product.variant.attribute.copy.service';
+import { ProductCopyTransformerService } from './Copy.transformers';
+import { ProductAttributeCopyService } from './Attributes.copy.service';
+import { ProductVariantAttributeCopyService } from './Variant.attribute.copy.service';
 
 @Injectable()
 export class ProductCopyService {

@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { ProductProduct } from 'src/database/destination/product/product';
-import { ProductCopyTransformerService } from './product.copy.transformers';
+import { ProductCopyTransformerService } from './Copy.transformers';
 import { AttributeAttributeValue } from 'src/database/destination/attributes';
 import { ProductProductVariant } from 'src/database/destination/productVariant/productVariant';
 import { AttributeAssignedVariantAttribute } from 'src/database/destination/productVariant/attributes/assignment';

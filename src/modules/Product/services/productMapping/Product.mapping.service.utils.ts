@@ -1,4 +1,7 @@
-import { ProductMappingResponseDto } from './Product.mapping.types';
+import {
+  ProductMappingResponseDto,
+  ProductMappingsDto,
+} from './Product.mapping.types';
 
 /**
  * @description -- this method removes duplicate retailer ids against a category id if any
@@ -85,4 +88,62 @@ export const getProductMappingFilter = (productId, shopId) => {
       },
     ],
   };
+};
+
+/**
+ * Converts a Map<number, number> into an object with keys added as shr_b2b_product_id.
+ * @param map The Map<number, number> to convert.
+ * @returns An object with keys added as shr_b2b_product_id in ElasticSearch filter format.
+ */
+export const convertMapToProductMapping = (
+  map: Map<number, number>,
+): { all: { shr_b2b_product_id: number }[] } => {
+  const filter: { all: { shr_b2b_product_id: number }[] } = {
+    all: [],
+  };
+  for (const key of map.keys()) {
+    filter.all.push({ shr_b2b_product_id: key });
+  }
+  return filter;
+};
+
+/**
+ * Transforms the copied product mapping data into the desired format.
+ * @param retailerId The ID of the retailer.
+ * @param productsMapping A map of product IDs from B2B to B2C.
+ * @param elasticSearchResponse The response from Elasticsearch containing product mapping data.
+ * @returns An array of transformed product mappings.
+ */
+export const transformCopiedProductMapping = (
+  retailerId: string,
+  productsMapping: Map<number, number>,
+  elasticSearchResponse: ProductMappingResponseDto[],
+): ProductMappingsDto[] => {
+  const mappings: ProductMappingsDto[] = [];
+
+  elasticSearchResponse.forEach((document) => {
+    mappings.push({
+      shr_b2b_product_id: document.shr_b2b_product_id.raw,
+      shr_b2c_product_id: String(
+        productsMapping.get(Number(document.shr_b2c_product_id.raw)),
+      ),
+      retailer_id: retailerId,
+    });
+  });
+
+  return mappings;
+};
+
+/**
+ * Breaks an array into chunks of a specified size.
+ * @param array The array to be chunked.
+ * @param size The size of each chunk.
+ * @returns An array of chunked arrays.
+ */
+export const chunkArray = <T>(array: T[], size: number) => {
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+  return chunks;
 };

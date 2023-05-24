@@ -9,7 +9,7 @@ import {
 } from './Product.dto';
 import PromisePool from '@supercharge/promise-pool/dist';
 import { ProductMappingService } from './services/productMapping/Product.mapping.service';
-import { ProductCopyService } from './services/productCopy/product.copy.service';
+import { ProductCopyService } from './services/productCopy/Service';
 
 @Controller()
 @ApiTags('auto-sync-product-api')

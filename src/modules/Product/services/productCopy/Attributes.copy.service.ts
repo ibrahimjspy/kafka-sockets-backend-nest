@@ -4,7 +4,7 @@ import { In, Repository } from 'typeorm';
 import { AttributeAssignedProductAttribute } from 'src/database/destination/product/attributes/assignment';
 import { AttributeAssignedProductAttributeValue } from 'src/database/destination/product/attributes/value';
 import { ProductProduct } from 'src/database/destination/product/product';
-import { ProductCopyTransformerService } from './product.copy.transformers';
+import { ProductCopyTransformerService } from './Copy.transformers';
 import { AttributeAttributeValue } from 'src/database/destination/attributes';
 
 @Injectable()

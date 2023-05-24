@@ -23,7 +23,7 @@ import { ProductVariantMappingRepository } from 'src/database/destination/reposi
 import { CreateProductCopiesRepository } from 'src/database/destination/repositories/copyProducts';
 import { SyncMappingsRepository } from 'src/database/destination/repositories/syncProducts';
 import { ProductProduct } from 'src/database/destination/product/product';
-import { ProductCopyService } from './services/productCopy/product.copy.service';
+import { ProductCopyService } from './services/productCopy/Service';
 import { ProductProductChannelListing } from 'src/database/destination/product/channnelListing';
 import { ProductProductMedia } from 'src/database/destination/product/media';
 import { ProductProductVariant } from 'src/database/destination/productVariant/productVariant';
@@ -31,12 +31,12 @@ import { ProductProductVariantChannelListing } from 'src/database/destination/pr
 import { WarehouseStock } from 'src/database/destination/productVariant/warehouseStock';
 import { AttributeAssignedProductAttribute } from 'src/database/destination/product/attributes/assignment';
 import { AttributeAssignedProductAttributeValue } from 'src/database/destination/product/attributes/value';
-import { ProductCopyTransformerService } from './services/productCopy/product.copy.transformers';
-import { ProductAttributeCopyService } from './services/productCopy/product.attributes.copy.service';
+import { ProductCopyTransformerService } from './services/productCopy/Copy.transformers';
+import { ProductAttributeCopyService } from './services/productCopy/Attributes.copy.service';
 import { AttributeAttributeValue } from 'src/database/destination/attributes';
 import { AttributeAssignedVariantAttribute } from 'src/database/destination/productVariant/attributes/assignment';
 import { AttributeAssignedVariantAttributeValue } from 'src/database/destination/productVariant/attributes/value';
-import { ProductVariantAttributeCopyService } from './services/productCopy/product.variant.attribute.copy.service';
+import { ProductVariantAttributeCopyService } from './services/productCopy/Variant.attribute.copy.service';
 import { ProductCategory } from 'src/database/destination/category';
 import { ProductCategoryRepository } from 'src/database/destination/repositories/category';
 

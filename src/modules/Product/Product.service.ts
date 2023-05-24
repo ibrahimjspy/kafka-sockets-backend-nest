@@ -44,7 +44,7 @@ import { ProductVariantMappingRepository } from 'src/database/destination/reposi
 import { CreateProductCopiesRepository } from 'src/database/destination/repositories/copyProducts';
 import { ProductCategoryRepository } from 'src/database/destination/repositories/category';
 import { ProductCategory } from 'src/database/destination/category';
-import { ProductCopyService } from './services/productCopy/product.copy.service';
+import { ProductCopyService } from './services/productCopy/Service';
 import { ProductVariantShopMapping } from 'src/database/destination/addProductToShop';
 
 @Injectable()

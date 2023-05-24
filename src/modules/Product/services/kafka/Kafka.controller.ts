@@ -9,7 +9,9 @@ import {
   KAFKA_BULK_PRODUCT_CREATE_TOPIC,
   KAFKA_CREATE_PRODUCT_BATCHES_TOPIC,
   KAFKA_CREATE_PRODUCT_COPIES_TOPIC,
+  KAFKA_SAVE_PRODUCT_ES_MAPPINGS_TOPIC,
 } from 'src/constants';
+import { ProductMappingService } from '../productMapping/Product.mapping.service';
 
 @Controller()
 export class KafkaController {
@@ -17,6 +19,7 @@ export class KafkaController {
     @Inject(forwardRef(() => ProductService))
     private readonly productService: ProductService,
     private readonly kafkaProductService: ProducerService,
+    private readonly productMappingService: ProductMappingService,
   ) {}
   private readonly logger = new Logger(KafkaController.name);
 
@@ -71,6 +74,14 @@ export class KafkaController {
   }
 
   pushProductCopiesToShop(@Payload() message: ProducerRecord) {
+    try {
+      return this.kafkaProductService.produce(message);
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  pushElasticSearchMappings(@Payload() message: ProducerRecord) {
     try {
       return this.kafkaProductService.produce(message);
     } catch (error) {
