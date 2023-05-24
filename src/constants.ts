@@ -2,12 +2,16 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 // kafka
-export const KAFKA_CONSUMER_GROUP = 'auto-sync-kafka-consumer-34';
+export const KAFKA_CONSUMER_GROUP = 'auto-sync-kafka-consumer-39';
 export const KAFKA_CLIENT_ID =
   process.env.KAFKA_CLIENT_ID || 'auto-sync-client';
 export const KAFKA_BROKER_ENDPOINT = process.env.KAFKA_BROKER_ENDPOINT;
 export const KAFKA_BULK_PRODUCT_CREATE_TOPIC = 'autoSyncBulkCreate';
 export const KAFKA_CREATE_PRODUCT_BATCHES_TOPIC = 'autoSyncCreateBatches';
+export const KAFKA_CREATE_PRODUCT_COPIES_TOPIC = 'autoSyncCreateProductCopies';
+export const KAFKA_SAVE_PRODUCT_ES_MAPPINGS_TOPIC =
+  'autoSyncSaveElasticSearchMappings';
+
 export const KAFKA_HEARTBEAT_INTERVAL =
   Number(process.env.KAFKA_HEARTBEAT_INTERVAL) || 1000;
 export const KAFKA_RETRIES = Number(process.env.KAFKA_RETRIES) || 5;

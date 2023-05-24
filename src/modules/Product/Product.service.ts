@@ -24,13 +24,16 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   KAFKA_BULK_PRODUCT_CREATE_TOPIC,
   KAFKA_CREATE_PRODUCT_BATCHES_TOPIC,
+  KAFKA_CREATE_PRODUCT_COPIES_TOPIC,
   PRODUCT_BATCH_SIZE,
   PRODUCT_UPDATE_BATCH_SIZE,
 } from 'src/constants';
 import {
+  getCategoryIds,
   isArrayEmpty,
   productTotalCountTransformer,
   transformMappings,
+  transformProductsListSync,
 } from './Product.utils';
 import { getStoreIdFromShop } from 'src/graphql/source/handler/shop';
 import { ProductVariantInterface } from './services/productVariant/Product.variant.types';
@@ -39,6 +42,10 @@ import { idBase64Decode } from './services/productMedia/Product.media.utils';
 import { SyncMappingsRepository } from 'src/database/destination/repositories/syncProducts';
 import { ProductVariantMappingRepository } from 'src/database/destination/repositories/addProductToShop';
 import { CreateProductCopiesRepository } from 'src/database/destination/repositories/copyProducts';
+import { ProductCategoryRepository } from 'src/database/destination/repositories/category';
+import { ProductCategory } from 'src/database/destination/category';
+import { ProductCopyService } from './services/productCopy/Service';
+import { ProductVariantShopMapping } from 'src/database/destination/addProductToShop';
 
 @Injectable()
 export class ProductService {
@@ -56,6 +63,8 @@ export class ProductService {
     private readonly syncMappingsRepository: SyncMappingsRepository,
     private readonly productVariantMappingRepository: ProductVariantMappingRepository,
     private readonly createProductCopiesRepository: CreateProductCopiesRepository,
+    private readonly productCategoryRepository: ProductCategoryRepository,
+    private readonly productCopyService: ProductCopyService,
   ) {}
   private readonly logger = new Logger(ProductService.name);
 
@@ -450,30 +459,96 @@ export class ProductService {
   }
 
   /**
-   * @description -- this syncs a category by firstly getting all category ids and then calling a stored procedure
-   * which creates copies of products in b2c database
-   * we then take these product ids from a table that stores event id and products mappings
+   * @description -- this syncs a category by firstly getting all category ids and then calling a method
+   * which creates copies of products and add those copied products to shop
    * after getting product mappings we then store mappings in elastic search and shop service
    */
-  public async autoSyncV2(autoSyncInput: AutoSyncDto): Promise<any> {
+  public async autoSyncV2(autoSyncInput: AutoSyncDto) {
     try {
       const { storeId, categoryId } = autoSyncInput;
-      const eventId = uuidv4();
+      const eventId: string = uuidv4();
       const [addCategoryToShop] = await Promise.all([
         this.shopDestinationApi.addCategoryToShop(storeId, categoryId),
         this.productMappingService.saveSyncCategoryMapping(autoSyncInput),
       ]);
+      await this.kafkaService.pushProductCopiesToShop({
+        topic: KAFKA_CREATE_PRODUCT_COPIES_TOPIC,
+        messages: [
+          {
+            value: JSON.stringify({
+              autoSyncInput,
+              eventId,
+              addCategoryToShop,
+            }),
+          },
+        ],
+      });
+      return { categoryId, eventId };
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  /**
+   * @description Syncs a category by getting all category IDs and calling a stored procedure to create copies of products in the B2C database.
+   * The product mappings are then stored in Elasticsearch and the shop service.
+   * @param autoSyncInput The auto sync input object.
+   * @param eventId The event ID.
+   * @param addCategoryToShop add category to shop from shop service
+   * @returns A Promise that resolves to an array of product variant shop mappings.
+   */
+  public async autoSyncV2ProductsCreate({
+    autoSyncInput,
+    eventId,
+    addCategoryToShop,
+  }): Promise<ProductVariantShopMapping[]> {
+    try {
+      const { storeId, categoryId } = autoSyncInput;
+      const BATCH_SIZE = 1;
       const parentCategoryId = idBase64Decode(categoryId);
-      await this.createProductCopiesRepository.createProductCopies(
-        parentCategoryId,
+      const categories =
+        await this.productCategoryRepository.fetchCategoriesInSameTree(
+          Number(parentCategoryId),
+        );
+      const totalCount =
+        await this.productCategoryRepository.getProductCountForCategories(
+          getCategoryIds(categories),
+        );
+      let completedCount = 0;
+      this.webSocketService.sendAutoSyncProgressV2(
+        totalCount,
+        completedCount,
+        autoSyncInput,
         eventId,
       );
-      const mappings = await this.syncMappingsRepository.getSyncedProducts(
-        eventId,
-      );
+      const { ...bulkProducts } = await PromisePool.for(categories)
+        .withConcurrency(BATCH_SIZE)
+        .handleError((error) => {
+          this.logger.error(error);
+        })
+        .onTaskFinished((category: ProductCategory, pool) => {
+          this.webSocketService.sendAutoSyncProgressV2(
+            totalCount,
+            completedCount,
+            autoSyncInput,
+            eventId,
+          );
+          this.logger.log(`Progress: ${pool.processedPercentage()}%`);
+        })
+        .process(async (category: ProductCategory) => {
+          const productCopiesCreate =
+            await this.productCopyService.createCopiesForCategory(category.id);
+          completedCount = completedCount + productCopiesCreate.length;
+          return productCopiesCreate;
+        });
+
       const saveMappings =
         await this.productVariantMappingRepository.saveProductVariantMappings(
-          transformMappings(mappings, storeId, addCategoryToShop),
+          transformMappings(
+            transformProductsListSync(bulkProducts.results),
+            storeId,
+            addCategoryToShop,
+          ),
         );
       return saveMappings;
     } catch (error) {

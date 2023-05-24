@@ -9,6 +9,7 @@ import {
 } from './Product.dto';
 import PromisePool from '@supercharge/promise-pool/dist';
 import { ProductMappingService } from './services/productMapping/Product.mapping.service';
+import { ProductCopyService } from './services/productCopy/Service';
 
 @Controller()
 @ApiTags('auto-sync-product-api')
@@ -18,6 +19,7 @@ export class ProductController {
   constructor(
     private readonly productService: ProductService,
     private readonly productMappingService: ProductMappingService,
+    private readonly productCopyService: ProductCopyService,
   ) {}
   @Post('api/v1/auto/sync')
   async autoSync(@Body() autoSyncInput: ImportBulkCategoriesDto) {

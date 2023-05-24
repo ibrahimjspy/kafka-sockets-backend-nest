@@ -8,7 +8,10 @@ import { ProducerRecord } from 'kafkajs';
 import {
   KAFKA_BULK_PRODUCT_CREATE_TOPIC,
   KAFKA_CREATE_PRODUCT_BATCHES_TOPIC,
+  KAFKA_CREATE_PRODUCT_COPIES_TOPIC,
+  KAFKA_SAVE_PRODUCT_ES_MAPPINGS_TOPIC,
 } from 'src/constants';
+import { ProductMappingService } from '../productMapping/Product.mapping.service';
 
 @Controller()
 export class KafkaController {
@@ -16,6 +19,7 @@ export class KafkaController {
     @Inject(forwardRef(() => ProductService))
     private readonly productService: ProductService,
     private readonly kafkaProductService: ProducerService,
+    private readonly productMappingService: ProductMappingService,
   ) {}
   private readonly logger = new Logger(KafkaController.name);
 
@@ -37,6 +41,21 @@ export class KafkaController {
     }
   }
 
+  @MessagePattern(KAFKA_CREATE_PRODUCT_COPIES_TOPIC)
+  async autoSyncAddCopyProductsToShop(@Payload() message) {
+    try {
+      this.logger.log('Pushing product copies to shop');
+
+      const addCopiesToShop =
+        this.productService.autoSyncV2ProductsCreate(message);
+      this.logger.log('Pushing product copies to shop called');
+
+      return;
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
   pushProductBatch(@Payload() message: ProducerRecord) {
     try {
       this.logger.log('Pushing product batch to create');
@@ -47,6 +66,22 @@ export class KafkaController {
   }
 
   createProductBatches(@Payload() message: ProducerRecord) {
+    try {
+      return this.kafkaProductService.produce(message);
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  pushProductCopiesToShop(@Payload() message: ProducerRecord) {
+    try {
+      return this.kafkaProductService.produce(message);
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  pushElasticSearchMappings(@Payload() message: ProducerRecord) {
     try {
       return this.kafkaProductService.produce(message);
     } catch (error) {
