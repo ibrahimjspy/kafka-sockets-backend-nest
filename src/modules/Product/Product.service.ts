@@ -45,7 +45,7 @@ import { CreateProductCopiesRepository } from 'src/database/destination/reposito
 import { ProductCategoryRepository } from 'src/database/destination/repositories/category';
 import { ProductCategory } from 'src/database/destination/category';
 import { ProductCopyService } from './services/productCopy/Service';
-import { ProductVariantShopMapping } from 'src/database/destination/addProductToShop';
+import { ProductProduct } from 'src/database/destination/product/product';
 
 @Injectable()
 export class ProductService {
@@ -474,9 +474,9 @@ export class ProductService {
     autoSyncInput,
     eventId,
     addCategoryToShop,
-  }): Promise<ProductVariantShopMapping[]> {
+  }): Promise<ProductProduct[][]> {
     try {
-      const { storeId, categoryId } = autoSyncInput;
+      const { storeId, categoryId, shopId }: AutoSyncDto = autoSyncInput;
       const BATCH_SIZE = 1;
       const parentCategoryId = idBase64Decode(categoryId);
       const categories =
@@ -514,16 +514,21 @@ export class ProductService {
           completedCount = completedCount + productCopiesCreate.length;
           return productCopiesCreate;
         });
-
-      const saveMappings =
-        await this.productVariantMappingRepository.saveProductVariantMappings(
+      const productList = bulkProducts.results;
+      await Promise.race([
+        this.productVariantMappingRepository.saveProductVariantMappings(
           transformMappings(
             transformProductsListSync(bulkProducts.results),
             storeId,
             addCategoryToShop,
           ),
-        );
-      return saveMappings;
+        ),
+        this.productMappingService.saveBulkMappingsCopiedProducts({
+          retailerId: shopId,
+          productsList: bulkProducts.results,
+        }),
+      ]);
+      return productList;
     } catch (error) {
       this.logger.error(error);
     }

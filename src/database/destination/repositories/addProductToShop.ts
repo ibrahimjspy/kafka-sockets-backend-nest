@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProductVariantShopMapping } from '../addProductToShop';
@@ -7,6 +7,7 @@ import { ProductVariantShopMapping } from '../addProductToShop';
 export class ProductVariantMappingRepository {
   @InjectRepository(ProductVariantShopMapping)
   private readonly repository: Repository<ProductVariantShopMapping>;
+  private readonly logger = new Logger(ProductVariantMappingRepository.name);
 
   /**
    * @description -- this method saves mappings for product variants
@@ -14,6 +15,10 @@ export class ProductVariantMappingRepository {
   public async saveProductVariantMappings(
     productVariantMappings: ProductVariantShopMapping[],
   ) {
-    return this.repository.save(productVariantMappings);
+    try {
+      return this.repository.save(productVariantMappings);
+    } catch (error) {
+      this.logger.error(error);
+    }
   }
 }

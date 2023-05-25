@@ -1,3 +1,4 @@
+import { idBase64Decode } from '../productMedia/Product.media.utils';
 import {
   ProductMappingResponseDto,
   ProductMappingsDto,
@@ -97,15 +98,15 @@ export const getProductMappingFilter = (productId, shopId) => {
  */
 export const convertMapToProductMapping = (
   map: Map<number, number>,
-): { all: { shr_b2c_product_id: string }[] } => {
-  const filter: { all: { shr_b2c_product_id: string }[] } = {
-    all: [],
+): { all: { shr_b2c_product_id: string[] }[] } => {
+  const filter: { all: { shr_b2c_product_id: string[] }[] } = {
+    all: [{ shr_b2c_product_id: [] }],
   };
 
   for (const key of map.keys()) {
     const transformProduct = btoa(`Product:${key}`);
 
-    filter.all.push({ shr_b2c_product_id: transformProduct });
+    filter.all[0].shr_b2c_product_id.push(transformProduct);
   }
   return filter;
 };
@@ -125,9 +126,10 @@ export const transformCopiedProductMapping = (
   const mappings: ProductMappingsDto[] = [];
   elasticSearchResponse.flat(1).forEach((document) => {
     const transformProduct = btoa(
-      `Product:${productsMapping.get(Number(document.shr_b2c_product_id.raw))}`,
+      `Product:${productsMapping.get(
+        Number(idBase64Decode(document.shr_b2c_product_id.raw)),
+      )}`,
     );
-
     mappings.push({
       shr_b2b_product_id: document.shr_b2b_product_id.raw,
       shr_b2c_product_id: transformProduct,
