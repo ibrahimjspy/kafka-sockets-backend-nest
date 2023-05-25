@@ -17,8 +17,11 @@ import { AutoSyncDto, DeActivateAutoSyncDto } from '../../Product.dto';
 import { ProductTransformedDto } from '../../transformer/Product.transformer.types';
 import polly from 'polly-js';
 import {
+  chunkArray,
+  convertMapToProductMapping,
   getElasticSearchDocumentIds,
   getProductMappingFilter,
+  transformCopiedProductMapping,
   validateSaveMappingsList,
   validateSingleProductMappings,
   validateSyncedRetailerMappings,
@@ -30,6 +33,7 @@ import { isArrayEmpty } from '../../Product.utils';
 import PromisePool from '@supercharge/promise-pool/dist';
 import { getShopDetails } from 'src/graphql/source/handler/shop';
 import { getShopFieldValues } from 'src/graphql/utils/getShop';
+import { ProductProduct } from 'src/database/destination/product/product';
 @Injectable()
 export class ProductMappingService {
   private readonly logger = new Logger(ProductMappingService.name);
@@ -362,5 +366,134 @@ export class ProductMappingService {
     } catch (error) {
       this.logger.error(error);
     }
+  }
+
+  /**
+   * Fetches all mappings for the given products from the mapping service, with retry functionality.
+   * @param productsList2d An array of arrays containing ProductProduct objects.
+   * @param currentPage The current page number for pagination (default: 1).
+   * @returns A Promise that resolves to an array of mapping results.
+   * @throws An error if the request fails after retries.
+   */
+  private async getMappingsCopyProducts(
+    productsList2d: ProductProduct[][],
+    currentPage = 1,
+  ): Promise<ProductMappingResponseDto[]> {
+    try {
+      return await polly()
+        .logger((error) => {
+          console.log(error);
+          Logger.error(error);
+        })
+        .waitAndRetry(RETRY_COUNT)
+        .executeForPromise(async () => {
+          const validProducts = productsList2d.flat(1);
+          const productChunks = chunkArray(validProducts, 32); // Split validProducts into chunks of 32
+
+          const results: ProductMappingResponseDto[] = [];
+          const pool = new PromisePool();
+
+          await pool
+            .for(productChunks)
+            .withConcurrency(10) // Adjust the concurrency as needed
+            .process(async (chunk) => {
+              const productMappings = this.getProductMapping(chunk);
+              const filters = JSON.stringify({
+                query: '',
+                page: { size: 1000, current: currentPage },
+                filters: convertMapToProductMapping(productMappings),
+              });
+
+              const elasticSearchResponse: any = await axios.post(
+                `${MAPPING_SERVICE_URL}/search`,
+                filters,
+                MAPPING_SERVICE_HEADERS,
+              );
+
+              results.push(...elasticSearchResponse.data.results);
+
+              const totalPages =
+                elasticSearchResponse.data.meta?.page?.total_pages;
+              if (currentPage !== totalPages && totalPages !== 0) {
+                const nextPageProductIds = await this.getMappingsCopyProducts(
+                  productsList2d,
+                  currentPage + 1,
+                );
+                results.push(...nextPageProductIds);
+              }
+            })
+            .catch((error) => {
+              console.dir(error, { depth: null });
+              Logger.error(error);
+              throw error;
+            });
+
+          return results;
+        });
+    } catch (error) {
+      console.dir(error, { depth: null });
+      Logger.error(error);
+      throw error;
+    }
+  }
+
+  /**
+   * @description -- This method stores mappings in bulk in the destination mapping service (Elasticsearch).
+   * @warn -- This can create mappings using falsy values due to how Elasticsearch stores documents.
+   */
+  public async saveBulkMappingsCopiedProducts({ retailerId, productsList }) {
+    try {
+      const batchSize = 100;
+      const validProducts = productsList.flat(1);
+      const productMappings = this.getProductMapping(validProducts);
+      const masterProductDocuments = await this.getMappingsCopyProducts(
+        productsList,
+      );
+      const createMappingsPayload = transformCopiedProductMapping(
+        retailerId,
+        productMappings,
+        masterProductDocuments,
+      );
+      if (!validateSaveMappingsList(createMappingsPayload)) return;
+
+      const chunkedPayload = chunkArray(createMappingsPayload, batchSize);
+
+      const pool = await new PromisePool()
+        .for(chunkedPayload)
+        .withConcurrency(10)
+        .process(async (mapping) => {
+          return await axios.post(
+            `${MAPPING_SERVICE_URL}/documents`,
+            JSON.stringify(mapping),
+            {
+              headers: MAPPING_SERVICE_HEADERS.headers,
+            },
+          );
+        });
+      return pool;
+    } catch (error) {
+      this.logger.log(error);
+    }
+  }
+
+  /**
+   * Generates a mapping between original and copied product IDs.
+   * @param copiedProducts - The copied products.
+   * @param key - The key used to determine the type of mapping. Default is 'parent'.
+   * @returns A mapping between original and copied product IDs.
+   */
+  public getProductMapping(
+    copiedProducts: ProductProduct[],
+    key = 'parent',
+  ): Map<number, number> {
+    const mapping: Map<number, number> = new Map();
+    copiedProducts.forEach((copiedProduct) => {
+      const originalId =
+        key === 'parent' ? copiedProduct.metadata.parentId : copiedProduct.id;
+      const copiedId =
+        key === 'parent' ? copiedProduct.id : copiedProduct.metadata.parentId;
+      mapping.set(originalId, copiedId);
+    });
+    return mapping;
   }
 }

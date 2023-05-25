@@ -97,12 +97,15 @@ export const getProductMappingFilter = (productId, shopId) => {
  */
 export const convertMapToProductMapping = (
   map: Map<number, number>,
-): { all: { shr_b2b_product_id: number }[] } => {
-  const filter: { all: { shr_b2b_product_id: number }[] } = {
+): { all: { shr_b2c_product_id: string }[] } => {
+  const filter: { all: { shr_b2c_product_id: string }[] } = {
     all: [],
   };
+
   for (const key of map.keys()) {
-    filter.all.push({ shr_b2b_product_id: key });
+    const transformProduct = btoa(`Product:${key}`);
+
+    filter.all.push({ shr_b2c_product_id: transformProduct });
   }
   return filter;
 };
@@ -120,17 +123,18 @@ export const transformCopiedProductMapping = (
   elasticSearchResponse: ProductMappingResponseDto[],
 ): ProductMappingsDto[] => {
   const mappings: ProductMappingsDto[] = [];
+  elasticSearchResponse.flat(1).forEach((document) => {
+    const transformProduct = btoa(
+      `Product:${productsMapping.get(Number(document.shr_b2c_product_id.raw))}`,
+    );
 
-  elasticSearchResponse.forEach((document) => {
     mappings.push({
       shr_b2b_product_id: document.shr_b2b_product_id.raw,
-      shr_b2c_product_id: String(
-        productsMapping.get(Number(document.shr_b2c_product_id.raw)),
-      ),
+      shr_b2c_product_id: transformProduct,
       retailer_id: retailerId,
     });
   });
-
+  console.log(mappings[0]);
   return mappings;
 };
 
