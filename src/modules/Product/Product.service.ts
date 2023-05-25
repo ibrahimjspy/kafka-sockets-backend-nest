@@ -121,7 +121,7 @@ export class ProductService {
         totalCount: 0,
         batchNumber: 0,
       };
-      while (pagination.hasNextPage && pagination.batchNumber < 2) {
+      while (pagination.hasNextPage && pagination.batchNumber < 40) {
         const categoryData: GetProductsDto = await getProductsHandler(
           { first: pagination.first, after: pagination.endCursor },
           {
@@ -173,12 +173,8 @@ export class ProductService {
     pagination,
     eventId,
   }) {
-    const productsList = await this.productMappingService.validateMappings(
-      autoSyncInput,
-      productsData,
-    );
     const validateProducts = this.validationService.transformedProducts(
-      productsList,
+      productsData,
       addCategoryToShop,
     );
 
@@ -198,11 +194,7 @@ export class ProductService {
         this.logger.log(`Progress: ${pool.processedPercentage()}%`);
       })
       .process(async (product: ProductTransformedDto) => {
-        return await this.createSingleProduct(
-          autoSyncInput,
-          product,
-          addCategoryToShop,
-        );
+        return await this.createSingleProduct(autoSyncInput, product);
       });
 
     return bulkProducts;
@@ -221,26 +213,23 @@ export class ProductService {
   public async createSingleProduct(
     autoSyncInput: AutoSyncDto,
     productData: ProductTransformedDto,
-    addCategoryToShop: string,
   ): Promise<ProductMappingsDto> {
     const productId = await this.productDestinationApi.createProduct(
       productData,
     );
-    const { storeId } = autoSyncInput;
 
     const addProductToChannel = await Promise.allSettled([
       await this.productDestinationApi.productChannelListing(productId),
     ]);
 
-    const [createProductVariants, storeProductBrand, createProductMedia] =
-      await Promise.allSettled([
-        this.productVariantService.bulkProductVariantCreate(
-          productId,
-          productData,
-        ),
-        this.productDestinationApi.storeProductBrand(productId, productData),
-        this.productMediaService.bulkMediaCreate(productId, productData),
-      ]);
+    const [storeProductBrand, createProductMedia] = await Promise.allSettled([
+      this.productVariantService.bulkProductVariantCreate(
+        productId,
+        productData,
+      ),
+      this.productDestinationApi.storeProductBrand(productId, productData),
+      this.productMediaService.bulkMediaCreate(productId, productData),
+    ]);
 
     const productMapping =
       this.productTransformer.transformCreatedProductForMapping(
@@ -249,15 +238,8 @@ export class ProductService {
         productData,
       );
 
-    const [addProductToShop, storeProductStatus] = await Promise.allSettled([
-      this.productDestinationApi.addProductToShop(
-        storeId,
-        productId,
-        addCategoryToShop,
-        createProductVariants['value'],
-      ),
+    const [storeProductStatus, saveMappings] = await Promise.allSettled([
       this.productDestinationApi.saveProductCreateStatus(productId),
-      this.productDestinationApi.addProductsToStore([productMapping], storeId),
       this.productMappingService.saveBulkMappings([productMapping]), //TODO move these mappings to bulk once shop service is updated
     ]);
 
@@ -265,7 +247,7 @@ export class ProductService {
       addProductToChannel,
       storeProductBrand,
       createProductMedia,
-      addProductToShop,
+      saveMappings,
       storeProductStatus,
     ]);
 
@@ -330,11 +312,6 @@ export class ProductService {
           const categoryId = newProduct.categoryId;
           const shopId = retailer.shr_retailer_shop_id.raw;
           const storeId = await getStoreIdFromShop(shopId);
-          const addCategoryToShop =
-            await this.shopDestinationApi.addCategoryToShop(
-              storeId,
-              categoryId,
-            );
           const autoSyncInput: AutoSyncDto = {
             shopId,
             storeId,
@@ -346,11 +323,7 @@ export class ProductService {
             ]);
           if (isArrayEmpty(validateProduct)) return;
 
-          return await this.createSingleProduct(
-            autoSyncInput,
-            newProduct,
-            addCategoryToShop,
-          );
+          return await this.createSingleProduct(autoSyncInput, newProduct);
         });
       await this.productMappingService.saveBulkMappings(bulkProducts.results);
       return syncedRetailerIds;

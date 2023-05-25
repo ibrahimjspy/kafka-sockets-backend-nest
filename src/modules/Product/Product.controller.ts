@@ -21,7 +21,7 @@ export class ProductController {
     private readonly productMappingService: ProductMappingService,
     private readonly productCopyService: ProductCopyService,
   ) {}
-  @Post('api/v1/auto/sync')
+  @Post('api/v3/auto/sync')
   async autoSync(@Body() autoSyncInput: ImportBulkCategoriesDto) {
     const BATCH_SIZE = 1;
     const { ...syncCategories } = await PromisePool.for(

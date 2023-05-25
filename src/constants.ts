@@ -19,7 +19,7 @@ export const KAFKA_SESSION_TIMEOUT =
   Number(process.env.KAFKA_SESSION_TIMEOUT) || 1000000;
 
 // application
-export const PRODUCT_BATCH_SIZE = Number(process.env.PRODUCT_BATCH_SIZE) || 25;
+export const PRODUCT_BATCH_SIZE = Number(process.env.PRODUCT_BATCH_SIZE) || 15;
 export const PRODUCT_UPDATE_BATCH_SIZE =
   Number(process.env.PRODUCT_UPDATE_BATCH_SIZE) || 5;
 export const RETRY_COUNT = 4;

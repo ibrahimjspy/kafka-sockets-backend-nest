@@ -92,7 +92,6 @@ export class ProductTransformer {
     return {
       shr_b2b_product_id: transformedProduct.sourceId,
       shr_b2c_product_id: createdProductId,
-      retailer_id: autoSyncInput.shopId,
     };
   }
 
