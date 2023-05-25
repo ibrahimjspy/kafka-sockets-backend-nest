@@ -134,7 +134,6 @@ export const transformCopiedProductMapping = (
       retailer_id: retailerId,
     });
   });
-  console.log(mappings[0]);
   return mappings;
 };
 
