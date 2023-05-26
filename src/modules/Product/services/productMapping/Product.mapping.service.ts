@@ -388,7 +388,7 @@ export class ProductMappingService {
         .waitAndRetry(RETRY_COUNT)
         .executeForPromise(async () => {
           const validProducts = productsList2d.flat(1);
-          const productChunks = chunkArray(validProducts, 32); // Split validProducts into chunks of 32
+          const productChunks = chunkArray(validProducts, 500); // Split validProducts into chunks of 32
 
           const results: ProductMappingResponseDto[] = [];
           const pool = new PromisePool();
@@ -445,6 +445,10 @@ export class ProductMappingService {
     try {
       const batchSize = 100;
       const validProducts = productsList.flat(1);
+      this.logger.log(
+        `storing elastic search mapping for ${validProducts.length} products`,
+      );
+
       const productMappings = this.getProductMapping(validProducts);
       const masterProductDocuments = await this.getMappingsCopyProducts(
         productsList,
@@ -470,6 +474,9 @@ export class ProductMappingService {
             },
           );
         });
+      this.logger.log(
+        `stored elastic search mapping for ${validProducts.length} products !!`,
+      );
       return pool;
     } catch (error) {
       this.logger.log(error);

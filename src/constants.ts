@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 // kafka
-export const KAFKA_CONSUMER_GROUP = 'auto-sync-kafka-consumer-43';
+export const KAFKA_CONSUMER_GROUP = 'auto-sync-kafka-consumer-44';
 export const KAFKA_CLIENT_ID =
   process.env.KAFKA_CLIENT_ID || 'auto-sync-client';
 export const KAFKA_BROKER_ENDPOINT = process.env.KAFKA_BROKER_ENDPOINT;
@@ -19,6 +19,8 @@ export const KAFKA_SESSION_TIMEOUT =
   Number(process.env.KAFKA_SESSION_TIMEOUT) || 1000000;
 
 // application
+export const CATEGORIES_BATCH_SIZE =
+  Number(process.env.CATEGORIES_BATCH_SIZE) || 5;
 export const PRODUCT_BATCH_SIZE = Number(process.env.PRODUCT_BATCH_SIZE) || 15;
 export const PRODUCT_UPDATE_BATCH_SIZE =
   Number(process.env.PRODUCT_UPDATE_BATCH_SIZE) || 5;
