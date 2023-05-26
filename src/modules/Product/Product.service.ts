@@ -22,6 +22,7 @@ import { SocketClientService } from '../Socket/Socket.client.service';
 import { KafkaController } from './services/kafka/Kafka.controller';
 import { v4 as uuidv4 } from 'uuid';
 import {
+  CATEGORIES_BATCH_SIZE,
   KAFKA_BULK_PRODUCT_CREATE_TOPIC,
   KAFKA_CREATE_PRODUCT_BATCHES_TOPIC,
   KAFKA_CREATE_PRODUCT_COPIES_TOPIC,
@@ -477,7 +478,6 @@ export class ProductService {
   }): Promise<ProductProduct[][]> {
     try {
       const { storeId, categoryId, shopId }: AutoSyncDto = autoSyncInput;
-      const BATCH_SIZE = 1;
       const parentCategoryId = idBase64Decode(categoryId);
       const categories =
         await this.productCategoryRepository.fetchCategoriesInSameTree(
@@ -495,7 +495,7 @@ export class ProductService {
         eventId,
       );
       const { ...bulkProducts } = await PromisePool.for(categories)
-        .withConcurrency(BATCH_SIZE)
+        .withConcurrency(CATEGORIES_BATCH_SIZE)
         .handleError((error) => {
           this.logger.error(error);
         })
@@ -511,24 +511,30 @@ export class ProductService {
         .process(async (category: ProductCategory) => {
           const productCopiesCreate =
             await this.productCopyService.createCopiesForCategory(category.id);
+          await Promise.race([
+            this.productVariantMappingRepository.saveProductVariantMappings(
+              transformMappings(
+                transformProductsListSync([productCopiesCreate]),
+                storeId,
+                addCategoryToShop,
+              ),
+            ),
+            this.productMappingService.saveBulkMappingsCopiedProducts({
+              retailerId: shopId,
+              productsList: [productCopiesCreate],
+            }),
+          ]);
           completedCount = completedCount + productCopiesCreate.length;
           return productCopiesCreate;
         });
-      const productList = bulkProducts.results;
-      await Promise.race([
-        this.productVariantMappingRepository.saveProductVariantMappings(
-          transformMappings(
-            transformProductsListSync(bulkProducts.results),
-            storeId,
-            addCategoryToShop,
-          ),
-        ),
-        this.productMappingService.saveBulkMappingsCopiedProducts({
-          retailerId: shopId,
-          productsList: bulkProducts.results,
-        }),
-      ]);
-      return productList;
+      this.webSocketService.sendAutoSyncProgressV2(
+        totalCount,
+        totalCount,
+        autoSyncInput,
+        eventId,
+      );
+
+      return bulkProducts.results;
     } catch (error) {
       this.logger.error(error);
     }
