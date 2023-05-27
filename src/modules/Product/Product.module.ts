@@ -39,6 +39,9 @@ import { AttributeAssignedVariantAttributeValue } from 'src/database/destination
 import { ProductVariantAttributeCopyService } from './services/productCopy/Variant.attribute.copy.service';
 import { ProductCategory } from 'src/database/destination/category';
 import { ProductCategoryRepository } from 'src/database/destination/repositories/category';
+import { ProductWebhooksController } from './product.webhook.controller';
+import { InventoryService } from './services/inventory.ts/Inventory.service';
+import { OrderLine } from 'src/database/destination/order/orderLine';
 
 @Module({
   imports: [
@@ -58,8 +61,9 @@ import { ProductCategoryRepository } from 'src/database/destination/repositories
     TypeOrmModule.forFeature([AttributeAssignedVariantAttribute]),
     TypeOrmModule.forFeature([AttributeAssignedVariantAttributeValue]),
     TypeOrmModule.forFeature([ProductCategory]),
+    TypeOrmModule.forFeature([OrderLine]),
   ],
-  controllers: [KafkaController, ProductController],
+  controllers: [KafkaController, ProductController, ProductWebhooksController],
   providers: [
     ProductService,
     ProductTransformer,
@@ -95,6 +99,8 @@ import { ProductCategoryRepository } from 'src/database/destination/repositories
     AttributeAssignedVariantAttributeValue,
     ProductCategoryRepository,
     ProductCategory,
+    InventoryService,
+    OrderLine,
   ],
 })
 export class ProductModule {}

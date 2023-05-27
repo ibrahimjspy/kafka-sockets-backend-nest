@@ -9,6 +9,7 @@ export const KAFKA_BROKER_ENDPOINT = process.env.KAFKA_BROKER_ENDPOINT;
 export const KAFKA_BULK_PRODUCT_CREATE_TOPIC = 'autoSyncBulkCreate';
 export const KAFKA_CREATE_PRODUCT_BATCHES_TOPIC = 'autoSyncCreateBatches';
 export const KAFKA_CREATE_PRODUCT_COPIES_TOPIC = 'autoSyncCreateProductCopies';
+export const KAFKA_INVENTORY_SYNC_TOPIC = 'autoSyncInventorySync';
 export const KAFKA_SAVE_PRODUCT_ES_MAPPINGS_TOPIC =
   'autoSyncSaveElasticSearchMappings';
 
