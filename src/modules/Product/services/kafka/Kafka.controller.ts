@@ -9,9 +9,11 @@ import {
   KAFKA_BULK_PRODUCT_CREATE_TOPIC,
   KAFKA_CREATE_PRODUCT_BATCHES_TOPIC,
   KAFKA_CREATE_PRODUCT_COPIES_TOPIC,
+  KAFKA_INVENTORY_SYNC_TOPIC,
   KAFKA_SAVE_PRODUCT_ES_MAPPINGS_TOPIC,
 } from 'src/constants';
 import { ProductMappingService } from '../productMapping/Product.mapping.service';
+import { InventoryService } from '../inventory.ts/Inventory.service';
 
 @Controller()
 export class KafkaController {
@@ -20,6 +22,7 @@ export class KafkaController {
     private readonly productService: ProductService,
     private readonly kafkaProductService: ProducerService,
     private readonly productMappingService: ProductMappingService,
+    private readonly inventoryService: InventoryService,
   ) {}
   private readonly logger = new Logger(KafkaController.name);
 
@@ -49,6 +52,19 @@ export class KafkaController {
       const addCopiesToShop =
         this.productService.autoSyncV2ProductsCreate(message);
       this.logger.log('Pushing product copies to shop called');
+
+      return;
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  @MessagePattern(KAFKA_INVENTORY_SYNC_TOPIC)
+  async autoSyncInventorySync(@Payload() message) {
+    try {
+      this.logger.log('sync inventory kafka resolver called');
+
+      const syncInventory = this.inventoryService.inventorySync(message);
 
       return;
     } catch (error) {

@@ -9,6 +9,7 @@ export const KAFKA_BROKER_ENDPOINT = process.env.KAFKA_BROKER_ENDPOINT;
 export const KAFKA_BULK_PRODUCT_CREATE_TOPIC = 'autoSyncBulkCreate';
 export const KAFKA_CREATE_PRODUCT_BATCHES_TOPIC = 'autoSyncCreateBatches';
 export const KAFKA_CREATE_PRODUCT_COPIES_TOPIC = 'autoSyncCreateProductCopies';
+export const KAFKA_INVENTORY_SYNC_TOPIC = 'autoSyncInventorySync';
 export const KAFKA_SAVE_PRODUCT_ES_MAPPINGS_TOPIC =
   'autoSyncSaveElasticSearchMappings';
 
@@ -20,8 +21,8 @@ export const KAFKA_SESSION_TIMEOUT =
 
 // application
 export const CATEGORIES_BATCH_SIZE =
-  Number(process.env.CATEGORIES_BATCH_SIZE) || 5;
-export const PRODUCT_BATCH_SIZE = Number(process.env.PRODUCT_BATCH_SIZE) || 15;
+  Number(process.env.CATEGORIES_BATCH_SIZE) || 10;
+export const PRODUCT_BATCH_SIZE = Number(process.env.PRODUCT_BATCH_SIZE) || 20;
 export const PRODUCT_UPDATE_BATCH_SIZE =
   Number(process.env.PRODUCT_UPDATE_BATCH_SIZE) || 5;
 export const RETRY_COUNT = 4;
@@ -77,3 +78,6 @@ export const MAPPING_SERVICE_HEADERS = {
     Authorization: `Bearer private-${MAPPING_SERVICE_TOKEN}`,
   },
 };
+export const B2B_MAPPING_URL =
+  process.env.B2B_MAPPING_URL ||
+  `${AUTO_SYNC_MAPPING_URL.split('engines/')[0]}engines/b2b-product-track-dev`;

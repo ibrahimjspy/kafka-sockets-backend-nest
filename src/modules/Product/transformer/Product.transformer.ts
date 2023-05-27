@@ -14,12 +14,14 @@ import {
   VENDOR_NAME_METADATA_KEY,
   STYLE_NUMBER_ATTRIBUTE_NAME,
 } from 'src/constants';
+import { ProductMappingService } from '../services/productMapping/Product.mapping.service';
 
 @Injectable()
 export class ProductTransformer {
   constructor(
     private readonly mediaTransformer: ProductMediaTransformer,
     private readonly variantTransformer: ProductVariantTransformer,
+    private readonly productMappingService: ProductMappingService,
   ) {}
 
   public payloadBuilder(productsData: GetProductsDto) {
@@ -84,14 +86,20 @@ export class ProductTransformer {
     return styleNumber;
   }
 
-  public transformCreatedProductForMapping(
+  public async transformCreatedProductForMapping(
     autoSyncInput: AutoSyncDto,
     createdProductId: string,
     transformedProduct: ProductTransformedDto,
-  ): ProductMappingsDto {
+  ): Promise<ProductMappingsDto> {
+    const b2bProductId = transformedProduct.sourceId;
+    const osProductId = await this.productMappingService.getOSIdMapping(
+      b2bProductId,
+    );
     return {
+      retailer_id: autoSyncInput.shopId,
       shr_b2b_product_id: transformedProduct.sourceId,
       shr_b2c_product_id: createdProductId,
+      os_product_id: osProductId,
     };
   }
 

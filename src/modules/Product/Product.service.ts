@@ -122,7 +122,7 @@ export class ProductService {
         totalCount: 0,
         batchNumber: 0,
       };
-      while (pagination.hasNextPage && pagination.batchNumber < 40) {
+      while (pagination.hasNextPage && pagination.batchNumber < 50) {
         const categoryData: GetProductsDto = await getProductsHandler(
           { first: pagination.first, after: pagination.endCursor },
           {
@@ -233,7 +233,7 @@ export class ProductService {
     ]);
 
     const productMapping =
-      this.productTransformer.transformCreatedProductForMapping(
+      await this.productTransformer.transformCreatedProductForMapping(
         autoSyncInput,
         productId,
         productData,

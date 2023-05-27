@@ -3,7 +3,6 @@ import {
   COLOR_ATTRIBUTE_ID,
   SIZE_ATTRIBUTE_ID,
   DEFAULT_CHANNEL_ID,
-  DEFAULT_WAREHOUSE_ID,
   SKU_ATTRIBUTE_ID,
   COST_ATTRIBUTE_ID,
 } from 'src/constants';
@@ -69,7 +68,7 @@ export class ProductVariantDestinationService {
           channelListings: { channelId: "${DEFAULT_CHANNEL_ID}", price: ${
         resalePrice || defaultVariantResalePrice
       }, costPrice: ${costPrice || defaultVariantCostPrice}}
-         stocks: { warehouse:"${DEFAULT_WAREHOUSE_ID}"  quantity: 1000 }
+         preorder: { globalThreshold: 1000 }
         }
       `;
     });
