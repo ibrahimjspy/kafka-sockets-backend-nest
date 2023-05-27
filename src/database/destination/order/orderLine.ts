@@ -1,6 +1,7 @@
+import { ORDER_LINE_TABLE } from 'src/database/db.constants';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'saleor.order_orderline' })
+@Entity({ name: ORDER_LINE_TABLE })
 export class OrderLine {
   @PrimaryGeneratedColumn('uuid')
   id: string;
