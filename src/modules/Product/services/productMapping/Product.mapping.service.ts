@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import {
   CategoryMappingDto,
+  OsMappingType,
   ProductMappingResponseDto,
   ProductMappingsDto,
   SyncCategoryMappingDto,
@@ -8,6 +9,7 @@ import {
 import axios from 'axios';
 import {
   AUTO_SYNC_MAPPING_URL,
+  B2B_MAPPING_URL,
   MAPPING_SERVICE_HEADERS,
   MAPPING_SERVICE_URL,
   PRODUCT_BATCH_SIZE,
@@ -502,5 +504,33 @@ export class ProductMappingService {
       mapping.set(originalId, copiedId);
     });
     return mapping;
+  }
+
+  /**
+   * returns os product id against a b2b product id from elastic search mapping
+   */
+  public async getOSIdMapping(b2bProductId: string) {
+    try {
+      const filters = JSON.stringify({
+        query: '',
+        page: { size: 100 },
+        filters: {
+          all: [
+            {
+              shr_b2b_product_id: b2bProductId,
+            },
+          ],
+        },
+      });
+      const getB2BMapping = await axios.post(
+        `${B2B_MAPPING_URL}/search`,
+        filters,
+        MAPPING_SERVICE_HEADERS,
+      );
+      const response: OsMappingType = getB2BMapping.data;
+      return response.results[0]?.os_product_id.raw || null;
+    } catch (error) {
+      this.logger.error(error);
+    }
   }
 }

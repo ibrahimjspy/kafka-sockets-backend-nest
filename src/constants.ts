@@ -21,8 +21,8 @@ export const KAFKA_SESSION_TIMEOUT =
 
 // application
 export const CATEGORIES_BATCH_SIZE =
-  Number(process.env.CATEGORIES_BATCH_SIZE) || 5;
-export const PRODUCT_BATCH_SIZE = Number(process.env.PRODUCT_BATCH_SIZE) || 15;
+  Number(process.env.CATEGORIES_BATCH_SIZE) || 10;
+export const PRODUCT_BATCH_SIZE = Number(process.env.PRODUCT_BATCH_SIZE) || 20;
 export const PRODUCT_UPDATE_BATCH_SIZE =
   Number(process.env.PRODUCT_UPDATE_BATCH_SIZE) || 5;
 export const RETRY_COUNT = 4;
@@ -78,3 +78,6 @@ export const MAPPING_SERVICE_HEADERS = {
     Authorization: `Bearer private-${MAPPING_SERVICE_TOKEN}`,
   },
 };
+export const B2B_MAPPING_URL =
+  process.env.B2B_MAPPING_URL ||
+  `${AUTO_SYNC_MAPPING_URL.split('engines/')[0]}engines/b2b-product-track-dev`;
