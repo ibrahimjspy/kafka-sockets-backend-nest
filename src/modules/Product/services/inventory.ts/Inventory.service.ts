@@ -111,9 +111,11 @@ export class InventoryService {
         if (
           parentStock &&
           childStock &&
-          parentStock.quantity !== childStock.quantity
+          parentStock.quantity !== childStock.quantity &&
+          parentStock.quantity_allocated !== childStock.quantity_allocated
         ) {
           parentStock.quantity = childStock.quantity;
+          parentStock.quantity_allocated = childStock.quantity_allocated;
           updatePromises.push(
             this.productVariantStockRepository.save(parentStock),
           );
@@ -130,6 +132,7 @@ export class InventoryService {
       }
 
       await Promise.all(promises);
+      this.logger.log('Inventory syncing complete');
     } catch (error) {
       this.logger.error(error);
     }
@@ -170,11 +173,13 @@ export class InventoryService {
       if (
         parentStock &&
         childStock &&
-        parentStock.quantity !== childStock.quantity
+        childStock.quantity !== parentStock.quantity &&
+        childStock.quantity_allocated !== parentStock.quantity_allocated
       ) {
-        parentStock.quantity = childStock.quantity;
+        childStock.quantity = parentStock.quantity;
+        childStock.quantity_allocated = parentStock.quantity_allocated;
         updatePromises.push(
-          this.productVariantStockRepository.save(parentStock),
+          this.productVariantStockRepository.save(childStock),
         );
       }
     }
