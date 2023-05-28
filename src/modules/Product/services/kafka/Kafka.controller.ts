@@ -13,7 +13,7 @@ import {
   KAFKA_SAVE_PRODUCT_ES_MAPPINGS_TOPIC,
 } from 'src/constants';
 import { ProductMappingService } from '../productMapping/Product.mapping.service';
-import { InventoryService } from '../inventory.ts/Inventory.service';
+import { InventoryService } from '../Inventory/Inventory.service';
 
 @Controller()
 export class KafkaController {
