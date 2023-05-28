@@ -1,13 +1,15 @@
 import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { OrderIdDto } from './Product.webhook.dtos';
 import { ProducerService } from './services/kafka/Kafka.producer.service';
-import { KafkaController } from './services/kafka/Kafka.controller';
-import { KAFKA_INVENTORY_SYNC_TOPIC } from 'src/constants';
+import {
+  KAFKA_INVENTORY_SYNC_TOPIC,
+  KAFKA_PRODUCT_CHECK_IN_TOPIC,
+} from 'src/constants';
 
 @Controller('webhook')
 export class ProductWebhooksController {
   constructor(private readonly kafkaProductService: ProducerService) {}
-  private readonly logger = new Logger(KafkaController.name);
+  private readonly logger = new Logger(ProductWebhooksController.name);
 
   @Post('inventory/sync')
   async inventorySync(@Body() orderInput: OrderIdDto) {
@@ -23,5 +25,22 @@ export class ProductWebhooksController {
         ],
       });
     } catch (error) {}
+  }
+
+  @Post('product/check/in')
+  async productCheckIn(@Body() productInput) {
+    try {
+      this.logger.log('product check in webhook called', productInput);
+      return await this.kafkaProductService.produce({
+        topic: KAFKA_PRODUCT_CHECK_IN_TOPIC,
+        messages: [
+          {
+            value: JSON.stringify(productInput),
+          },
+        ],
+      });
+    } catch (error) {
+      this.logger.error(error);
+    }
   }
 }
