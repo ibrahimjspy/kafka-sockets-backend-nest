@@ -44,6 +44,9 @@ export interface ProductMappingResponseDto {
   shr_b2b_product_id: {
     raw: string;
   };
+  os_product_id: {
+    raw: string;
+  };
 }
 
 export interface OsMappingType {
