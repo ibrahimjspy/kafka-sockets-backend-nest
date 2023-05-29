@@ -533,4 +533,35 @@ export class ProductMappingService {
       this.logger.error(error);
     }
   }
+
+  /**
+   * returns b2c master product id against an os product id
+   */
+  public async getMasterProductId(osProductId: string): Promise<string> {
+    try {
+      const filters = JSON.stringify({
+        query: '',
+        page: { size: 10 },
+        filters: {
+          all: [
+            {
+              os_product_id: osProductId,
+            },
+            {
+              retailer_id: 'master',
+            },
+          ],
+        },
+      });
+      const productMappings = await axios.post(
+        `${MAPPING_SERVICE_URL}/search`,
+        filters,
+        MAPPING_SERVICE_HEADERS,
+      );
+      const response = productMappings.data;
+      return response.results[0]?.shr_b2c_product_id.raw || null;
+    } catch (error) {
+      this.logger.error('getting master id failed', error);
+    }
+  }
 }
