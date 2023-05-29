@@ -194,21 +194,20 @@ export class InventoryService {
 
         await this.productVariantStockRepository.save(newStock);
         this.logger.log('Created new stock for child variant', childVariant.id);
-        return;
-      }
-
-      if (
-        parentStock &&
-        childStock &&
-        (childStock.quantity !== parentStock.quantity ||
-          childStock.quantity_allocated !== parentStock.quantity_allocated)
-      ) {
-        childStock.quantity = parentStock.quantity;
-        childStock.quantity_allocated = parentStock.quantity_allocated;
-        updatePromises.push(
-          this.productVariantStockRepository.save(childStock),
-        );
-        this.logger.log('Updated stock for child variant', childVariant.id);
+      } else {
+        if (
+          parentStock &&
+          childStock &&
+          (childStock.quantity !== parentStock.quantity ||
+            childStock.quantity_allocated !== parentStock.quantity_allocated)
+        ) {
+          childStock.quantity = parentStock.quantity;
+          childStock.quantity_allocated = parentStock.quantity_allocated;
+          updatePromises.push(
+            this.productVariantStockRepository.save(childStock),
+          );
+          this.logger.log('Updated stock for child variant', childVariant.id);
+        }
       }
     }
 
@@ -316,17 +315,17 @@ export class InventoryService {
         };
         await this.productVariantStockRepository.save(newStock);
         this.logger.log(`Created new stock for variant ${variantId}`);
-        return;
+      } else {
+        const updatedStock: Partial<WarehouseStock> = {
+          id: variantStockListing.id,
+          product_variant_id: variantId,
+          quantity: variant.quantity,
+        };
+        await this.productVariantStockRepository.update(
+          variantStockListing.id,
+          updatedStock,
+        );
       }
-      const updatedStock: Partial<WarehouseStock> = {
-        id: variantStockListing.id,
-        product_variant_id: variantId,
-        quantity: variant.quantity,
-      };
-      await this.productVariantStockRepository.update(
-        variantStockListing.id,
-        updatedStock,
-      );
     });
 
     await Promise.all(updatePromises);
