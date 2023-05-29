@@ -5,10 +5,14 @@ import {
   KAFKA_INVENTORY_SYNC_TOPIC,
   KAFKA_PRODUCT_CHECK_IN_TOPIC,
 } from 'src/constants';
+import { InventoryService } from './services/Inventory/Inventory.service';
 
 @Controller('webhook')
 export class ProductWebhooksController {
-  constructor(private readonly kafkaProductService: ProducerService) {}
+  constructor(
+    private readonly kafkaProductService: ProducerService,
+    private readonly inventoryService: InventoryService,
+  ) {}
   private readonly logger = new Logger(ProductWebhooksController.name);
 
   @Post('inventory/sync')

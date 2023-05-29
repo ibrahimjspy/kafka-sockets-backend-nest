@@ -42,6 +42,7 @@ import { ProductCategoryRepository } from 'src/database/destination/repositories
 import { ProductWebhooksController } from './Product.webhook.controller';
 import { InventoryService } from './services/Inventory/Inventory.service';
 import { OrderLine } from 'src/database/destination/order/orderLine';
+import { Warehouse } from 'src/database/destination/warehouse';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { OrderLine } from 'src/database/destination/order/orderLine';
     TypeOrmModule.forFeature([AttributeAssignedVariantAttributeValue]),
     TypeOrmModule.forFeature([ProductCategory]),
     TypeOrmModule.forFeature([OrderLine]),
+    TypeOrmModule.forFeature([Warehouse]),
   ],
   controllers: [KafkaController, ProductController, ProductWebhooksController],
   providers: [
@@ -101,6 +103,7 @@ import { OrderLine } from 'src/database/destination/order/orderLine';
     ProductCategory,
     InventoryService,
     OrderLine,
+    Warehouse,
   ],
 })
 export class ProductModule {}

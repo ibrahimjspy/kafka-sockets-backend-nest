@@ -22,6 +22,7 @@ import { AttributeAssignedVariantAttribute } from './database/destination/produc
 import { AttributeAssignedVariantAttributeValue } from './database/destination/productVariant/attributes/value';
 import { ProductCategory } from './database/destination/category';
 import { OrderLine } from './database/destination/order/orderLine';
+import { Warehouse } from './database/destination/warehouse';
 @Module({
   imports: [
     TerminusModule,
@@ -39,6 +40,7 @@ import { OrderLine } from './database/destination/order/orderLine';
         database: configService.get('POSTGRES_DATABASE'),
         entities: [
           ProductMedia,
+          Warehouse,
           ProductThumbnail,
           ProductVariantShopMapping,
           SyncMappings,
