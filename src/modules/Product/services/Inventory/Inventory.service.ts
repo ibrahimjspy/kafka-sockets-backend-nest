@@ -421,7 +421,6 @@ export class InventoryService {
    * @returns The extracted `id` value or `undefined` if the array is empty.
    */
   extractIdFromPayloadArray(payloadArray: SaleorOrderWebhookPayload[]): string {
-    console.log(payloadArray);
     const firstPayload = payloadArray[0];
     if (firstPayload) {
       return idBase64Decode(firstPayload.id);
