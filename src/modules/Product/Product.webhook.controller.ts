@@ -1,5 +1,4 @@
 import { Body, Controller, Logger, Post } from '@nestjs/common';
-import { OrderIdDto } from './Product.webhook.dtos';
 import { ProducerService } from './services/kafka/Kafka.producer.service';
 import {
   KAFKA_INVENTORY_SYNC_TOPIC,
@@ -16,15 +15,13 @@ export class ProductWebhooksController {
   private readonly logger = new Logger(ProductWebhooksController.name);
 
   @Post('inventory/sync')
-  async inventorySync(@Body() orderInput: OrderIdDto) {
+  async inventorySync(@Body() orderEvent) {
     try {
       return await this.kafkaProductService.produce({
         topic: KAFKA_INVENTORY_SYNC_TOPIC,
         messages: [
           {
-            value: JSON.stringify({
-              orderId: orderInput.orderId,
-            }),
+            value: JSON.stringify(orderEvent),
           },
         ],
       });
