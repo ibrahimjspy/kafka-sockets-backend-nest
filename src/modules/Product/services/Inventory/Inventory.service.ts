@@ -13,6 +13,7 @@ import {
   VariantListType,
 } from './Inventory.types';
 import { Warehouse } from 'src/database/destination/warehouse';
+import { SaleorOrderWebhookPayload } from '../../Product.webhook.dtos';
 
 @Injectable()
 export class InventoryService {
@@ -35,15 +36,17 @@ export class InventoryService {
    * If any of the promises is not successful, it rolls back the created products and returns the error that caused the failure.
    * @param orderId - The ID of the order.
    */
-  public async inventorySync({ orderId }: { orderId: string }): Promise<void> {
+  public async inventorySync(
+    orderPayload: SaleorOrderWebhookPayload[],
+  ): Promise<void> {
     try {
+      const orderId = this.extractIdFromPayloadArray(orderPayload);
       this.logger.log('Syncing inventory for orderId', orderId);
-      const order_id = idBase64Decode(orderId);
 
       // Fetch order details
       const orderDetails = await this.orderRepository.find({
         where: {
-          orderId: order_id,
+          orderId: orderId,
         },
       });
 
@@ -410,5 +413,19 @@ export class InventoryService {
     });
 
     return id;
+  }
+
+  /**
+   * Extracts the `id` property from the first element of an array of `SaleorOrderWebhookPayload` objects.
+   * @param payloadArray The array of `SaleorOrderWebhookPayload` objects.
+   * @returns The extracted `id` value or `undefined` if the array is empty.
+   */
+  extractIdFromPayloadArray(payloadArray: SaleorOrderWebhookPayload[]): string {
+    console.log(payloadArray);
+    const firstPayload = payloadArray[0];
+    if (firstPayload) {
+      return idBase64Decode(firstPayload.id);
+    }
+    throw new Error('Id could not be found');
   }
 }

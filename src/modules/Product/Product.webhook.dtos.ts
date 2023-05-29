@@ -6,3 +6,7 @@ export class OrderIdDto {
   @IsString()
   orderId: string;
 }
+export interface SaleorOrderWebhookPayload {
+  type: string;
+  id: string;
+}
