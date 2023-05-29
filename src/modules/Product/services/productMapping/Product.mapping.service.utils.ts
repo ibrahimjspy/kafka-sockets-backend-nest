@@ -133,6 +133,7 @@ export const transformCopiedProductMapping = (
     mappings.push({
       shr_b2b_product_id: document.shr_b2b_product_id.raw,
       shr_b2c_product_id: transformProduct,
+      os_product_id: document.os_product_id.raw,
       retailer_id: retailerId,
     });
   });
