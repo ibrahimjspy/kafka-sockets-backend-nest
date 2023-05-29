@@ -28,3 +28,23 @@ export interface bulkVariantCreate {
     errors: any[];
   };
 }
+
+export interface ProductDetailInterface {
+  name: string;
+  metadata: {
+    key: string;
+    value: string;
+  }[];
+  variants: {
+    id: string;
+    stocks: any[];
+    attributes: {
+      attribute: {
+        name: string;
+      };
+      values: {
+        name: string;
+      }[];
+    }[];
+  }[];
+}

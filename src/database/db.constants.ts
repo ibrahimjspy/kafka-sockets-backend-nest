@@ -27,3 +27,4 @@ export const PRODUCT_ATTRIBUTE_VALUE_TABLE =
 export const PRODUCT_TABLE = 'product_product';
 export const CATEGORY_TABLE = 'product_category';
 export const ORDER_LINE_TABLE = 'saleor.order_orderline';
+export const WAREHOUSE_TABLE = 'saleor.warehouse_warehouse';

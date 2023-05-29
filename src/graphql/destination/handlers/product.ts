@@ -6,7 +6,7 @@ import {
 import { Injectable, Logger } from '@nestjs/common';
 import { graphqlCallDestination } from '../proxies/client';
 import { createProductMutation } from '../mutations/product/create';
-import { productCreate } from '../types/product';
+import { ProductDetailInterface, productCreate } from '../types/product';
 import { graphqlExceptionHandler } from 'src/graphql/utils/exceptionHandler';
 import { productChannelListingMutation } from '../mutations/product/channelListing';
 import {
@@ -22,6 +22,7 @@ import { PaginationDto } from 'src/graphql/types/paginate';
 import { updateProductMutation } from '../mutations/product/updateProduct';
 import { updateProductListingMutation } from '../mutations/product/updateProductListing';
 import { ValidationService } from 'src/modules/Product/services/validation/Product.validation.service';
+import { getProductDetailQuery } from '../queries/products/details';
 
 /**
  * @description -- this layer connects with destination graphql api for and exposes handlers to perform transactions related to product such as create, metadata update etc
@@ -231,6 +232,21 @@ export class ProductDestinationService {
         graphqlExceptionHandler(err),
       );
       throw err;
+    }
+  }
+
+  /**
+   * @description -- this method returns product detail from destination
+   */
+  public async getProductDetails(id: string): Promise<ProductDetailInterface> {
+    try {
+      const response = await graphqlCallDestination(getProductDetailQuery(id));
+      return response['product'];
+    } catch (err) {
+      this.logger.error(
+        'product fetch call failed',
+        graphqlExceptionHandler(err),
+      );
     }
   }
 }
