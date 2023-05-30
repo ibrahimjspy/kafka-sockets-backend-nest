@@ -28,8 +28,26 @@ export class ProductWebhooksController {
     } catch (error) {}
   }
 
+  // Deprecated this webhook will be replaced with product/checkin
   @Post('product/check/in')
   async productCheckIn(@Body() productInput) {
+    try {
+      this.logger.log('product check in webhook called', productInput);
+      return await this.kafkaProductService.produce({
+        topic: KAFKA_PRODUCT_CHECK_IN_TOPIC,
+        messages: [
+          {
+            value: JSON.stringify(productInput),
+          },
+        ],
+      });
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  @Post('product/checkin')
+  async productCheckInV2(@Body() productInput) {
     try {
       this.logger.log('product check in webhook called', productInput);
       return await this.kafkaProductService.produce({
