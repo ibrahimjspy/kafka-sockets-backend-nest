@@ -304,30 +304,47 @@ export class ProductService {
     newProduct: ProductTransformedDto,
   ) {
     try {
-      const { ...bulkProducts } = await PromisePool.for(syncedRetailerIds)
+      const masterProduct = await this.createSingleProduct(
+        {
+          shopId: 'master',
+          storeId: '164',
+          categoryId: newProduct.categoryId,
+        },
+        newProduct,
+      );
+      const parentId = masterProduct.shr_b2c_product_id;
+      this.productCopyService.createCopiesForCategoryOrProduct(parentId, false);
+      return await PromisePool.for(syncedRetailerIds)
         .withConcurrency(PRODUCT_BATCH_SIZE)
         .handleError((error) => {
           this.logger.error(error);
         })
         .process(async (retailer: CategoryMappingDto) => {
-          const categoryId = newProduct.categoryId;
-          const shopId = retailer.shr_retailer_shop_id.raw;
-          const storeId = await getStoreIdFromShop(shopId);
-          const autoSyncInput: AutoSyncDto = {
-            shopId,
-            storeId,
-            categoryId,
-          };
-          const validateProduct =
-            await this.productMappingService.validateMappings(autoSyncInput, [
-              newProduct,
-            ]);
-          if (isArrayEmpty(validateProduct)) return;
-
-          return await this.createSingleProduct(autoSyncInput, newProduct);
+          const retailerId = retailer.shr_retailer_shop_id.raw;
+          const productCopy =
+            await this.productCopyService.createCopiesForCategoryOrProduct(
+              parentId,
+              false,
+            );
+          const categoryId = btoa(`Category:${productCopy[0].category_id}`);
+          const storeId = await getStoreIdFromShop(retailerId);
+          await Promise.race([
+            this.productVariantMappingRepository.saveProductVariantMappings(
+              transformMappings(
+                transformProductsListSync([productCopy]),
+                storeId,
+                await this.shopDestinationApi.addCategoryToShop(
+                  storeId,
+                  categoryId,
+                ),
+              ),
+            ),
+            this.productMappingService.saveBulkMappingsCopiedProducts({
+              retailerId: retailerId,
+              productsList: [productCopy],
+            }),
+          ]);
         });
-      await this.productMappingService.saveBulkMappings(bulkProducts.results);
-      return syncedRetailerIds;
     } catch (error) {
       this.logger.error(error);
     }
@@ -510,7 +527,9 @@ export class ProductService {
         })
         .process(async (category: ProductCategory) => {
           const productCopiesCreate =
-            await this.productCopyService.createCopiesForCategory(category.id);
+            await this.productCopyService.createCopiesForCategoryOrProduct(
+              category.id,
+            );
           await Promise.race([
             this.productVariantMappingRepository.saveProductVariantMappings(
               transformMappings(
