@@ -83,3 +83,7 @@ export const MAPPING_SERVICE_HEADERS = {
 export const B2B_MAPPING_URL =
   process.env.B2B_MAPPING_URL ||
   `${AUTO_SYNC_MAPPING_URL.split('engines/')[0]}engines/b2b-product-track-dev`;
+export const masterProductDefaults = {
+  shopId: 'master',
+  storeId: '164',
+};

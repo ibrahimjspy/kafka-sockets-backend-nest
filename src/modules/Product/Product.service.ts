@@ -28,9 +28,11 @@ import {
   KAFKA_CREATE_PRODUCT_COPIES_TOPIC,
   PRODUCT_BATCH_SIZE,
   PRODUCT_UPDATE_BATCH_SIZE,
+  masterProductDefaults,
 } from 'src/constants';
 import {
   getCategoryIds,
+  getDecodedProductId,
   isArrayEmpty,
   productTotalCountTransformer,
   transformMappings,
@@ -306,13 +308,12 @@ export class ProductService {
     try {
       const masterProduct = await this.createSingleProduct(
         {
-          shopId: 'master',
-          storeId: '164',
+          ...masterProductDefaults,
           categoryId: newProduct.categoryId,
         },
         newProduct,
       );
-      const parentId = masterProduct.shr_b2c_product_id;
+      const parentId = getDecodedProductId(masterProduct);
       this.productCopyService.createCopiesForCategoryOrProduct(parentId, false);
       return await PromisePool.for(syncedRetailerIds)
         .withConcurrency(PRODUCT_BATCH_SIZE)
