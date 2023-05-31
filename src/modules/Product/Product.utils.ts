@@ -3,6 +3,8 @@ import { ProductCategory } from 'src/database/destination/category';
 import { SyncMappings } from 'src/database/destination/mapping';
 import { ProductProduct } from 'src/database/destination/product/product';
 import { v4 as uuidv4 } from 'uuid';
+import { idBase64Decode } from './services/productMedia/Product.media.utils';
+import { ProductMappingsDto } from './services/productMapping/Product.mapping.types';
 
 export const isArrayEmpty = (array) => {
   return array.length == 0;
@@ -72,4 +74,22 @@ export const transformProductsListSync = (
     }
   }
   return mappings as SyncMappings[];
+};
+
+/**
+ * Decodes the product ID from a ProductMappingsDto object.
+ * @param {ProductMappingsDto} productMapping - The product mapping object.
+ * @returns {string} - The decoded product ID.
+ */
+export const getDecodedProductId = (productMapping: ProductMappingsDto) => {
+  return idBase64Decode(productMapping.shr_b2c_product_id);
+};
+
+/**
+ * Gets the encoded category ID for a given product.
+ * @param {ProductProduct} product - The product object.
+ * @returns {string} The encoded category ID.
+ */
+export const getEncodedCategoryId = (product: ProductProduct) => {
+  return btoa(`Category:${product.category_id}`);
 };

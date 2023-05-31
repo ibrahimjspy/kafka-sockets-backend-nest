@@ -10,6 +10,7 @@ export const KAFKA_BULK_PRODUCT_CREATE_TOPIC = 'autoSyncBulkCreate';
 export const KAFKA_CREATE_PRODUCT_BATCHES_TOPIC = 'autoSyncCreateBatches';
 export const KAFKA_CREATE_PRODUCT_COPIES_TOPIC = 'autoSyncCreateProductCopies';
 export const KAFKA_INVENTORY_SYNC_TOPIC = 'autoSyncInventorySync';
+export const KAFKA_NEW_PRODUCT_SYNC_TOPIC = 'autoSyncNewProductSync';
 export const KAFKA_PRODUCT_CHECK_IN_TOPIC = 'autoSyncProductCheckIn';
 
 export const KAFKA_SAVE_PRODUCT_ES_MAPPINGS_TOPIC =
@@ -83,3 +84,7 @@ export const MAPPING_SERVICE_HEADERS = {
 export const B2B_MAPPING_URL =
   process.env.B2B_MAPPING_URL ||
   `${AUTO_SYNC_MAPPING_URL.split('engines/')[0]}engines/b2b-product-track-dev`;
+export const masterProductDefaults = {
+  shopId: 'master',
+  storeId: '164',
+};

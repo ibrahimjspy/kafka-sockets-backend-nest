@@ -37,26 +37,41 @@ export class ProductCopyService {
   ) {}
 
   /**
-   * Creates copies of products for a given category.
-   * @param categoryId The ID of the category.
+   * Creates copies of products for a given category or a single product.
+   * @param id The ID of the category or the single product.
+   * @param isCategory Indicates whether the ID represents a category or a single product.
    * @returns A Promise that resolves to the copied products.
-   */ async createCopiesForCategory(
-    categoryId: number,
+   */
+  async createCopiesForCategoryOrProduct(
+    id: number | string,
+    isCategory = true,
   ): Promise<ProductProduct[]> {
     try {
-      this.logger.log(
-        `Creating copies of products for category ID ${categoryId}`,
-      );
+      const logPrefix = isCategory ? `category ID ${id}` : `product ID ${id}`;
+      this.logger.log(`Creating copies of products for ${logPrefix}`);
 
-      // Retrieve the master products for the given category
-      const masterProducts = await this.productRepository
+      let productQuery = this.productRepository
         .createQueryBuilder('product')
-        .where('product.category_id = :categoryId', { categoryId })
         .andWhere('product.metadata ->> :isMasterKey = :isMasterValue', {
           isMasterKey: 'isMaster',
           isMasterValue: 'true',
-        })
-        .getMany();
+        });
+
+      if (isCategory) {
+        this.logger.log(`Filtering by category ID ${id}`);
+        productQuery = productQuery.andWhere(
+          'product.category_id = :categoryId',
+          { categoryId: id },
+        );
+      } else {
+        this.logger.log(`Filtering by product ID ${id}`);
+        productQuery = productQuery.andWhere('product.id = :productId', {
+          productId: id,
+        });
+      }
+
+      // Retrieve the master products based on the query
+      const masterProducts = await productQuery.getMany();
 
       this.logger.log(`Retrieved ${masterProducts.length} master products`);
 
@@ -102,10 +117,7 @@ export class ProductCopyService {
 
       return copiedProductsResult;
     } catch (error) {
-      this.logger.error(
-        `An error occurred while creating copies for category ID ${categoryId}`,
-        error,
-      );
+      this.logger.error(`An error occurred while creating copies `, error);
       throw error;
     }
   }

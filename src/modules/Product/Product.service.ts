@@ -28,9 +28,12 @@ import {
   KAFKA_CREATE_PRODUCT_COPIES_TOPIC,
   PRODUCT_BATCH_SIZE,
   PRODUCT_UPDATE_BATCH_SIZE,
+  masterProductDefaults,
 } from 'src/constants';
 import {
   getCategoryIds,
+  getDecodedProductId,
+  getEncodedCategoryId,
   isArrayEmpty,
   productTotalCountTransformer,
   transformMappings,
@@ -267,7 +270,7 @@ export class ProductService {
    * @link -- createSingleProduct()
    * @link -- createNewProductCDC()
    */
-  public async handleNewProductCDC(productId: string) {
+  public async handleNewProductCDC({ productId }) {
     const productData = await getProductsHandler(
       { first: 1 },
       { categories: [], ids: [productId] },
@@ -304,30 +307,45 @@ export class ProductService {
     newProduct: ProductTransformedDto,
   ) {
     try {
-      const { ...bulkProducts } = await PromisePool.for(syncedRetailerIds)
+      const masterProduct = await this.createSingleProduct(
+        {
+          ...masterProductDefaults,
+          categoryId: newProduct.categoryId,
+        },
+        newProduct,
+      );
+      const parentId = getDecodedProductId(masterProduct);
+      return await PromisePool.for(syncedRetailerIds)
         .withConcurrency(PRODUCT_BATCH_SIZE)
         .handleError((error) => {
           this.logger.error(error);
         })
         .process(async (retailer: CategoryMappingDto) => {
-          const categoryId = newProduct.categoryId;
-          const shopId = retailer.shr_retailer_shop_id.raw;
-          const storeId = await getStoreIdFromShop(shopId);
-          const autoSyncInput: AutoSyncDto = {
-            shopId,
-            storeId,
-            categoryId,
-          };
-          const validateProduct =
-            await this.productMappingService.validateMappings(autoSyncInput, [
-              newProduct,
-            ]);
-          if (isArrayEmpty(validateProduct)) return;
-
-          return await this.createSingleProduct(autoSyncInput, newProduct);
+          const retailerId = retailer.shr_retailer_shop_id.raw;
+          const productCopy =
+            await this.productCopyService.createCopiesForCategoryOrProduct(
+              parentId,
+              false,
+            );
+          const categoryId = getEncodedCategoryId(productCopy[0]);
+          const storeId = await getStoreIdFromShop(retailerId);
+          await Promise.race([
+            this.productVariantMappingRepository.saveProductVariantMappings(
+              transformMappings(
+                transformProductsListSync([productCopy]),
+                storeId,
+                await this.shopDestinationApi.addCategoryToShop(
+                  storeId,
+                  categoryId,
+                ),
+              ),
+            ),
+            this.productMappingService.saveBulkMappingsCopiedProducts({
+              retailerId: retailerId,
+              productsList: [productCopy],
+            }),
+          ]);
         });
-      await this.productMappingService.saveBulkMappings(bulkProducts.results);
-      return syncedRetailerIds;
     } catch (error) {
       this.logger.error(error);
     }
@@ -510,7 +528,9 @@ export class ProductService {
         })
         .process(async (category: ProductCategory) => {
           const productCopiesCreate =
-            await this.productCopyService.createCopiesForCategory(category.id);
+            await this.productCopyService.createCopiesForCategoryOrProduct(
+              category.id,
+            );
           await Promise.race([
             this.productVariantMappingRepository.saveProductVariantMappings(
               transformMappings(
