@@ -78,7 +78,7 @@ export class KafkaController {
     try {
       this.logger.log('sync new product kafka resolver called');
 
-      const syncInventory = this.productService.handleNewProductCDC(message);
+      const syncProduct = this.productService.handleNewProductCDC(message);
 
       return;
     } catch (error) {
