@@ -269,7 +269,7 @@ export class ProductService {
    * @link -- createSingleProduct()
    * @link -- createNewProductCDC()
    */
-  public async handleNewProductCDC(productId: string) {
+  public async handleNewProductCDC({ productId }) {
     const productData = await getProductsHandler(
       { first: 1 },
       { categories: [], ids: [productId] },
