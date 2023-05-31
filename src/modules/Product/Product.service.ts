@@ -33,6 +33,7 @@ import {
 import {
   getCategoryIds,
   getDecodedProductId,
+  getEncodedCategoryId,
   isArrayEmpty,
   productTotalCountTransformer,
   transformMappings,
@@ -314,7 +315,6 @@ export class ProductService {
         newProduct,
       );
       const parentId = getDecodedProductId(masterProduct);
-      this.productCopyService.createCopiesForCategoryOrProduct(parentId, false);
       return await PromisePool.for(syncedRetailerIds)
         .withConcurrency(PRODUCT_BATCH_SIZE)
         .handleError((error) => {
@@ -327,7 +327,7 @@ export class ProductService {
               parentId,
               false,
             );
-          const categoryId = btoa(`Category:${productCopy[0].category_id}`);
+          const categoryId = getEncodedCategoryId(productCopy[0]);
           const storeId = await getStoreIdFromShop(retailerId);
           await Promise.race([
             this.productVariantMappingRepository.saveProductVariantMappings(

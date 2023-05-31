@@ -84,3 +84,12 @@ export const transformProductsListSync = (
 export const getDecodedProductId = (productMapping: ProductMappingsDto) => {
   return idBase64Decode(productMapping.shr_b2c_product_id);
 };
+
+/**
+ * Gets the encoded category ID for a given product.
+ * @param {ProductProduct} product - The product object.
+ * @returns {string} The encoded category ID.
+ */
+export const getEncodedCategoryId = (product: ProductProduct) => {
+  return btoa(`Category:${product.category_id}`);
+};
