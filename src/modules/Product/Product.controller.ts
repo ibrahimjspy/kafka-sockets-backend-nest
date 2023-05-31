@@ -47,16 +47,18 @@ export class ProductController {
 
   @Post('api/v1/product')
   async handleNewProduct(@Body() productInput: ProductIdDto) {
-    this.kafkaProductService.produce({
-      topic: KAFKA_NEW_PRODUCT_SYNC_TOPIC,
-      messages: [
-        {
-          value: JSON.stringify({
-            productId: productInput.productId,
-          }),
-        },
-      ],
-    });
+    try {
+      return await this.kafkaProductService.produce({
+        topic: KAFKA_NEW_PRODUCT_SYNC_TOPIC,
+        messages: [
+          {
+            value: JSON.stringify({
+              productId: productInput.productId,
+            }),
+          },
+        ],
+      });
+    } catch (error) {}
   }
 
   @Put('api/v1/product')
