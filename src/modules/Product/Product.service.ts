@@ -50,6 +50,7 @@ import { ProductCategoryRepository } from 'src/database/destination/repositories
 import { ProductCategory } from 'src/database/destination/category';
 import { ProductCopyService } from './services/productCopy/Service';
 import { ProductProduct } from 'src/database/destination/product/product';
+import { SyncService } from './services/sync/Sync.service';
 
 @Injectable()
 export class ProductService {
@@ -69,6 +70,7 @@ export class ProductService {
     private readonly createProductCopiesRepository: CreateProductCopiesRepository,
     private readonly productCategoryRepository: ProductCategoryRepository,
     private readonly productCopyService: ProductCopyService,
+    private readonly syncService: SyncService,
   ) {}
   private readonly logger = new Logger(ProductService.name);
 
@@ -322,13 +324,17 @@ export class ProductService {
         })
         .process(async (retailer: CategoryMappingDto) => {
           const retailerId = retailer.shr_retailer_shop_id.raw;
+          const storeId = await getStoreIdFromShop(retailerId);
+          if (!storeId) return;
+          const validateStore =
+            this.shopDestinationApi.validateStoreId(storeId);
+          if (!validateStore) return;
           const productCopy =
             await this.productCopyService.createCopiesForCategoryOrProduct(
               parentId,
               false,
             );
           const categoryId = getEncodedCategoryId(productCopy[0]);
-          const storeId = await getStoreIdFromShop(retailerId);
           await Promise.race([
             this.productVariantMappingRepository.saveProductVariantMappings(
               transformMappings(
@@ -358,7 +364,7 @@ export class ProductService {
    * @link -- update changes
    * @link -- updateProductFields()
    */
-  public async handleProductUpdateCDC(productId: string) {
+  public async handleProductUpdateCDC({ productId }) {
     try {
       const sourceProductData = await getProductsHandler(
         { first: 1 },
@@ -369,9 +375,9 @@ export class ProductService {
       const productMappings =
         await this.productMappingService.getAllProductMappings({
           productId: transformedProductSource.sourceId,
-          shopId: null,
+          shopId: 'master',
         });
-      return await PromisePool.for(productMappings)
+      return await PromisePool.for([productMappings[0]])
         .withConcurrency(PRODUCT_BATCH_SIZE)
         .handleError((error) => {
           this.logger.error(error);
@@ -439,6 +445,7 @@ export class ProductService {
             updatedProductFields,
           );
         });
+      await this.syncService.syncChildPricingWithMaster(productId);
     }
     if (updatedProductFields.hasOwnProperty('isAvailableForPurchase')) {
       await this.productDestinationApi.updateProductListing(

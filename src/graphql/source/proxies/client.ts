@@ -8,14 +8,18 @@ import polly from 'polly-js';
 import { Logger } from '@nestjs/common';
 import { graphqlExceptionHandler } from 'src/graphql/utils/exceptionHandler';
 
-export const graphqlCallSource = async (query: string): Promise<object> => {
+export const graphqlCallSource = async (
+  query: string,
+  logs = true,
+): Promise<object> => {
   return polly()
     .logger(function (err) {
       const logger = new Logger('graphqlCallSource');
-      logger.warn(
-        `retrying :: ${query.split('(')[0]}`,
-        graphqlExceptionHandler(err),
-      );
+      logs &&
+        logger.warn(
+          `retrying :: ${query.split('(')[0]}`,
+          graphqlExceptionHandler(err),
+        );
     })
     .waitAndRetry(RETRY_COUNT)
     .executeForPromise(async () => {

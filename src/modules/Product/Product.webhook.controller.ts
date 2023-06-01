@@ -17,7 +17,7 @@ export class ProductWebhooksController {
   @Post('inventory/sync')
   async inventorySync(@Body() orderEvent) {
     try {
-      return await this.kafkaProductService.produce({
+      await this.kafkaProductService.produce({
         topic: KAFKA_INVENTORY_SYNC_TOPIC,
         messages: [
           {
@@ -25,6 +25,7 @@ export class ProductWebhooksController {
           },
         ],
       });
+      return 'inventory sync message received';
     } catch (error) {}
   }
 
@@ -33,7 +34,7 @@ export class ProductWebhooksController {
   async productCheckIn(@Body() productInput) {
     try {
       this.logger.log('product check in webhook called', productInput);
-      return await this.kafkaProductService.produce({
+      await this.kafkaProductService.produce({
         topic: KAFKA_PRODUCT_CHECK_IN_TOPIC,
         messages: [
           {
@@ -41,6 +42,7 @@ export class ProductWebhooksController {
           },
         ],
       });
+      return 'product check in sync message received';
     } catch (error) {
       this.logger.error(error);
     }
@@ -50,7 +52,7 @@ export class ProductWebhooksController {
   async productCheckInV2(@Body() productInput) {
     try {
       this.logger.log('product check in webhook called', productInput);
-      return await this.kafkaProductService.produce({
+      await this.kafkaProductService.produce({
         topic: KAFKA_PRODUCT_CHECK_IN_TOPIC,
         messages: [
           {
@@ -58,6 +60,7 @@ export class ProductWebhooksController {
           },
         ],
       });
+      return 'product check in sync message received';
     } catch (error) {
       this.logger.error(error);
     }

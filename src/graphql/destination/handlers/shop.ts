@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { graphqlCallDestination } from '../proxies/client';
 import { graphqlExceptionHandler } from 'src/graphql/utils/exceptionHandler';
 import { addCategoryToShopMutation } from '../mutations/shop/addCategoryToShop';
+import { shopDetailQuery } from '../queries/shop/details';
 
 @Injectable()
 export class ShopDestinationService {
@@ -26,6 +27,20 @@ export class ShopDestinationService {
         graphqlExceptionHandler(err),
       );
       throw err;
+    }
+  }
+
+  /**
+   * @description -- this method validates whether shop exists or not
+   * @warn -- it relies on marketplace shop to throw error to return false
+   */
+  public async validateStoreId(storeId: string): Promise<boolean> {
+    try {
+      await graphqlCallDestination(shopDetailQuery(storeId), false);
+      return true;
+    } catch (err) {
+      this.logger.log('No shop was found', storeId);
+      return false;
     }
   }
 }
