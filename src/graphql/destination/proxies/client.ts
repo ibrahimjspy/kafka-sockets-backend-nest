@@ -13,14 +13,16 @@ import {
 
 export const graphqlCallDestination = async (
   query: string,
+  logs = true,
 ): Promise<object> => {
   return polly()
     .logger(function (err) {
       const logger = new Logger('graphqlCallDestination');
-      logger.warn(
-        `retrying :: ${query.split('(')[0]}`,
-        graphqlExceptionHandler(err),
-      );
+      logs &&
+        logger.warn(
+          `retrying :: ${query.split('(')[0]}`,
+          graphqlExceptionHandler(err),
+        );
     })
     .waitAndRetry(RETRY_COUNT)
     .executeForPromise(async () => {

@@ -8,7 +8,7 @@ import { getShopFieldValues } from 'src/graphql/utils/getShop';
  */
 export const getStoreIdFromShop = async (id: string) => {
   try {
-    const shopData = await graphqlCallSource(getShopQuery({ id }));
+    const shopData = await graphqlCallSource(getShopQuery({ id }), false);
     return (
       getShopFieldValues(
         shopData['marketplaceShop']['fields'],

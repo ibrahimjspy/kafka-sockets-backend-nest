@@ -11,6 +11,7 @@ export const KAFKA_CREATE_PRODUCT_BATCHES_TOPIC = 'autoSyncCreateBatches';
 export const KAFKA_CREATE_PRODUCT_COPIES_TOPIC = 'autoSyncCreateProductCopies';
 export const KAFKA_INVENTORY_SYNC_TOPIC = 'autoSyncInventorySync';
 export const KAFKA_NEW_PRODUCT_SYNC_TOPIC = 'autoSyncNewProductSync';
+export const KAFKA_UPDATE_PRODUCT_SYNC_TOPIC = 'autoSyncUpdateProductSync';
 export const KAFKA_PRODUCT_CHECK_IN_TOPIC = 'autoSyncProductCheckIn';
 
 export const KAFKA_SAVE_PRODUCT_ES_MAPPINGS_TOPIC =

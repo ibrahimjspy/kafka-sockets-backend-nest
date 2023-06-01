@@ -43,6 +43,7 @@ import { ProductWebhooksController } from './Product.webhook.controller';
 import { InventoryService } from './services/Inventory/Inventory.service';
 import { OrderLine } from 'src/database/destination/order/orderLine';
 import { Warehouse } from 'src/database/destination/warehouse';
+import { SyncService } from './services/sync/Sync.service';
 
 @Module({
   imports: [
@@ -104,6 +105,7 @@ import { Warehouse } from 'src/database/destination/warehouse';
     InventoryService,
     OrderLine,
     Warehouse,
+    SyncService,
   ],
 })
 export class ProductModule {}

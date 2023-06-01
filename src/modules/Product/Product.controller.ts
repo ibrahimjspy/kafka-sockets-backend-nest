@@ -11,7 +11,10 @@ import PromisePool from '@supercharge/promise-pool/dist';
 import { ProductMappingService } from './services/productMapping/Product.mapping.service';
 import { ProductCopyService } from './services/productCopy/Service';
 import { ProducerService } from './services/kafka/Kafka.producer.service';
-import { KAFKA_NEW_PRODUCT_SYNC_TOPIC } from 'src/constants';
+import {
+  KAFKA_NEW_PRODUCT_SYNC_TOPIC,
+  KAFKA_UPDATE_PRODUCT_SYNC_TOPIC,
+} from 'src/constants';
 
 @Controller()
 @ApiTags('auto-sync-product-api')
@@ -63,9 +66,18 @@ export class ProductController {
 
   @Put('api/v1/product')
   async handleProductUpdate(@Body() productInput: ProductIdDto) {
-    return await this.productService.handleProductUpdateCDC(
-      productInput.productId,
-    );
+    try {
+      return await this.kafkaProductService.produce({
+        topic: KAFKA_UPDATE_PRODUCT_SYNC_TOPIC,
+        messages: [
+          {
+            value: JSON.stringify({
+              productId: productInput.productId,
+            }),
+          },
+        ],
+      });
+    } catch (error) {}
   }
 
   @Delete('api/v1/auto/sync')

@@ -12,6 +12,7 @@ import {
   KAFKA_INVENTORY_SYNC_TOPIC,
   KAFKA_NEW_PRODUCT_SYNC_TOPIC,
   KAFKA_SAVE_PRODUCT_ES_MAPPINGS_TOPIC,
+  KAFKA_UPDATE_PRODUCT_SYNC_TOPIC,
 } from 'src/constants';
 import { ProductMappingService } from '../productMapping/Product.mapping.service';
 import { InventoryService } from '../Inventory/Inventory.service';
@@ -79,6 +80,19 @@ export class KafkaController {
       this.logger.log('sync new product kafka resolver called');
 
       const syncProduct = this.productService.handleNewProductCDC(message);
+
+      return;
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  @MessagePattern(KAFKA_UPDATE_PRODUCT_SYNC_TOPIC)
+  async autoSyncUpdateProductSync(@Payload() message) {
+    try {
+      this.logger.log('update product sync kafka resolver called');
+
+      const syncProduct = this.productService.handleProductUpdateCDC(message);
 
       return;
     } catch (error) {
