@@ -273,28 +273,31 @@ export class ProductService {
    * @link -- createNewProductCDC()
    */
   public async handleNewProductCDC({ productId }) {
-    const productData = await getProductsHandler(
-      { first: 1 },
-      { categories: [], ids: [productId] },
-    );
-    let syncedRetailerIds: CategoryMappingDto[] = [];
-    const transformedProduct =
-      this.productTransformer.payloadBuilder(productData)[0];
-    const categoryIds = transformedProduct.categoryTree;
-    await Promise.all(
-      categoryIds.map(async (categoryId) => {
-        const retailerIds = await this.productMappingService.getSyncedRetailers(
-          categoryId,
-        );
-        syncedRetailerIds = syncedRetailerIds.concat(retailerIds);
-      }),
-    );
-    if (isArrayEmpty(syncedRetailerIds)) return syncedRetailerIds;
+    try {
+      const productData = await getProductsHandler(
+        { first: 1 },
+        { categories: [], ids: [productId] },
+      );
+      let syncedRetailerIds: CategoryMappingDto[] = [];
+      const transformedProduct =
+        this.productTransformer.payloadBuilder(productData)[0];
+      const categoryIds = transformedProduct.categoryTree;
+      await Promise.all(
+        categoryIds.map(async (categoryId) => {
+          const retailerIds =
+            await this.productMappingService.getSyncedRetailers(categoryId);
+          syncedRetailerIds = syncedRetailerIds.concat(retailerIds);
+        }),
+      );
+      if (isArrayEmpty(syncedRetailerIds)) return syncedRetailerIds;
 
-    return await this.createNewProductCDC(
-      syncedRetailerIds,
-      transformedProduct,
-    );
+      return await this.createNewProductCDC(
+        syncedRetailerIds,
+        transformedProduct,
+      );
+    } catch (error) {
+      this.logger.log(error);
+    }
   }
 
   /**
