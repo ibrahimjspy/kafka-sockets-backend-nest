@@ -34,7 +34,6 @@ import {
   getCategoryIds,
   getDecodedProductId,
   getEncodedCategoryId,
-  isArrayEmpty,
   productTotalCountTransformer,
   transformMappings,
   transformProductsListSync,
@@ -289,7 +288,6 @@ export class ProductService {
           syncedRetailerIds = syncedRetailerIds.concat(retailerIds);
         }),
       );
-      if (isArrayEmpty(syncedRetailerIds)) return syncedRetailerIds;
 
       return await this.createNewProductCDC(
         syncedRetailerIds,
@@ -324,6 +322,7 @@ export class ProductService {
       return await PromisePool.for(syncedRetailerIds)
         .withConcurrency(PRODUCT_BATCH_SIZE)
         .handleError((error) => {
+          console.log(error);
           this.logger.error(error);
         })
         .process(async (retailer: CategoryMappingDto) => {
