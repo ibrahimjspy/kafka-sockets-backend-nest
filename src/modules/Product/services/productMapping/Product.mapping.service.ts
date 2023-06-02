@@ -49,6 +49,7 @@ export class ProductMappingService {
   public async saveBulkMappings(mappingsList: ProductMappingsDto[]) {
     return polly()
       .logger(function (error) {
+        console.dir(error, { depth: null });
         Logger.error(error);
       })
       .waitAndRetry(RETRY_COUNT)
@@ -203,6 +204,7 @@ export class ProductMappingService {
   ): Promise<CategoryMappingDto[]> {
     return polly()
       .logger(function (error) {
+        console.dir(error, { depth: null });
         Logger.error(error);
       })
       .waitAndRetry(RETRY_COUNT)

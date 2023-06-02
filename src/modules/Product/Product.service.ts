@@ -296,6 +296,7 @@ export class ProductService {
         transformedProduct,
       );
     } catch (error) {
+      console.dir(error, { depth: null });
       this.logger.log(error);
     }
   }
