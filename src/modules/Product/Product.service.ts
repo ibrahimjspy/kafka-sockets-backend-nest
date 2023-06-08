@@ -557,7 +557,7 @@ export class ProductService {
           completedCount = completedCount + productCopiesCreate.length;
           return productCopiesCreate;
         });
-      this.webSocketService.sendAutoSyncProgressV2(
+      await this.webSocketService.sendAutoSyncProgressV2(
         totalCount,
         totalCount,
         autoSyncInput,
