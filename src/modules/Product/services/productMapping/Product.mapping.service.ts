@@ -133,7 +133,7 @@ export class ProductMappingService {
   /**
    * @description -- this method fetches whether a category is synced against retailer or not
    */
-  public async getSyncCategoryMappings(autoSyncInput: AutoSyncDto) {
+  private async getSyncCategoryMappings(autoSyncInput: AutoSyncDto) {
     return polly()
       .logger(function (error) {
         Logger.error(error);
@@ -313,7 +313,10 @@ export class ProductMappingService {
   /**
    * @description -- this method fetches whether a category is synced against retailer or not
    */
-  public async removeSyncedCategoryMapping(shopId: string) {
+  public async removeSyncedCategoryMapping(
+    shopId: string,
+    categoryId?: string,
+  ) {
     return polly()
       .logger(function (error) {
         Logger.error(error);
@@ -328,6 +331,7 @@ export class ProductMappingService {
               {
                 shr_retailer_shop_id: shopId,
               },
+              ...(categoryId ? [{ shr_category_id: categoryId }] : []),
             ],
           },
         });
@@ -565,5 +569,19 @@ export class ProductMappingService {
     } catch (error) {
       this.logger.error('getting master id failed', error);
     }
+  }
+
+  /**
+   * @description -- this method validates whether thus category is synced or not
+   * @param -- auto sync input for syncing category
+   * @returns -- boolean whether category is synced or not
+   */
+  public async validateSyncCategoryMapping(
+    autoSyncInout: AutoSyncDto,
+  ): Promise<boolean> {
+    const syncCategoriesMapping = await this.getSyncCategoryMappings(
+      autoSyncInout,
+    );
+    return syncCategoriesMapping?.results?.length;
   }
 }

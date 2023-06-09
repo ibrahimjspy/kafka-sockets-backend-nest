@@ -108,6 +108,29 @@ export class ProductService {
   }
 
   /**
+   * @description -- this method cancels auto sync by removing its mapping against a shop
+   * @warn -- it will also stop importing more products against that category for given shop id as we validate this mapping in auto sync
+   */
+  public async cancelAutoSync(autoSyncInput: AutoSyncDto): Promise<object> {
+    try {
+      const { shopId, categoryId } = autoSyncInput;
+      this.logger.log(
+        `Canceling auto sync for category ${categoryId} against shop ${shopId}`,
+      );
+
+      const removeSyncCategoryMapping =
+        this.productMappingService.removeSyncedCategoryMapping(
+          shopId,
+          categoryId,
+        );
+      return { removeSyncCategoryMapping };
+    } catch (error) {
+      this.logger.error(error);
+      return { error: error.message };
+    }
+  }
+
+  /**
    * @description -- this method creates bulk product batches
    * @step -- fetches products against a category
    * @step -- send a kafka message which creates product in bulk against that batch
@@ -503,7 +526,7 @@ export class ProductService {
     autoSyncInput,
     eventId,
     addCategoryToShop,
-  }): Promise<ProductProduct[][]> {
+  }): Promise<(void | ProductProduct[])[]> {
     try {
       const { storeId, categoryId, shopId }: AutoSyncDto = autoSyncInput;
       const parentCategoryId = idBase64Decode(categoryId);
@@ -536,7 +559,19 @@ export class ProductService {
           );
           this.logger.log(`Progress: ${pool.processedPercentage()}%`);
         })
-        .process(async (category: ProductCategory) => {
+        .process(async (category: ProductCategory, key, pool) => {
+          const validateCategoryMapping =
+            await this.productMappingService.validateSyncCategoryMapping(
+              autoSyncInput,
+            );
+          if (!validateCategoryMapping) {
+            this.logger.log(
+              `Validation for category ${category} failed, stopping promise pool`,
+              autoSyncInput,
+            );
+            return pool.stop();
+          }
+
           const productCopiesCreate =
             await this.productCopyService.createCopiesForCategoryOrProduct(
               category.id,
