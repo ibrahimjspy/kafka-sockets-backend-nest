@@ -34,7 +34,6 @@ import {
   getCategoryIds,
   getDecodedProductId,
   getEncodedCategoryId,
-  isArrayEmpty,
   productTotalCountTransformer,
   transformMappings,
   transformProductsListSync,
@@ -105,6 +104,29 @@ export class ProductService {
       return { categoryId, eventId };
     } catch (error) {
       this.logger.error(error);
+    }
+  }
+
+  /**
+   * @description -- this method cancels auto sync by removing its mapping against a shop
+   * @warn -- it will also stop importing more products against that category for given shop id as we validate this mapping in auto sync
+   */
+  public async cancelAutoSync(autoSyncInput: AutoSyncDto): Promise<object> {
+    try {
+      const { shopId, categoryId } = autoSyncInput;
+      this.logger.log(
+        `Canceling auto sync for category ${categoryId} against shop ${shopId}`,
+      );
+
+      const removeSyncCategoryMapping =
+        this.productMappingService.removeSyncedCategoryMapping(
+          shopId,
+          categoryId,
+        );
+      return { removeSyncCategoryMapping };
+    } catch (error) {
+      this.logger.error(error);
+      return { error: error.message };
     }
   }
 
@@ -273,28 +295,31 @@ export class ProductService {
    * @link -- createNewProductCDC()
    */
   public async handleNewProductCDC({ productId }) {
-    const productData = await getProductsHandler(
-      { first: 1 },
-      { categories: [], ids: [productId] },
-    );
-    let syncedRetailerIds: CategoryMappingDto[] = [];
-    const transformedProduct =
-      this.productTransformer.payloadBuilder(productData)[0];
-    const categoryIds = transformedProduct.categoryTree;
-    await Promise.all(
-      categoryIds.map(async (categoryId) => {
-        const retailerIds = await this.productMappingService.getSyncedRetailers(
-          categoryId,
-        );
-        syncedRetailerIds = syncedRetailerIds.concat(retailerIds);
-      }),
-    );
-    if (isArrayEmpty(syncedRetailerIds)) return syncedRetailerIds;
+    try {
+      const productData = await getProductsHandler(
+        { first: 1 },
+        { categories: [], ids: [productId] },
+      );
+      let syncedRetailerIds: CategoryMappingDto[] = [];
+      const transformedProduct =
+        this.productTransformer.payloadBuilder(productData)[0];
+      const categoryIds = transformedProduct.categoryTree;
+      await Promise.all(
+        categoryIds.map(async (categoryId) => {
+          const retailerIds =
+            await this.productMappingService.getSyncedRetailers(categoryId);
+          syncedRetailerIds = syncedRetailerIds.concat(retailerIds);
+        }),
+      );
 
-    return await this.createNewProductCDC(
-      syncedRetailerIds,
-      transformedProduct,
-    );
+      return await this.createNewProductCDC(
+        syncedRetailerIds,
+        transformedProduct,
+      );
+    } catch (error) {
+      console.dir(error, { depth: null });
+      this.logger.log(error);
+    }
   }
 
   /**
@@ -320,6 +345,7 @@ export class ProductService {
       return await PromisePool.for(syncedRetailerIds)
         .withConcurrency(PRODUCT_BATCH_SIZE)
         .handleError((error) => {
+          console.log(error);
           this.logger.error(error);
         })
         .process(async (retailer: CategoryMappingDto) => {
@@ -500,7 +526,7 @@ export class ProductService {
     autoSyncInput,
     eventId,
     addCategoryToShop,
-  }): Promise<ProductProduct[][]> {
+  }): Promise<(void | ProductProduct[])[]> {
     try {
       const { storeId, categoryId, shopId }: AutoSyncDto = autoSyncInput;
       const parentCategoryId = idBase64Decode(categoryId);
@@ -533,7 +559,19 @@ export class ProductService {
           );
           this.logger.log(`Progress: ${pool.processedPercentage()}%`);
         })
-        .process(async (category: ProductCategory) => {
+        .process(async (category: ProductCategory, key, pool) => {
+          const validateCategoryMapping =
+            await this.productMappingService.validateSyncCategoryMapping(
+              autoSyncInput,
+            );
+          if (!validateCategoryMapping) {
+            this.logger.log(
+              `Validation for category ${category} failed, stopping promise pool`,
+              autoSyncInput,
+            );
+            return pool.stop();
+          }
+
           const productCopiesCreate =
             await this.productCopyService.createCopiesForCategoryOrProduct(
               category.id,
@@ -554,7 +592,7 @@ export class ProductService {
           completedCount = completedCount + productCopiesCreate.length;
           return productCopiesCreate;
         });
-      this.webSocketService.sendAutoSyncProgressV2(
+      await this.webSocketService.sendAutoSyncProgressV2(
         totalCount,
         totalCount,
         autoSyncInput,

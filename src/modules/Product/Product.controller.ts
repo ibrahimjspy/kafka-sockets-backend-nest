@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Logger, Post, Put } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ProductService } from './Product.service';
 import {
   AutoSyncDto,
@@ -106,5 +106,14 @@ export class ProductController {
         return this.productService.autoSyncV2(syncCategoriesRequest);
       });
     return syncCategories.results;
+  }
+
+  @Delete('api/v1/auto/sync/cancel')
+  @ApiOperation({
+    summary:
+      'this cancels auto sync against a category, which will effectively stop importing any more products against that category for a retailer',
+  })
+  async cancelAutoSync(@Body() cancelAutoSync: AutoSyncDto) {
+    return await this.productService.cancelAutoSync(cancelAutoSync);
   }
 }
