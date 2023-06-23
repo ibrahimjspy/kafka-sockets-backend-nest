@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { idBase64Decode } from '../productMedia/Product.media.utils';
 import { ProductProductVariant } from 'src/database/destination/productVariant/productVariant';
 import { ProductProductVariantChannelListing } from 'src/database/destination/productVariant/channelListing';
+import { ProductProductChannelListing } from 'src/database/destination/product/channnelListing';
+import { ProductProduct } from 'src/database/destination/product/product';
 
 @Injectable()
 export class SyncService {
@@ -11,6 +13,10 @@ export class SyncService {
   private readonly productVariantRepository: Repository<ProductProductVariant>;
   @InjectRepository(ProductProductVariantChannelListing)
   private readonly productVariantChannelListingRepository: Repository<ProductProductVariantChannelListing>;
+  @InjectRepository(ProductProductChannelListing)
+  private readonly productChannelListingRepository: Repository<ProductProductChannelListing>;
+  @InjectRepository(ProductProduct)
+  private productRepository: Repository<ProductProduct>;
   private readonly logger = new Logger(SyncService.name);
 
   /**
@@ -77,5 +83,76 @@ export class SyncService {
       }
     }
     this.logger.log('Child pricing synchronization with master completed');
+  }
+
+  /**
+   * Syncs the child product listings with the master product listing.
+   * @param {string} productId - The ID of the master product.
+   * @returns {Promise<void>} - A Promise that resolves once the synchronization is completed.
+   * @throws {Error} - If the master product listing is not found or an error occurs during the synchronization process.
+   */
+  public async syncChildListingWithMaster(productId: string): Promise<void> {
+    try {
+      this.logger.log(
+        `Syncing child listings with master product ${productId}`,
+      );
+      const decodedProductId = idBase64Decode(productId);
+
+      // Retrieve the master product listing
+      const masterProductListing =
+        await this.productChannelListingRepository.findOne({
+          where: {
+            product_id: Number(decodedProductId),
+          },
+        });
+
+      if (!masterProductListing) {
+        throw new Error(
+          `Master product listing not found for product ID: ${decodedProductId}`,
+        );
+      }
+
+      // Retrieve all child products associated with the master product
+      const childProducts = await this.productRepository
+        .createQueryBuilder('product')
+        .where('product.metadata ->> :parentKey = :parentId', {
+          parentKey: 'parentId',
+          parentId: `${decodedProductId}`,
+        })
+        .getMany();
+
+      // Iterate over the child products and update their channel listings
+      for (const childProduct of childProducts) {
+        const childProductListing =
+          await this.productChannelListingRepository.findOne({
+            where: {
+              product_id: childProduct.id,
+            },
+          });
+
+        if (!childProductListing) {
+          this.logger.log(
+            `Channel listing not found for child product ${childProduct.id}`,
+          );
+          continue;
+        }
+
+        const updatedProductListing: Partial<ProductProductChannelListing> = {
+          ...masterProductListing,
+          id: childProductListing.id,
+        };
+
+        await this.productChannelListingRepository.save(updatedProductListing);
+        this.logger.log(
+          `Updated channel listing for child product ${childProduct.id}`,
+        );
+      }
+
+      this.logger.log('Child pricing synchronization with master completed');
+    } catch (error) {
+      this.logger.error(
+        `Error occurred during child listing synchronization: ${error}`,
+      );
+    }
   }
 }

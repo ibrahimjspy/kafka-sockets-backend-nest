@@ -317,7 +317,6 @@ export class ProductService {
         transformedProduct,
       );
     } catch (error) {
-      console.dir(error, { depth: null });
       this.logger.log(error);
     }
   }
@@ -478,6 +477,7 @@ export class ProductService {
         productId,
         updatedProductFields,
       );
+      await this.syncService.syncChildListingWithMaster(productId);
     }
 
     return productId;
